@@ -1,6 +1,7 @@
 import express from "express";
 import {
   addItemToCart,
+  checkoutCart,
   clearCart,
   getActiveCart,
   removeCartItem,
@@ -78,4 +79,20 @@ router.delete("/", validateJwt, async (req, res) => {
     return res.status(500).json({ message: "Server error" });
   }
 });
+
+// ✅ checkout
+// ✅ checkout
+// ✅ checkout
+router.post("/checkout", validateJwt, async (req, res) => {
+  try {
+    const userId = (req as any).user._id;
+    const response = await checkoutCart({
+      userId,
+    });
+    return res.status(response.statusCode).send(response);
+  } catch (err) {
+    return res.status(500).json({ message: "Server error" });
+  }
+});
+
 export default router;

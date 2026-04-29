@@ -1,4 +1,5 @@
 import { cartModel } from "../models/cartModel.js";
+import orderModel, { Order } from "../models/orderModel.js";
 import product from "../models/productModel.js";
 import productModel from "../models/productModel.js";
 
@@ -176,6 +177,50 @@ export const clearCart = async ({ userId }: clearCart) => {
   return {
     data: updatedCart,
     message: "Cart cleared",
+    statusCode: 200,
+  };
+};
+
+// ✅ checkout
+// ✅ checkout
+// ✅ checkout
+// ✅ checkout
+// ✅ checkout
+export interface checkoutInput {
+  userId: string;
+}
+
+export const checkoutCart = async ({ userId }: checkoutInput) => {
+  const cart = await getActiveCart({ userId });
+  const orderItems: Order[] = [];
+  for (const item of cart.items) {
+    const product = await productModel.findById(item.product);
+    if (!product) {
+      return {
+        message: `Product with id ${item.product} not found`,
+        statusCode: 404,
+      };
+    }
+    const orderItem: Order = {
+      productTitle: product.title || "",
+      productImage: product.image || "",
+      price: item.unitPrice,
+      quantity: item.quantity,
+    };
+    orderItems.push(orderItem);
+  }
+  const order = await orderModel.create({
+    orderItems,
+    totalPrice: cart.totalPrice,
+    adress: "some address",
+    userId,
+  });
+  await order.save();
+  cart.status = "completed";
+  await cart.save();
+  return {
+    data: order,
+    message: "Checkout successful",
     statusCode: 200,
   };
 };
