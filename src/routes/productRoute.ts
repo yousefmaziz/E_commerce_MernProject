@@ -7,5 +7,4 @@ router.get("/", async (req, res) => {
   const products = await getAllProducts();
   res.status(200).send(products);
 });
-// Define product routes here (e.g., GET, POST, PUT, DELETE)
 export default router;

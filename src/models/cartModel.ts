@@ -3,7 +3,7 @@ import { Schema, Document } from "mongoose";
 import { Iproduct } from "./productModel.js";
 
 const cartStatusEnum = ["active", "completed", "cancelled"] as const;
-export interface IcartItem extends Document {
+export interface IcartItem {
   product: Iproduct;
   quantity: number;
   unitPrice: number;
