@@ -10,13 +10,13 @@ router.post("/register", async (req, res) => {
     email,
     password,
   });
-  res.status(statusCode).send(data);
+  res.status(statusCode).json(data);
 });
 
 router.post("/login", async (req, res) => {
   const { email, password } = req.body;
   const { data, statusCode } = await login({ email, password });
-  res.status(statusCode).send(data);
+  res.status(statusCode).json(data);
 });
 
 export default router;
