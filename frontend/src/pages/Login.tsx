@@ -4,10 +4,8 @@ import Button from "@mui/material/Button";
 import { useRef, useState } from "react";
 import { useAuth } from "../context/Auth/AuthContext";
 import { useNavigate } from "react-router-dom";
-export default function Register() {
+export default function Login() {
   const [error, setError] = useState("");
-  const firstNameRef = useRef<HTMLInputElement>(null);
-  const lastNameRef = useRef<HTMLInputElement>(null);
   const emailRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
   const { login } = useAuth();
@@ -15,21 +13,18 @@ export default function Register() {
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    const firstName = firstNameRef.current?.value;
-    const lastName = lastNameRef.current?.value;
     const email = emailRef.current?.value;
     const password = passwordRef.current?.value;
-    console.log({ firstName, lastName, email, password });
 
-    const response = await fetch("http://localhost:3002/user/register", {
+    const response = await fetch("http://localhost:3002/user/login", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ firstName, lastName, email, password }),
+      body: JSON.stringify({ email, password }),
     });
     if (!response.ok) {
-      setError("Registration failed. Please try again.");
+      setError("Login failed. Please try again.");
       return;
     }
     const token = await response.json();
@@ -39,7 +34,7 @@ export default function Register() {
       return;
     }
     login(email, token);
-    navigate("/login");
+    navigate("/");
   };
   return (
     <>
@@ -53,7 +48,7 @@ export default function Register() {
             mt: 5,
           }}
         >
-          <Typography variant="h4">Register New User</Typography>
+          <Typography variant="h4">Login</Typography>
           <Box
             sx={{
               display: "flex",
@@ -65,18 +60,6 @@ export default function Register() {
               borderRadius: 2,
             }}
           >
-            <TextField
-              inputRef={firstNameRef}
-              label="First Name"
-              variant="outlined"
-              name="firstName"
-            />
-            <TextField
-              inputRef={lastNameRef}
-              label="Last Name"
-              variant="outlined"
-              name="lastName"
-            />
             <TextField
               inputRef={emailRef}
               label="Email"
@@ -96,7 +79,7 @@ export default function Register() {
               color="primary"
               type="submit"
             >
-              Register
+              Login
             </Button>
             {error && <Typography sx={{ color: "red" }}>{error}</Typography>}
           </Box>
