@@ -1,6 +1,7 @@
 import userModel from "../models/userModel.js";
 import bcryptt from "bcrypt";
 import jwt from "jsonwebtoken";
+import orderModel from "../models/orderModel.js";
 interface registerData {
   firstName: string;
   lastName: string;
@@ -56,4 +57,16 @@ export const login = async ({ email, password }: loginData) => {
 
 const generateToken = (data: any) => {
   return jwt.sign(data, "2000");
+};
+
+export interface myOrder {
+  userId: string;
+}
+
+export const getMyOrder = ({ userId: myOrder }) => {
+  try {
+    return { data: orderModel.find({ userId }), statusCode: 200 };
+  } catch (err) {
+    throw err;
+  }
 };

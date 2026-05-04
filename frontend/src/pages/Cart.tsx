@@ -10,8 +10,10 @@ import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useCart } from "../context/cart/CartContext";
+import { useNavigate } from "react-router-dom";
 
 export default function Cart() {
+  const navigate = useNavigate();
   const { cartItems, totalPrice, updateItem, RemoveItem, clearCart } =
     useCart();
 
@@ -36,11 +38,19 @@ export default function Cart() {
       <Typography variant="h4" gutterBottom>
         Your Shopping Cart
       </Typography>
-
       {cartItems.length === 0 ? (
         <Typography>No items in cart</Typography>
       ) : (
         <>
+          <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+            <Button
+              variant="contained"
+              onClick={() => clearAll()}
+              sx={{ color: "white", m: 2 }}
+            >
+              Clear
+            </Button>
+          </Box>
           {cartItems.map((item) => (
             <Box
               key={item.productId}
@@ -126,12 +136,13 @@ export default function Cart() {
             <Typography variant="h5">
               Total: {totalPrice.toFixed(2)} EGP
             </Typography>
+
             <Button
               variant="contained"
-              onClick={() => clearAll()}
               sx={{ color: "white" }}
+              onClick={() => navigate("/checkout")}
             >
-              Clear All
+              GO TO CHECKOUT
             </Button>
           </Box>
         </>

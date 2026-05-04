@@ -43,6 +43,10 @@ function Navbar() {
     navigate("/cart");
   };
 
+  const handleMyOrder = () => {
+    navigate("/myorder");
+  };
+
   return (
     <AppBar position="static">
       <Container maxWidth="xl">
@@ -123,7 +127,10 @@ function Navbar() {
                     onClose={handleCloseUserMenu}
                   >
                     <MenuItem onClick={handleCloseUserMenu}>
-                      <Typography sx={{ textAlign: "center" }}>
+                      <Typography
+                        onClick={handleMyOrder}
+                        sx={{ textAlign: "center" }}
+                      >
                         MY Orders
                       </Typography>
                     </MenuItem>
