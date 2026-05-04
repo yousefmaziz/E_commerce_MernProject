@@ -13,9 +13,12 @@ import AdbIcon from "@mui/icons-material/Adb";
 import { useAuth } from "../context/Auth/AuthContext";
 import Button from "@mui/material/Button";
 import { useNavigate } from "react-router-dom";
-
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import { Badge } from "@mui/material";
+import { useCart } from "../context/cart/CartContext";
 function Navbar() {
   const { username, isAuthenticated, logout } = useAuth();
+  const { cartItems } = useCart();
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
     null,
   );
@@ -36,6 +39,9 @@ function Navbar() {
     navigate("/login");
     handleCloseUserMenu();
   };
+  const handleCart = () => {
+    navigate("/cart");
+  };
 
   return (
     <AppBar position="static">
@@ -50,24 +56,30 @@ function Navbar() {
               width: "100%",
             }}
           >
-            <Box
-              sx={{ display: "flex", direction: "row", alignItems: "center" }}
+            <Button
+              variant="text"
+              sx={{ color: "white" }}
+              onClick={() => navigate("/")}
             >
-              <AdbIcon sx={{ display: "flex", mr: 1 }} />
-              <Typography
-                variant="h6"
-                noWrap
-                component="a"
-                sx={{
-                  mr: 2,
-                  display: { xs: "none", md: "flex" },
-                  fontFamily: "monospace",
-                  fontWeight: 700,
-                }}
+              <Box
+                sx={{ display: "flex", direction: "row", alignItems: "center" }}
               >
-                Tech
-              </Typography>
-            </Box>
+                <AdbIcon sx={{ display: "flex", mr: 1 }} />
+                <Typography
+                  variant="h6"
+                  noWrap
+                  component="a"
+                  sx={{
+                    mr: 2,
+                    display: { xs: "none", md: "flex" },
+                    fontFamily: "monospace",
+                    fontWeight: 700,
+                  }}
+                >
+                  Tech
+                </Typography>
+              </Box>
+            </Button>
             <Box
               sx={{
                 flexGrow: 0,
@@ -76,6 +88,11 @@ function Navbar() {
                 alignItems: "center",
               }}
             >
+              <IconButton aria-label="cart" sx={{ mr: 2 }} onClick={handleCart}>
+                <Badge badgeContent={cartItems.length} color="secondary">
+                  <ShoppingCartIcon sx={{ color: "white" }} />
+                </Badge>
+              </IconButton>
               {isAuthenticated ? (
                 <>
                   <Tooltip title="Open settings">

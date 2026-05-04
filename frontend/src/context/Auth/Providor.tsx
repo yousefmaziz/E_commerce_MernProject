@@ -1,4 +1,4 @@
-import { useState, type PropsWithChildren, type FC, useEffect } from "react";
+import { useState, type PropsWithChildren, type FC } from "react";
 import { AuthContext } from "./AuthContext";
 
 const AuthProvider: FC<PropsWithChildren> = ({ children }) => {

@@ -6,6 +6,7 @@ import productModel from "../models/productModel.js";
 // ✅ Types
 export interface CartInput {
   userId: string;
+  populate?: boolean;
 }
 
 export interface AddItemInput {
@@ -26,8 +27,14 @@ export interface RemoveCartItemInput {
   productId: any;
 }
 // ✅ get active cart
-export const getActiveCart = async ({ userId }: CartInput) => {
-  let cart = await cartModel.findOne({ userId, status: "active" });
+export const getActiveCart = async ({ userId, populate }: CartInput) => {
+  let cart;
+  if (populate) {
+    await cartModel
+      .findOne({ userId, status: "active" })
+      .populate("items.product");
+  }
+  cart = await cartModel.findOne({ userId, status: "active" });
 
   if (!cart) {
     cart = await cartModel.create({
@@ -74,6 +81,8 @@ export const addItemToCart = async ({
       product: productId,
       quantity,
       unitPrice: product.price,
+      title: product.title,
+      imageUrl: product.image,
     });
 
     cart.totalPrice = cart.items.reduce(
@@ -81,10 +90,10 @@ export const addItemToCart = async ({
       0,
     );
 
-    const updatedCart = await cart.save();
+    await cart.save();
 
     return {
-      data: updatedCart,
+      data: await getActiveCart({ userId, populate: true }),
       message: "Product added to cart",
       statusCode: 200,
     };
@@ -128,10 +137,10 @@ export const updateCartItem = async ({
 
   total = total + exist.unitPrice * exist.quantity;
   cart.totalPrice = total;
-  const updatedCart = await cart.save();
+  await cart.save();
 
   return {
-    data: updatedCart,
+    data: await getActiveCart({ userId, populate: true }),
     message: "Cart item updated",
     statusCode: 200,
   };
@@ -159,10 +168,10 @@ export const removeCartItem = async ({
   }, 0);
   cart.items = OtherItems;
   cart.totalPrice = total;
-  const updatedCart = await cart.save();
+  await cart.save();
 
   return {
-    data: updatedCart,
+    data: await getActiveCart({ userId, populate: true }),
     message: "Cart item removed",
     statusCode: 200,
   };
@@ -173,9 +182,9 @@ export const clearCart = async ({ userId }: clearCart) => {
 
   cart.items = [];
   cart.totalPrice = 0;
-  const updatedCart = await cart.save();
+  await cart.save();
   return {
-    data: updatedCart,
+    data: await getActiveCart({ userId, populate: true }),
     message: "Cart cleared",
     statusCode: 200,
   };

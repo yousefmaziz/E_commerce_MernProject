@@ -7,6 +7,8 @@ export interface IcartItem {
   product: Iproduct;
   quantity: number;
   unitPrice: number;
+  title: string;
+  imageUrl: string;
 }
 
 export interface Icart extends Document {
@@ -20,6 +22,8 @@ const cartItemSchema = new Schema<IcartItem>({
   product: { type: Schema.Types.ObjectId, ref: "product", required: true },
   quantity: { type: Number, required: true, default: 1 },
   unitPrice: { type: Number, required: true },
+  title: { type: String, required: true },
+  imageUrl: { type: String, required: true },
 });
 
 const cartSchema = new Schema<Icart>({

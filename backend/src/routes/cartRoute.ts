@@ -8,8 +8,6 @@ import {
   updateCartItem,
 } from "../services/cartServices.js";
 import validateJwt from "../middlewares/validateJwt.js";
-import { send } from "process";
-
 const router = express.Router();
 
 router.get("/", validateJwt, async (req, res) => {
@@ -20,7 +18,7 @@ router.get("/", validateJwt, async (req, res) => {
       return res.status(401).json({ message: "Unauthorized user" });
     }
 
-    const cart = await getActiveCart({ userId: user._id });
+    const cart = await getActiveCart({ userId: user._id, populate: true });
 
     return res.send(cart);
   } catch (err) {
