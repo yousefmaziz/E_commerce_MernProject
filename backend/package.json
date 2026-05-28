@@ -1,15 +1,10 @@
 {
   "name": "e-commerce-yehyatech",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
   "type": "module",
   "scripts": {
-    "dev": "nodemon"
+    "dev": "nodemon --watch src --ext ts --exec tsx src/index.ts"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "dependencies": {
     "bcrypt": "^6.0.0",
     "cors": "^2.8.6",
@@ -25,6 +20,7 @@
     "@types/node": "^25.5.2",
     "nodemon": "^3.1.14",
     "ts-node": "^10.9.2",
+    "tsx": "^4.22.3",
     "typescript": "^6.0.2"
   }
 }

@@ -2,13 +2,8 @@ import * as React from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
-import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
-import Menu from "@mui/material/Menu";
 import Container from "@mui/material/Container";
-import Avatar from "@mui/material/Avatar";
-import Tooltip from "@mui/material/Tooltip";
-import MenuItem from "@mui/material/MenuItem";
 import AdbIcon from "@mui/icons-material/Adb";
 import { useAuth } from "../context/Auth/AuthContext";
 import Button from "@mui/material/Button";
@@ -16,136 +11,177 @@ import { useNavigate } from "react-router-dom";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import { Badge } from "@mui/material";
 import { useCart } from "../context/cart/CartContext";
+
 function Navbar() {
   const { username, isAuthenticated, logout } = useAuth();
+
   const { cartItems } = useCart();
-  const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
-    null,
-  );
+
   const navigate = useNavigate();
-  const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorElUser(event.currentTarget);
-  };
 
-  const handleCloseUserMenu = () => {
-    setAnchorElUser(null);
-  };
-
-  const handlelogin = () => {
+  const handleLogin = () => {
     navigate("/login");
   };
+
   const handleLogout = () => {
     logout();
     navigate("/login");
-    handleCloseUserMenu();
-  };
-  const handleCart = () => {
-    navigate("/cart");
-  };
-
-  const handleMyOrder = () => {
-    navigate("/myorder");
   };
 
   return (
-    <AppBar position="static">
+    <AppBar
+      position="sticky"
+      sx={{
+        backgroundColor: "#0f172a",
+        boxShadow: "none",
+      }}
+    >
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <Box
             sx={{
               display: "flex",
-              direction: "row",
               justifyContent: "space-between",
               alignItems: "center",
               width: "100%",
             }}
           >
+            {/* LOGO */}
+
             <Button
               variant="text"
-              sx={{ color: "white" }}
+              sx={{
+                color: "white",
+                textTransform: "none",
+              }}
               onClick={() => navigate("/")}
             >
               <Box
-                sx={{ display: "flex", direction: "row", alignItems: "center" }}
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                }}
               >
-                <AdbIcon sx={{ display: "flex", mr: 1 }} />
+                <AdbIcon sx={{ mr: 1 }} />
+
                 <Typography
                   variant="h6"
-                  noWrap
-                  component="a"
                   sx={{
-                    mr: 2,
-                    display: { xs: "none", md: "flex" },
-                    fontFamily: "monospace",
-                    fontWeight: 700,
+                    fontWeight: "bold",
+                    letterSpacing: 1,
                   }}
                 >
-                  Tech
+                  Tech Store
                 </Typography>
               </Box>
             </Button>
+
+            {/* RIGHT SIDE */}
+
             <Box
               sx={{
-                flexGrow: 0,
                 display: "flex",
-                direction: "row",
                 alignItems: "center",
+                gap: 2,
               }}
             >
-              <IconButton aria-label="cart" sx={{ mr: 2 }} onClick={handleCart}>
-                <Badge badgeContent={cartItems.length} color="secondary">
-                  <ShoppingCartIcon sx={{ color: "white" }} />
-                </Badge>
-              </IconButton>
+              {/* HOME */}
+
+              <Button
+                onClick={() => navigate("/")}
+                sx={{
+                  color: "white",
+                  textTransform: "none",
+                  fontWeight: "bold",
+                }}
+              >
+                Home
+              </Button>
+
+              {/* MY ORDERS */}
+
+              {isAuthenticated && (
+                <Button
+                  onClick={() => navigate("/myorder")}
+                  sx={{
+                    color: "white",
+                    textTransform: "none",
+                    fontWeight: "bold",
+                  }}
+                >
+                  My Orders
+                </Button>
+              )}
+
+              {/* DASHBOARD */}
+
+              {isAuthenticated && (
+                <Button
+                  onClick={() => navigate("/dashboard")}
+                  sx={{
+                    color: "white",
+                    textTransform: "none",
+                    fontWeight: "bold",
+                  }}
+                >
+                  Dashboard
+                </Button>
+              )}
+
+              {/* CART */}
+              {isAuthenticated && (
+                <Button
+                  onClick={() => navigate("/cart")}
+                  sx={{
+                    color: "white",
+                    minWidth: "auto",
+                  }}
+                >
+                  <Badge badgeContent={cartItems.length} color="error">
+                    <ShoppingCartIcon />
+                  </Badge>
+                </Button>
+              )}
+
+              {/* USERNAME */}
+
+              {isAuthenticated && (
+                <Typography
+                  sx={{
+                    color: "white",
+                    fontWeight: "bold",
+                  }}
+                >
+                  {username}
+                </Typography>
+              )}
+
+              {/* LOGIN / LOGOUT */}
+
               {isAuthenticated ? (
-                <>
-                  <Tooltip title="Open settings">
-                    <>
-                      <Typography sx={{ mr: 2 }}>{username}</Typography>
-                      <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                        <Avatar
-                          alt={username || "User"}
-                          src="/static/images/avatar/2.jpg"
-                        />
-                      </IconButton>
-                    </>
-                  </Tooltip>
-                  <Menu
-                    sx={{ mt: "45px" }}
-                    id="menu-appbar"
-                    anchorEl={anchorElUser}
-                    anchorOrigin={{
-                      vertical: "top",
-                      horizontal: "right",
-                    }}
-                    keepMounted
-                    transformOrigin={{
-                      vertical: "top",
-                      horizontal: "right",
-                    }}
-                    open={Boolean(anchorElUser)}
-                    onClose={handleCloseUserMenu}
-                  >
-                    <MenuItem onClick={handleCloseUserMenu}>
-                      <Typography
-                        onClick={handleMyOrder}
-                        sx={{ textAlign: "center" }}
-                      >
-                        MY Orders
-                      </Typography>
-                    </MenuItem>
-                    <MenuItem onClick={handleLogout}>
-                      <Typography sx={{ textAlign: "center" }}>
-                        Logout
-                      </Typography>
-                    </MenuItem>
-                  </Menu>
-                </>
+                <Button
+                  variant="contained"
+                  color="error"
+                  onClick={handleLogout}
+                  sx={{
+                    borderRadius: "10px",
+                    textTransform: "none",
+                    fontWeight: "bold",
+                    boxShadow: "none",
+                  }}
+                >
+                  Logout
+                </Button>
               ) : (
                 <Button
                   variant="contained"
-                  color="primary"
-                  onClick={handlelogin}
+                  onClick={handleLogin}
+                  sx={{
+                    borderRadius: "10px",
+                    textTransform: "none",
+                    fontWeight: "bold",
+                    boxShadow: "none",
+                  }}
                 >
                   Login
                 </Button>
@@ -157,4 +193,5 @@ function Navbar() {
     </AppBar>
   );
 }
+
 export default Navbar;

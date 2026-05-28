@@ -11,6 +11,7 @@ import { useCart } from "../context/cart/CartContext";
 import { useAuth } from "../context/Auth/AuthContext";
 import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-hot-toast/headless";
 
 export default function CheckoutPage() {
   const { token } = useAuth();
@@ -21,12 +22,12 @@ export default function CheckoutPage() {
   const [addressError, setAddressError] = useState("");
 
   const navigate = useNavigate();
+  const { clearCart } = useCart();
 
   const Checkout = async () => {
-    const adress = addressRef.current?.value;
-
+    const address = addressRef.current?.value;
     // ✅ validation
-    if (!adress || adress.trim() === "") {
+    if (!address || address.trim() === "") {
       setAddressError("Address is required");
       return;
     }
@@ -41,17 +42,19 @@ export default function CheckoutPage() {
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
-          adress,
+          address,
           paymentMethod,
         }),
       });
 
       const result = await response.json();
-
+      console.log("Checkout response:", result);
       if (!response.ok) {
         console.log("SERVER:", result);
         return;
       }
+
+      clearCart();
 
       navigate("/order");
     } catch (err) {
@@ -100,16 +103,14 @@ export default function CheckoutPage() {
                 {item.title} x {item.quantity}
               </Typography>
               <Typography>
-                {(item.unitPrice * item.quantity).toFixed(2)} EGP
+                {(item.unitPrice * item.quantity).toFixed(2)} $
               </Typography>
             </Box>
           ))}
 
           <Divider sx={{ my: 2 }} />
 
-          <Typography variant="h6">
-            Total: {totalPrice.toFixed(2)} EGP
-          </Typography>
+          <Typography variant="h6">Total: {totalPrice.toFixed(2)} $</Typography>
         </Paper>
 
         {/* 📦 Checkout Form */}

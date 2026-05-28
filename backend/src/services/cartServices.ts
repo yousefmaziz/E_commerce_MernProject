@@ -60,30 +60,45 @@ export const addItemToCart = async ({
     }
 
     const product = await productModel.findById(productId);
+
     if (!product) {
       return { message: "Product not found", statusCode: 404 };
     }
 
-    if (product.stock < quantity) {
-      return { message: "Insufficient stock", statusCode: 400 };
-    }
     const cart = await getActiveCart({ userId });
 
-    const exists = cart.items.some(
+    // نشوف المنتج موجود ولا لا
+
+    const existingItem = cart.items.find(
       (item) => item.product.toString() === productId.toString(),
     );
 
-    if (exists) {
-      return { message: "Product already in cart", statusCode: 400 };
+    // لو موجود نزود الكمية
+
+    if (existingItem) {
+      existingItem.quantity += quantity;
+
+      // نتأكد ان الكمية متعدتش ال stock
+
+      if (existingItem.quantity > product.stock) {
+        return {
+          message: "Insufficient stock",
+          statusCode: 400,
+        };
+      }
+    } else {
+      // لو مش موجود نضيفه
+
+      cart.items.push({
+        product: productId,
+        quantity,
+        unitPrice: product.price,
+        title: product.title,
+        imageUrl: product.image,
+      });
     }
 
-    cart.items.push({
-      product: productId,
-      quantity,
-      unitPrice: product.price,
-      title: product.title,
-      imageUrl: product.image,
-    });
+    // نحسب التوتال
 
     cart.totalPrice = cart.items.reduce(
       (total, item) => total + item.unitPrice * item.quantity,
@@ -93,13 +108,22 @@ export const addItemToCart = async ({
     await cart.save();
 
     return {
-      data: await getActiveCart({ userId, populate: true }),
+      data: await getActiveCart({
+        userId,
+        populate: true,
+      }),
+
       message: "Product added to cart",
+
       statusCode: 200,
     };
   } catch (err) {
     console.error("Add to cart error:", err);
-    return { message: "Server error", statusCode: 500 };
+
+    return {
+      message: "Server error",
+      statusCode: 500,
+    };
   }
 };
 
@@ -115,33 +139,48 @@ export const updateCartItem = async ({
   );
 
   if (!exist) {
-    return { message: "Product not in cart", statusCode: 404 };
+    return {
+      message: "Product not in cart",
+      statusCode: 404,
+    };
   }
+
   const product = await productModel.findById(productId);
+
   if (!product) {
-    return { message: "Product not found", statusCode: 404 };
+    return {
+      message: "Product not found",
+      statusCode: 404,
+    };
   }
 
   if (product.stock < quantity) {
-    return { message: "Insufficient stock", statusCode: 400 };
+    return {
+      message: "Insufficient stock",
+      statusCode: 400,
+    };
   }
 
-  const OtherItems = cart.items.filter(
-    (p) => p.product.toString() !== productId.toString(),
-  );
-  let total = OtherItems.reduce((total, product) => {
-    total + product.unitPrice * product.quantity;
-    return total;
-  }, 0);
+  // تحديث الكمية
+
   exist.quantity = quantity;
 
-  total = total + exist.unitPrice * exist.quantity;
-  cart.totalPrice = total;
+  // إعادة حساب التوتال بالكامل
+
+  cart.totalPrice = cart.items.reduce((total, item) => {
+    return total + item.unitPrice * item.quantity;
+  }, 0);
+
   await cart.save();
 
   return {
-    data: await getActiveCart({ userId, populate: true }),
+    data: await getActiveCart({
+      userId,
+      populate: true,
+    }),
+
     message: "Cart item updated",
+
     statusCode: 200,
   };
 };
@@ -151,28 +190,40 @@ export const removeCartItem = async ({
   productId,
 }: RemoveCartItemInput) => {
   const cart = await getActiveCart({ userId });
+
   const exist = cart.items.find(
     (p) => p.product.toString() === productId.toString(),
   );
 
   if (!exist) {
-    return { message: "Product not in cart", statusCode: 404 };
+    return {
+      message: "Product not in cart",
+      statusCode: 404,
+    };
   }
-  const OtherItems = cart.items.filter(
+
+  // حذف المنتج
+
+  cart.items = cart.items.filter(
     (p) => p.product.toString() !== productId.toString(),
   );
 
-  let total = OtherItems.reduce((total, product) => {
-    total + product.unitPrice * product.quantity;
-    return total;
+  // إعادة حساب التوتال
+
+  cart.totalPrice = cart.items.reduce((total, item) => {
+    return total + item.unitPrice * item.quantity;
   }, 0);
-  cart.items = OtherItems;
-  cart.totalPrice = total;
+
   await cart.save();
 
   return {
-    data: await getActiveCart({ userId, populate: true }),
+    data: await getActiveCart({
+      userId,
+      populate: true,
+    }),
+
     message: "Cart item removed",
+
     statusCode: 200,
   };
 };
@@ -197,9 +248,10 @@ export const clearCart = async ({ userId }: clearCart) => {
 // ✅ checkout
 export interface checkoutInput {
   userId: string;
+  address: string;
 }
 
-export const checkoutCart = async ({ userId }: checkoutInput) => {
+export const checkoutCart = async ({ userId, address }: checkoutInput) => {
   const cart = await getActiveCart({ userId });
   const orderItems: Order[] = [];
   for (const item of cart.items) {
@@ -221,7 +273,7 @@ export const checkoutCart = async ({ userId }: checkoutInput) => {
   const order = await orderModel.create({
     orderItems,
     totalPrice: cart.totalPrice,
-    adress: "some address",
+    address,
     userId,
   });
   await order.save();

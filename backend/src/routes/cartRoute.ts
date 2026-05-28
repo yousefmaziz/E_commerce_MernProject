@@ -86,6 +86,7 @@ router.post("/checkout", validateJwt, async (req, res) => {
     const userId = (req as any).user._id;
     const response = await checkoutCart({
       userId,
+      address: req.body.address,
     });
     return res.status(response.statusCode).send(response);
   } catch (err) {

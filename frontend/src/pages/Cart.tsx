@@ -35,18 +35,39 @@ export default function Cart() {
   };
   return (
     <Container sx={{ mt: 4 }}>
-      <Typography variant="h4" gutterBottom>
-        Your Shopping Cart
-      </Typography>
       {cartItems.length === 0 ? (
-        <Typography>No items in cart</Typography>
+        <>
+          <Typography variant="h4">Your Shopping Cart</Typography>
+          <Typography sx={{ color: "text.secondary", mx: 1 }}>
+            No items in cart
+          </Typography>
+        </>
       ) : (
         <>
-          <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              mb: 3,
+            }}
+          >
+            <Typography variant="h4">Your Shopping Cart</Typography>
             <Button
               variant="contained"
               onClick={() => clearAll()}
-              sx={{ color: "white", m: 2 }}
+              sx={{
+                borderRadius: "12px",
+                px: 3,
+                py: 1,
+                textTransform: "none",
+                fontWeight: "bold",
+                boxShadow: "none",
+
+                "&:hover": {
+                  boxShadow: "none",
+                },
+              }}
             >
               Clear
             </Button>
@@ -62,13 +83,13 @@ export default function Cart() {
                 mb: 2,
                 borderRadius: 3,
                 boxShadow: 3,
-                backgroundColor: "#fff",
+                backgroundColor: "rgba(255, 255, 255, 0.86)",
                 flexWrap: "wrap",
                 gap: 2,
               }}
             >
               <img
-                src={`http://localhost:3002${item.imageUrl}`}
+                src={`${item.imageUrl}`}
                 alt={item.title}
                 style={{
                   width: 100,
@@ -81,8 +102,8 @@ export default function Cart() {
               <Box sx={{ flex: 1, minWidth: 150 }}>
                 <Typography variant="h6">{item.title}</Typography>
 
-                <Typography variant="body2" color="text.secondary">
-                  {item.unitPrice} EGP
+                <Typography variant="body2" sx={{ color: "green" }}>
+                  {item.unitPrice} $
                 </Typography>
               </Box>
 
@@ -111,8 +132,10 @@ export default function Cart() {
                 </IconButton>
               </Box>
 
-              <Typography sx={{ fontWeight: "bold", minWidth: 100 }}>
-                {(item.unitPrice * item.quantity).toFixed(2)} EGP
+              <Typography
+                sx={{ fontWeight: "bold", minWidth: 100, color: "green" }}
+              >
+                {(item.unitPrice * item.quantity).toFixed(2)} $
               </Typography>
               <IconButton
                 onClick={() => handleDelete(item.productId)}
@@ -134,12 +157,23 @@ export default function Cart() {
             }}
           >
             <Typography variant="h5">
-              Total: {totalPrice.toFixed(2)} EGP
+              Total: {totalPrice.toFixed(2)} $
             </Typography>
 
             <Button
               variant="contained"
-              sx={{ color: "white" }}
+              sx={{
+                borderRadius: "12px",
+                px: 3,
+                py: 1,
+                textTransform: "none",
+                fontWeight: "bold",
+                boxShadow: "none",
+
+                "&:hover": {
+                  boxShadow: "none",
+                },
+              }}
               onClick={() => navigate("/checkout")}
             >
               GO TO CHECKOUT

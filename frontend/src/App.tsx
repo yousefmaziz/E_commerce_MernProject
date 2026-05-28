@@ -10,9 +10,14 @@ import CartProvider from "./context/cart/CartProvidor";
 import CheckOut from "./pages/CheckOut";
 import Order from "./pages/Order";
 import MyOrder from "./pages/MyOrder";
+import DashBoard from "./pages/DashBoard";
+import { Toaster } from "react-hot-toast";
+
 function App() {
   return (
     <>
+      <Toaster position="top-right" />
+
       <AuthProvider>
         <CartProvider>
           <BrowserRouter>
@@ -26,6 +31,7 @@ function App() {
                 <Route path="/checkout" element={<CheckOut />} />
                 <Route path="/order" element={<Order />} />
                 <Route path="/myorder" element={<MyOrder />} />
+                <Route path="/dashboard" element={<DashBoard />} />
               </Route>
             </Routes>
           </BrowserRouter>

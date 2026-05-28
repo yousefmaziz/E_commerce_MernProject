@@ -4,6 +4,8 @@ import Button from "@mui/material/Button";
 import { useRef, useState } from "react";
 import { useAuth } from "../context/Auth/AuthContext";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
+
 export default function Register() {
   const [error, setError] = useState("");
   const firstNameRef = useRef<HTMLInputElement>(null);
@@ -39,69 +41,94 @@ export default function Register() {
       return;
     }
     login(email, token);
+    toast.success("Registration successful!");
     navigate("/login");
   };
   return (
     <>
-      <Container>
+      <Box
+        sx={{
+          minHeight: "100vh",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+
+          background: `
+  radial-gradient(circle at top left, rgba(37,99,235,0.18) 0%, transparent 30%),
+  radial-gradient(circle at bottom right, rgba(168,85,247,0.18) 0%, transparent 30%),
+  linear-gradient(160deg, #020617 0%, #0f172a 45%, #111827 100%)
+`,
+
+          overflow: "hidden",
+          position: "relative",
+        }}
+      >
         <Box
           sx={{
             display: "flex",
             flexDirection: "column",
-            justifyContent: "center",
-            alignItems: "center",
-            mt: 5,
+            width: 400,
+            gap: 2,
+            px: 8,
+            py: 3,
+            border: "1px solid #ccc",
+            borderRadius: 2,
+            backgroundColor: "rgba(255, 255, 255, 0.86)",
           }}
         >
-          <Typography variant="h4">Register New User</Typography>
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              mt: 3,
-              gap: 2,
-              p: 3,
-              border: "1px solid #ccc",
-              borderRadius: 2,
-            }}
+          <Typography variant="h4" sx={{ mb: 2, textAlign: "center" }}>
+            Sign Up
+          </Typography>
+
+          <TextField
+            inputRef={firstNameRef}
+            label="First Name"
+            variant="outlined"
+            name="firstName"
+            fullWidth
+          />
+          <TextField
+            inputRef={lastNameRef}
+            label="Last Name"
+            variant="outlined"
+            name="lastName"
+            fullWidth
+          />
+          <TextField
+            inputRef={emailRef}
+            label="Email"
+            variant="outlined"
+            name="email"
+            fullWidth
+          />
+          <TextField
+            inputRef={passwordRef}
+            label="Password"
+            variant="outlined"
+            name="password"
+            fullWidth
+            type="password"
+          />
+          <Button
+            onClick={onSubmit}
+            variant="contained"
+            color="primary"
+            type="submit"
           >
-            <TextField
-              inputRef={firstNameRef}
-              label="First Name"
-              variant="outlined"
-              name="firstName"
-            />
-            <TextField
-              inputRef={lastNameRef}
-              label="Last Name"
-              variant="outlined"
-              name="lastName"
-            />
-            <TextField
-              inputRef={emailRef}
-              label="Email"
-              variant="outlined"
-              name="email"
-            />
-            <TextField
-              inputRef={passwordRef}
-              label="Password"
-              variant="outlined"
-              type="password"
-              name="password"
-            />
-            <Button
-              onClick={onSubmit}
-              variant="contained"
-              color="primary"
-              type="submit"
-            >
-              Register
-            </Button>
-            {error && <Typography sx={{ color: "red" }}>{error}</Typography>}
-          </Box>
+            Sign Up
+          </Button>
+          {error && <Typography sx={{ color: "red" }}>{error}</Typography>}
+          <Typography
+            variant="body2"
+            sx={{ mt: 2, textAlign: "center", color: "text.secondary" }}
+          >
+            Already have an account?{" "}
+            <a href="/login" style={{ color: "primary" }}>
+              Log in
+            </a>
+          </Typography>
         </Box>
-      </Container>
+      </Box>
     </>
   );
 }

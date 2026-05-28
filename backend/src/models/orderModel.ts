@@ -11,7 +11,7 @@ export interface Order {
 export interface OrderDocument extends Document {
   orderItems: Order[];
   totalPrice: number;
-  adress: string;
+  address: string;
   userId: ObjectId | string;
 }
 const orderItemSchema = new Schema<Order>({
@@ -24,7 +24,7 @@ const orderItemSchema = new Schema<Order>({
 const orderSchema = new Schema<OrderDocument>({
   orderItems: [orderItemSchema],
   totalPrice: { type: Number, required: true },
-  adress: { type: String, required: true },
+  address: { type: String, required: true },
   userId: { type: Schema.Types.ObjectId, ref: "User", required: true },
 });
 

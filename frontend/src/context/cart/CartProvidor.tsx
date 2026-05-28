@@ -2,7 +2,7 @@ import { type PropsWithChildren, type FC, useEffect, useState } from "react";
 import { CartContext } from "./CartContext";
 import { CartItem } from "../cart/CartContext";
 import { useAuth } from "../Auth/AuthContext";
-
+import toast from "react-hot-toast";
 const CartProvider: FC<PropsWithChildren> = ({ children }) => {
   const { token } = useAuth();
 
@@ -96,6 +96,7 @@ const CartProvider: FC<PropsWithChildren> = ({ children }) => {
       }
 
       handleCartResponse(result);
+      toast.success("Item added to cart!");
     } catch (err) {
       console.error("Add error:", err);
       setError("Something went wrong");
@@ -129,6 +130,7 @@ const CartProvider: FC<PropsWithChildren> = ({ children }) => {
       }
 
       handleCartResponse(result);
+      toast.success("Cart updated!");
     } catch (err) {
       console.error("Update error:", err);
       setError("Something went wrong");
@@ -159,6 +161,7 @@ const CartProvider: FC<PropsWithChildren> = ({ children }) => {
       }
 
       handleCartResponse(result);
+      toast.success("Item removed from cart!");
     } catch (err) {
       console.error("Delete error:", err);
       setError("Something went wrong");
@@ -185,6 +188,7 @@ const CartProvider: FC<PropsWithChildren> = ({ children }) => {
       }
 
       handleCartResponse(result);
+      toast.success("Cart cleared!");
     } catch (err) {
       console.error("Clear error:", err);
       setError("Something went wrong");
