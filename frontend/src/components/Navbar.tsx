@@ -25,9 +25,9 @@ import { useAuth } from "../context/Auth/AuthContext";
 import { useCart } from "../context/cart/CartContext";
 
 function Navbar() {
-  const { username, isAuthenticated, logout } = useAuth();
+  const { username, isAuthenticated, logout } = useAuth()!;
 
-  const { cartItems } = useCart();
+  const { cartItems } = useCart()!;
 
   const navigate = useNavigate();
 
@@ -307,7 +307,7 @@ function Navbar() {
           {/* USER */}
 
           {isAuthenticated && (
-            <Box mt={3}>
+            <Box sx={{ mt: 3 }}>
               <Typography
                 sx={{
                   mb: 2,

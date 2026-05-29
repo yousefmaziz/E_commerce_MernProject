@@ -11,18 +11,16 @@ import { useCart } from "../context/cart/CartContext";
 import { useAuth } from "../context/Auth/AuthContext";
 import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-hot-toast/headless";
 
 export default function CheckoutPage() {
-  const { token } = useAuth();
-  const { cartItems, totalPrice } = useCart();
+  const { token } = useAuth()!;
+  const { cartItems, totalPrice, clearCart } = useCart()!;
 
   const addressRef = useRef<HTMLInputElement>(null);
   const [paymentMethod, setPaymentMethod] = useState("cash");
   const [addressError, setAddressError] = useState("");
 
   const navigate = useNavigate();
-  const { clearCart } = useCart();
 
   const Checkout = async () => {
     const address = addressRef.current?.value;

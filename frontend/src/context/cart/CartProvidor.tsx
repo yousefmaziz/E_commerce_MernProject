@@ -4,7 +4,7 @@ import { CartItem } from "../cart/CartContext";
 import { useAuth } from "../Auth/AuthContext";
 import toast from "react-hot-toast";
 const CartProvider: FC<PropsWithChildren> = ({ children }) => {
-  const { token } = useAuth();
+  const { token } = useAuth()!;
 
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [totalPrice, setTotalPrice] = useState<number>(0);
@@ -138,7 +138,7 @@ const CartProvider: FC<PropsWithChildren> = ({ children }) => {
   };
 
   // ✅ remove item
-  const RemoveItem = async (productId: string) => {
+  const removeItem = async (productId: string) => {
     if (!token) return;
 
     try {
@@ -202,7 +202,7 @@ const CartProvider: FC<PropsWithChildren> = ({ children }) => {
         totalPrice,
         addToCart,
         updateItem,
-        RemoveItem,
+        removeItem,
         clearCart,
       }}
     >

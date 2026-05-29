@@ -9,7 +9,7 @@ export default function Login() {
   const [error, setError] = useState("");
   const emailRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
-  const { login } = useAuth();
+  const { login } = useAuth()!;
   const navigate = useNavigate();
 
   const onSubmit = async (e) => {

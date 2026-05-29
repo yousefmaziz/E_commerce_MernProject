@@ -1,4 +1,3 @@
-import React from "react";
 import {
   Box,
   Drawer,
@@ -58,7 +57,7 @@ export default function Dashboard() {
 
   const [mobileOpen, setMobileOpen] = useState(false);
   const [activePage, setActivePage] = useState("Home");
-  const { username } = useAuth();
+  const { username } = useAuth()!;
   const [users, setUsers] = useState([]);
   const [products, setProducts] = useState([]);
 
@@ -90,7 +89,7 @@ export default function Dashboard() {
   };
 
   // ================= DELETE USER =================
-  const deleteUser = async (id) => {
+  const deleteUser = async (id: string) => {
     try {
       await fetch(`http://localhost:3002/user/${id}`, {
         method: "DELETE",
@@ -103,7 +102,7 @@ export default function Dashboard() {
   };
 
   // ================= DELETE PRODUCT =================
-  const deleteProduct = async (id) => {
+  const deleteProduct = async (id: string) => {
     try {
       await fetch(`http://localhost:3002/product/${id}`, {
         method: "DELETE",
@@ -130,7 +129,7 @@ export default function Dashboard() {
   };
 
   // ================= OPEN EDIT USER =================
-  const openEditUser = (user) => {
+  const openEditUser = (user: any) => {
     setDialogType("user");
     setSelectedItem(user);
     setFormData({
@@ -157,7 +156,7 @@ export default function Dashboard() {
   };
 
   // ================= OPEN EDIT PRODUCT =================
-  const openEditProduct = (product) => {
+  const openEditProduct = (product: any) => {
     setDialogType("product");
     setSelectedItem(product);
     setFormData({
@@ -213,7 +212,7 @@ export default function Dashboard() {
         },
       );
       const updatedUser = await response.json();
-      setUsers((prev) =>
+      setUsers((prev: any[]) =>
         prev.map((user) => (user._id === updatedUser._id ? updatedUser : user)),
       );
       setOpen(false);
@@ -236,7 +235,7 @@ export default function Dashboard() {
       const data = await response.json();
       // handle different response shapes
       const updated = data.product || data;
-      setProducts((prev) =>
+      setProducts((prev: any[]) =>
         prev.map((product) =>
           product._id === updated._id ? updated : product,
         ),
@@ -251,7 +250,6 @@ export default function Dashboard() {
   useEffect(() => {
     fetchData();
     fetchProducts();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const container =
@@ -378,7 +376,10 @@ export default function Dashboard() {
             boxShadow: "0 2px 10px rgba(0,0,0,0.05)",
           }}
         >
-          <Typography variant="h5" fontWeight="bold" noWrap>
+          <Typography
+            variant="h5"
+            sx={{ fontWeight: "bold", color: "#0f172a" }}
+          >
             {activePage}
           </Typography>
           <Typography color="gray" sx={{ fontSize: { xs: 13, sm: 14 } }}>
@@ -389,7 +390,10 @@ export default function Dashboard() {
         {/* HOME */}
         {activePage === "Home" && (
           <Paper sx={{ p: { xs: 3, md: 5 }, borderRadius: 4 }}>
-            <Typography variant="h4" fontWeight="bold" mb={2}>
+            <Typography
+              variant="h4"
+              sx={{ fontWeight: "bold", color: "#0f172a" }}
+            >
               Welcome To Dashboard 👋
             </Typography>
             <Typography color="gray">
@@ -412,7 +416,10 @@ export default function Dashboard() {
                 gap: 2,
               }}
             >
-              <Typography variant="h4" fontWeight="bold" color="#0f172a">
+              <Typography
+                variant="h4"
+                sx={{ fontWeight: "bold", color: "#0f172a" }}
+              >
                 Users Management
               </Typography>
 
@@ -539,7 +546,10 @@ export default function Dashboard() {
                 gap: 2,
               }}
             >
-              <Typography variant="h4" fontWeight="bold" color="#0f172a">
+              <Typography
+                variant="h4"
+                sx={{ fontWeight: "bold", color: "#0f172a" }}
+              >
                 Products Management
               </Typography>
 

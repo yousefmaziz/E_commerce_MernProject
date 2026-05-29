@@ -14,8 +14,8 @@ import { useNavigate } from "react-router-dom";
 
 export default function Cart() {
   const navigate = useNavigate();
-  const { cartItems, totalPrice, updateItem, RemoveItem, clearCart } =
-    useCart();
+  const { cartItems, totalPrice, updateItem, removeItem, clearCart } =
+    useCart()!;
 
   const handleIncrease = (productId: string, quantity: number) => {
     updateItem(productId, quantity + 1);
@@ -28,7 +28,7 @@ export default function Cart() {
   };
 
   const handleDelete = (productId: string) => {
-    RemoveItem(productId);
+    removeItem(productId);
   };
   const clearAll = () => {
     clearCart();

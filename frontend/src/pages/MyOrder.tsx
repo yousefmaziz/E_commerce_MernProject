@@ -4,7 +4,7 @@ import { useAuth } from "../context/Auth/AuthContext";
 import { useEffect, useState } from "react";
 
 export default function MyOrder() {
-  const { token } = useAuth();
+  const { token } = useAuth()!;
 
   const [orders, setOrders] = useState<Order[]>([]);
   const myOrders = async () => {
