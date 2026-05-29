@@ -1,3 +1,4 @@
+import React from "react";
 import {
   Box,
   Drawer,
@@ -20,14 +21,20 @@ import {
   DialogContent,
   DialogActions,
   TextField,
+  AppBar,
+  IconButton,
+  CssBaseline,
+  useMediaQuery,
 } from "@mui/material";
 
-import { Home, People, Inventory } from "@mui/icons-material";
+import { Home, People, Inventory, Menu } from "@mui/icons-material";
 
 import { useEffect, useState } from "react";
+import { useTheme } from "@mui/material/styles";
 import { useAuth } from "../context/Auth/AuthContext";
 
 import { toast } from "react-hot-toast";
+
 const drawerWidth = 220;
 
 const menuItems = [
@@ -46,57 +53,49 @@ const menuItems = [
 ];
 
 export default function Dashboard() {
+  const theme = useTheme();
+  const isMdUp = useMediaQuery(theme.breakpoints.up("md"));
+
+  const [mobileOpen, setMobileOpen] = useState(false);
   const [activePage, setActivePage] = useState("Home");
   const { username } = useAuth();
   const [users, setUsers] = useState([]);
-
   const [products, setProducts] = useState([]);
 
   const [open, setOpen] = useState(false);
-
   const [dialogType, setDialogType] = useState("user");
-
   const [selectedItem, setSelectedItem] = useState(null);
-
   const [formData, setFormData] = useState({});
 
   // ================= FETCH USERS =================
-
-  const fetechdata = async () => {
+  const fetchData = async () => {
     try {
       const response = await fetch("http://localhost:3002/user");
-
       const data = await response.json();
-
-      setUsers(data);
+      setUsers(Array.isArray(data) ? data : []);
     } catch (err) {
       console.log(err);
     }
   };
 
   // ================= FETCH PRODUCTS =================
-
   const fetchProducts = async () => {
     try {
       const res = await fetch("http://localhost:3002/product");
-
       const data = await res.json();
-
-      setProducts(data);
+      setProducts(Array.isArray(data) ? data : []);
     } catch (err) {
       console.log(err);
     }
   };
 
   // ================= DELETE USER =================
-
   const deleteUser = async (id) => {
     try {
       await fetch(`http://localhost:3002/user/${id}`, {
         method: "DELETE",
       });
-
-      setUsers(users.filter((user) => user._id !== id));
+      setUsers((prev) => prev.filter((user) => user._id !== id));
       toast.success("User deleted successfully!");
     } catch (err) {
       console.log(err);
@@ -104,14 +103,12 @@ export default function Dashboard() {
   };
 
   // ================= DELETE PRODUCT =================
-
   const deleteProduct = async (id) => {
     try {
       await fetch(`http://localhost:3002/product/${id}`, {
         method: "DELETE",
       });
-
-      setProducts(products.filter((product) => product._id !== id));
+      setProducts((prev) => prev.filter((product) => product._id !== id));
       toast.success("Product deleted successfully!");
     } catch (err) {
       console.log(err);
@@ -119,12 +116,9 @@ export default function Dashboard() {
   };
 
   // ================= OPEN ADD USER =================
-
   const openAddUser = () => {
     setDialogType("user");
-
     setSelectedItem(null);
-
     setFormData({
       firstName: "",
       lastName: "",
@@ -132,34 +126,26 @@ export default function Dashboard() {
       password: "",
       role: "",
     });
-
     setOpen(true);
   };
 
   // ================= OPEN EDIT USER =================
-
   const openEditUser = (user) => {
     setDialogType("user");
-
     setSelectedItem(user);
-
     setFormData({
-      firstName: user.firstName,
-      lastName: user.lastName,
-      email: user.email,
-      role: user.role,
+      firstName: user.firstName || "",
+      lastName: user.lastName || "",
+      email: user.email || "",
+      role: user.role || "",
     });
-
     setOpen(true);
   };
 
   // ================= OPEN ADD PRODUCT =================
-
   const openAddProduct = () => {
     setDialogType("product");
-
     setSelectedItem(null);
-
     setFormData({
       title: "",
       image: "",
@@ -167,44 +153,32 @@ export default function Dashboard() {
       stock: "",
       description: "",
     });
-
     setOpen(true);
   };
 
   // ================= OPEN EDIT PRODUCT =================
-
   const openEditProduct = (product) => {
     setDialogType("product");
-
     setSelectedItem(product);
-
     setFormData({
-      title: product.title,
-      image: product.image,
-      price: product.price,
-      stock: product.stock,
-      description: product.description,
+      title: product.title || "",
+      image: product.image || "",
+      price: product.price || "",
+      stock: product.stock || "",
+      description: product.description || "",
     });
-
     setOpen(true);
   };
 
   // ================= ADD USER =================
-
   const addUser = async () => {
     try {
       await fetch("http://localhost:3002/user/register", {
         method: "POST",
-
-        headers: {
-          "Content-Type": "application/json",
-        },
-
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
-
-      fetechdata();
-
+      fetchData();
       setOpen(false);
       toast.success("User added successfully!");
     } catch (err) {
@@ -216,16 +190,10 @@ export default function Dashboard() {
     try {
       await fetch("http://localhost:3002/product", {
         method: "POST",
-
-        headers: {
-          "Content-Type": "application/json",
-        },
-
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
-
       fetchProducts();
-
       setOpen(false);
       toast.success("Product added successfully!");
     } catch (err) {
@@ -234,30 +202,20 @@ export default function Dashboard() {
   };
 
   // ================= UPDATE USER =================
-
   const updateUser = async () => {
     try {
       const response = await fetch(
         `http://localhost:3002/user/${selectedItem._id}`,
         {
           method: "PUT",
-
-          headers: {
-            "Content-Type": "application/json",
-          },
-
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify(formData),
         },
       );
-
       const updatedUser = await response.json();
-
-      setUsers(
-        users.map((user) =>
-          user._id === updatedUser._id ? updatedUser : user,
-        ),
+      setUsers((prev) =>
+        prev.map((user) => (user._id === updatedUser._id ? updatedUser : user)),
       );
-
       setOpen(false);
       toast.success("User updated successfully!");
     } catch (err) {
@@ -271,23 +229,18 @@ export default function Dashboard() {
         `http://localhost:3002/product/${selectedItem._id}`,
         {
           method: "PUT",
-
-          headers: {
-            "Content-Type": "application/json",
-          },
-
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify(formData),
         },
       );
-
       const data = await response.json();
-
-      setProducts(
-        products.map((product) =>
-          product._id === data.product._id ? data.product : product,
+      // handle different response shapes
+      const updated = data.product || data;
+      setProducts((prev) =>
+        prev.map((product) =>
+          product._id === updated._id ? updated : product,
         ),
       );
-
       setOpen(false);
       toast.success("Product updated successfully!");
     } catch (err) {
@@ -295,109 +248,150 @@ export default function Dashboard() {
     }
   };
 
-  // ================= ADD PRODUCT =================
-
   useEffect(() => {
-    fetechdata();
-
+    fetchData();
     fetchProducts();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const container =
+    typeof window !== "undefined" ? () => window.document.body : undefined;
+
+  const drawerContent = (
+    <Box>
+      <Toolbar>
+        <Typography variant="h6" fontWeight="bold" noWrap>
+          Dashboard
+        </Typography>
+      </Toolbar>
+      <List sx={{ px: 1 }}>
+        {menuItems.map((item) => (
+          <ListItemButton
+            key={item.text}
+            onClick={() => {
+              setActivePage(item.text);
+              if (!isMdUp) setMobileOpen(false);
+            }}
+            sx={{
+              borderRadius: 2,
+              mb: 1,
+              backgroundColor:
+                activePage === item.text ? "#1e293b" : "transparent",
+              "&:hover": { backgroundColor: "#1e293b" },
+            }}
+          >
+            <ListItemIcon sx={{ color: "white", minWidth: 40 }}>
+              {item.icon}
+            </ListItemIcon>
+            <ListItemText primary={item.text} />
+          </ListItemButton>
+        ))}
+      </List>
+    </Box>
+  );
 
   return (
     <Box sx={{ display: "flex" }}>
-      {/* Sidebar */}
-
-      <Drawer
-        variant="permanent"
-        sx={{
-          width: drawerWidth,
-
-          "& .MuiDrawer-paper": {
-            width: drawerWidth,
-            backgroundColor: "#0f172a",
-            color: "white",
-            border: "none",
-
-            position: "sticky",
-          },
-        }}
-      >
-        <Toolbar>
-          <Typography variant="h5" fontWeight="bold">
-            Dashboard
-          </Typography>
-        </Toolbar>
-
-        <List sx={{ px: 1 }}>
-          {menuItems.map((item) => (
-            <ListItemButton
-              key={item.text}
-              onClick={() => setActivePage(item.text)}
+      <CssBaseline />
+      {!isMdUp && (
+        <AppBar
+          position="fixed"
+          color="transparent"
+          elevation={0}
+          sx={{
+            zIndex: theme.zIndex.drawer + 1,
+            background: "transparent",
+            boxShadow: "none",
+          }}
+        >
+          <Toolbar>
+            <IconButton
+              edge="start"
+              onClick={() => setMobileOpen(true)}
+              aria-label="open drawer"
               sx={{
-                borderRadius: 2,
-                mb: 1,
-
-                backgroundColor:
-                  activePage === item.text ? "#1e293b" : "transparent",
-
+                backgroundColor: "#0f172a",
                 "&:hover": {
                   backgroundColor: "#1e293b",
                 },
               }}
             >
-              <ListItemIcon sx={{ color: "white" }}>{item.icon}</ListItemIcon>
+              <Menu sx={{ color: "white" }} />
+            </IconButton>
 
-              <ListItemText primary={item.text} />
-            </ListItemButton>
-          ))}
-        </List>
-      </Drawer>
+            <Typography variant="h6" sx={{ ml: 1 }}>
+              Dashboard
+            </Typography>
+          </Toolbar>
+        </AppBar>
+      )}
+      {/* Drawer */}
+      <Box
+        component="nav"
+        sx={{ width: { md: drawerWidth }, flexShrink: { md: 0 } }}
+      >
+        {/* Temporary drawer for mobile */}
+        <Drawer
+          container={container}
+          variant={isMdUp ? "permanent" : "temporary"}
+          open={isMdUp ? true : mobileOpen}
+          onClose={() => setMobileOpen(false)}
+          ModalProps={{ keepMounted: true }}
+          sx={{
+            "& .MuiDrawer-paper": {
+              width: drawerWidth,
+              backgroundColor: "#0f172a",
+              color: "white",
+              border: "none",
+            },
+          }}
+        >
+          {drawerContent}
+        </Drawer>
+      </Box>
 
       {/* Main Content */}
-
       <Box
         component="main"
         sx={{
           flexGrow: 1,
-          p: 4,
+          p: { xs: 2, sm: 3, md: 4 },
           backgroundColor: "#f1f5f9",
           minHeight: "100vh",
+          width: { xs: "100%", md: `calc(100% - ${drawerWidth}px)` },
         }}
       >
-        {/* Navbar */}
+        {/* add top spacing when mobile appbar is present */}
 
+        {/* Navbar */}
         <Box
           sx={{
             backgroundColor: "white",
-            p: 2,
+            p: { xs: 1.5, sm: 2 },
             borderRadius: 3,
             mb: 4,
             display: "flex",
+            flexDirection: { xs: "column", sm: "row" },
             justifyContent: "space-between",
             alignItems: "center",
+            gap: 1,
             boxShadow: "0 2px 10px rgba(0,0,0,0.05)",
           }}
         >
-          <Typography variant="h5" fontWeight="bold">
+          <Typography variant="h5" fontWeight="bold" noWrap>
             {activePage}
           </Typography>
-
-          <Typography color="gray">Welcome {username} 👋</Typography>
+          <Typography color="gray" sx={{ fontSize: { xs: 13, sm: 14 } }}>
+            Welcome {username} 👋
+          </Typography>
         </Box>
 
         {/* HOME */}
-
         {activePage === "Home" && (
-          <Paper
-            sx={{
-              p: 5,
-              borderRadius: 4,
-            }}
-          >
+          <Paper sx={{ p: { xs: 3, md: 5 }, borderRadius: 4 }}>
             <Typography variant="h4" fontWeight="bold" mb={2}>
               Welcome To Dashboard 👋
             </Typography>
-
             <Typography color="gray">
               Manage users and products easily.
             </Typography>
@@ -405,16 +399,17 @@ export default function Dashboard() {
         )}
 
         {/* USERS */}
-
         {activePage === "Users" && (
           <>
             {/* Header */}
             <Box
               sx={{
                 display: "flex",
+                flexDirection: { xs: "column", sm: "row" },
                 justifyContent: "space-between",
                 alignItems: "center",
                 mb: 3,
+                gap: 2,
               }}
             >
               <Typography variant="h4" fontWeight="bold" color="#0f172a">
@@ -431,10 +426,7 @@ export default function Dashboard() {
                   textTransform: "none",
                   fontWeight: "bold",
                   boxShadow: "none",
-
-                  "&:hover": {
-                    boxShadow: "none",
-                  },
+                  "&:hover": { boxShadow: "none" },
                 }}
               >
                 Add User
@@ -446,29 +438,20 @@ export default function Dashboard() {
               component={Paper}
               sx={{
                 borderRadius: "16px",
-                overflow: "hidden",
+                overflow: "auto",
                 boxShadow: "0 4px 20px rgba(0,0,0,0.05)",
               }}
             >
-              <Table>
+              <Table size={isMdUp ? "medium" : "small"}>
                 <TableHead>
-                  <TableRow
-                    sx={{
-                      backgroundColor: "#f8fafc",
-                    }}
-                  >
+                  <TableRow sx={{ backgroundColor: "#f8fafc" }}>
                     <TableCell sx={{ fontWeight: "bold" }}>ID</TableCell>
-
                     <TableCell sx={{ fontWeight: "bold" }}>
                       First Name
                     </TableCell>
-
                     <TableCell sx={{ fontWeight: "bold" }}>Last Name</TableCell>
-
                     <TableCell sx={{ fontWeight: "bold" }}>Email</TableCell>
-
                     <TableCell sx={{ fontWeight: "bold" }}>Role</TableCell>
-
                     <TableCell sx={{ fontWeight: "bold" }}>Options</TableCell>
                   </TableRow>
                 </TableHead>
@@ -476,33 +459,35 @@ export default function Dashboard() {
                 <TableBody>
                   {users.map((user, index) => (
                     <TableRow key={user._id} hover>
-                      <TableCell sx={{ fontWeight: "bold" }}>
+                      <TableCell sx={{ fontWeight: "bold", minWidth: 40 }}>
                         {index + 1}
                       </TableCell>
-
-                      <TableCell sx={{ fontWeight: "bold" }}>
+                      <TableCell sx={{ fontWeight: "bold", minWidth: 100 }}>
                         {user.firstName}
                       </TableCell>
-
-                      <TableCell sx={{ fontWeight: "bold" }}>
+                      <TableCell sx={{ fontWeight: "bold", minWidth: 100 }}>
                         {user.lastName}
                       </TableCell>
-
-                      <TableCell sx={{ fontWeight: "bold" }}>
+                      <TableCell
+                        sx={{
+                          fontWeight: "bold",
+                          minWidth: 150,
+                          wordBreak: "break-all",
+                        }}
+                      >
                         {user.email}
                       </TableCell>
-
                       <TableCell
                         sx={{
                           fontWeight: "bold",
                           color: user.role === "admin" ? "#16a34a" : "#2563eb",
+                          minWidth: 80,
                         }}
                       >
                         {user.role}
                       </TableCell>
-
                       <TableCell>
-                        <Box sx={{ display: "flex", gap: 1 }}>
+                        <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap" }}>
                           <Button
                             variant="contained"
                             color="error"
@@ -512,15 +497,11 @@ export default function Dashboard() {
                               textTransform: "none",
                               fontWeight: "bold",
                               boxShadow: "none",
-
-                              "&:hover": {
-                                boxShadow: "none",
-                              },
+                              "&:hover": { boxShadow: "none" },
                             }}
                           >
                             Delete
                           </Button>
-
                           <Button
                             variant="contained"
                             onClick={() => openEditUser(user)}
@@ -529,10 +510,7 @@ export default function Dashboard() {
                               textTransform: "none",
                               fontWeight: "bold",
                               boxShadow: "none",
-
-                              "&:hover": {
-                                boxShadow: "none",
-                              },
+                              "&:hover": { boxShadow: "none" },
                             }}
                           >
                             Edit
@@ -548,16 +526,17 @@ export default function Dashboard() {
         )}
 
         {/* PRODUCTS */}
-
         {activePage === "Products" && (
           <>
             {/* Header */}
             <Box
               sx={{
                 display: "flex",
+                flexDirection: { xs: "column", sm: "row" },
                 justifyContent: "space-between",
                 alignItems: "center",
                 mb: 3,
+                gap: 2,
               }}
             >
               <Typography variant="h4" fontWeight="bold" color="#0f172a">
@@ -574,10 +553,7 @@ export default function Dashboard() {
                   textTransform: "none",
                   fontWeight: "bold",
                   boxShadow: "none",
-
-                  "&:hover": {
-                    boxShadow: "none",
-                  },
+                  "&:hover": { boxShadow: "none" },
                 }}
               >
                 Add Product
@@ -589,27 +565,18 @@ export default function Dashboard() {
               component={Paper}
               sx={{
                 borderRadius: "16px",
-                overflow: "hidden",
+                overflow: "auto",
                 boxShadow: "0 4px 20px rgba(0,0,0,0.05)",
               }}
             >
-              <Table>
+              <Table size={isMdUp ? "medium" : "small"}>
                 <TableHead>
-                  <TableRow
-                    sx={{
-                      backgroundColor: "#f8fafc",
-                    }}
-                  >
+                  <TableRow sx={{ backgroundColor: "#f8fafc" }}>
                     <TableCell sx={{ fontWeight: "bold" }}>ID</TableCell>
-
                     <TableCell sx={{ fontWeight: "bold" }}>Image</TableCell>
-
                     <TableCell sx={{ fontWeight: "bold" }}>Title</TableCell>
-
                     <TableCell sx={{ fontWeight: "bold" }}>Price</TableCell>
-
                     <TableCell sx={{ fontWeight: "bold" }}>Stock</TableCell>
-
                     <TableCell sx={{ fontWeight: "bold" }}>Options</TableCell>
                   </TableRow>
                 </TableHead>
@@ -617,17 +584,19 @@ export default function Dashboard() {
                 <TableBody>
                   {products.map((product, index) => (
                     <TableRow key={product._id} hover>
-                      <TableCell>{index + 1}</TableCell>
+                      <TableCell sx={{ minWidth: 40 }}>{index + 1}</TableCell>
 
-                      <TableCell>
-                        <img
+                      <TableCell sx={{ minWidth: 70 }}>
+                        <Box
+                          component="img"
                           src={product.image}
                           alt={product.title}
-                          style={{
-                            width: 55,
-                            height: 55,
+                          sx={{
+                            width: { xs: 45, sm: 55 },
+                            height: { xs: 45, sm: 55 },
                             objectFit: "cover",
-                            borderRadius: "10px",
+                            borderRadius: 1.5,
+                            bgcolor: "#f8fafc",
                           }}
                         />
                       </TableCell>
@@ -635,6 +604,8 @@ export default function Dashboard() {
                       <TableCell
                         sx={{
                           fontWeight: 600,
+                          minWidth: 120,
+                          wordBreak: "break-word",
                         }}
                       >
                         {product.title}
@@ -644,6 +615,7 @@ export default function Dashboard() {
                         sx={{
                           fontWeight: "bold",
                           color: "#16a34a",
+                          minWidth: 80,
                         }}
                       >
                         ${product.price}
@@ -653,13 +625,14 @@ export default function Dashboard() {
                         sx={{
                           fontWeight: "bold",
                           color: product.stock > 0 ? "#2563eb" : "#dc2626",
+                          minWidth: 60,
                         }}
                       >
                         {product.stock}
                       </TableCell>
 
                       <TableCell>
-                        <Box sx={{ display: "flex", gap: 1 }}>
+                        <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap" }}>
                           <Button
                             variant="contained"
                             color="error"
@@ -669,10 +642,7 @@ export default function Dashboard() {
                               textTransform: "none",
                               fontWeight: "bold",
                               boxShadow: "none",
-
-                              "&:hover": {
-                                boxShadow: "none",
-                              },
+                              "&:hover": { boxShadow: "none" },
                             }}
                           >
                             Delete
@@ -686,10 +656,7 @@ export default function Dashboard() {
                               textTransform: "none",
                               fontWeight: "bold",
                               boxShadow: "none",
-
-                              "&:hover": {
-                                boxShadow: "none",
-                              },
+                              "&:hover": { boxShadow: "none" },
                             }}
                           >
                             Edit
@@ -705,7 +672,6 @@ export default function Dashboard() {
         )}
 
         {/* DIALOG */}
-
         <Dialog
           open={open}
           onClose={() => setOpen(false)}
@@ -723,12 +689,7 @@ export default function Dashboard() {
           </DialogTitle>
 
           <DialogContent
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              gap: 2,
-              mt: 1,
-            }}
+            sx={{ display: "flex", flexDirection: "column", gap: 2, mt: 1 }}
           >
             {dialogType === "user" ? (
               <>
@@ -736,58 +697,44 @@ export default function Dashboard() {
                   label="First Name"
                   value={formData.firstName || ""}
                   onChange={(e) =>
-                    setFormData({
-                      ...formData,
-                      firstName: e.target.value,
-                    })
+                    setFormData({ ...formData, firstName: e.target.value })
                   }
+                  fullWidth
                 />
-
                 <TextField
                   label="Last Name"
                   value={formData.lastName || ""}
                   onChange={(e) =>
-                    setFormData({
-                      ...formData,
-                      lastName: e.target.value,
-                    })
+                    setFormData({ ...formData, lastName: e.target.value })
                   }
+                  fullWidth
                 />
-
                 <TextField
                   label="Email"
                   value={formData.email || ""}
                   onChange={(e) =>
-                    setFormData({
-                      ...formData,
-                      email: e.target.value,
-                    })
+                    setFormData({ ...formData, email: e.target.value })
                   }
+                  fullWidth
                 />
-
                 {!selectedItem && (
                   <TextField
                     label="Password"
                     type="password"
                     value={formData.password || ""}
                     onChange={(e) =>
-                      setFormData({
-                        ...formData,
-                        password: e.target.value,
-                      })
+                      setFormData({ ...formData, password: e.target.value })
                     }
+                    fullWidth
                   />
                 )}
-
                 <TextField
                   label="Role"
                   value={formData.role || ""}
                   onChange={(e) =>
-                    setFormData({
-                      ...formData,
-                      role: e.target.value,
-                    })
+                    setFormData({ ...formData, role: e.target.value })
                   }
+                  fullWidth
                 />
               </>
             ) : (
@@ -796,57 +743,43 @@ export default function Dashboard() {
                   label="Title"
                   value={formData.title || ""}
                   onChange={(e) =>
-                    setFormData({
-                      ...formData,
-                      title: e.target.value,
-                    })
+                    setFormData({ ...formData, title: e.target.value })
                   }
+                  fullWidth
                 />
-
                 <TextField
-                  label="Image"
+                  label="Image (URL)"
                   value={formData.image || ""}
                   onChange={(e) =>
-                    setFormData({
-                      ...formData,
-                      image: e.target.value,
-                    })
+                    setFormData({ ...formData, image: e.target.value })
                   }
+                  fullWidth
                 />
-
                 <TextField
                   label="Price"
                   value={formData.price || ""}
                   onChange={(e) =>
-                    setFormData({
-                      ...formData,
-                      price: e.target.value,
-                    })
+                    setFormData({ ...formData, price: e.target.value })
                   }
+                  fullWidth
                 />
-
                 <TextField
                   label="Stock"
                   value={formData.stock || ""}
                   onChange={(e) =>
-                    setFormData({
-                      ...formData,
-                      stock: e.target.value,
-                    })
+                    setFormData({ ...formData, stock: e.target.value })
                   }
+                  fullWidth
                 />
-
                 <TextField
                   label="Description"
                   multiline
                   rows={3}
                   value={formData.description || ""}
                   onChange={(e) =>
-                    setFormData({
-                      ...formData,
-                      description: e.target.value,
-                    })
+                    setFormData({ ...formData, description: e.target.value })
                   }
+                  fullWidth
                 />
               </>
             )}
@@ -854,7 +787,6 @@ export default function Dashboard() {
 
           <DialogActions>
             <Button onClick={() => setOpen(false)}>Cancel</Button>
-
             <Button
               variant="contained"
               onClick={() => {

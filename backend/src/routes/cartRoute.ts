@@ -94,4 +94,17 @@ router.post("/checkout", validateJwt, async (req, res) => {
   }
 });
 
+router.get("/checkout", validateJwt, async (req, res) => {
+  try {
+    const userId = (req as any).user._id;
+    const response = await checkoutCart({
+      userId,
+      address: req.body.address,
+    });
+    return res.status(response.statusCode).send(response);
+  } catch (err) {
+    return res.status(500).json({ message: "Server error" });
+  }
+});
+
 export default router;

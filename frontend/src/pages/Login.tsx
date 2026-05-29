@@ -59,50 +59,125 @@ export default function Login() {
       >
         <Box
           sx={{
+            width: { xs: "90%", sm: 400 },
             display: "flex",
             flexDirection: "column",
-            width: 400,
-            gap: 2,
-            px: 8,
-            py: 3,
-            border: "1px solid #ccc",
-            borderRadius: 2,
-            backgroundColor: "rgba(255, 255, 255, 0.86)",
+            gap: 3,
+            p: { xs: 3, sm: 4 },
+            borderRadius: "24px",
+            background: "rgba(255,255,255,0.9)",
+            backdropFilter: "blur(12px)",
+            boxShadow: "0 10px 40px rgba(0,0,0,0.12)",
+            border: "1px solid rgba(255,255,255,0.3)",
           }}
         >
-          <Typography variant="h4" sx={{ mb: 2, textAlign: "center" }}>
-            Login
-          </Typography>
+          {/* TITLE */}
+          <Box sx={{ textAlign: "center" }}>
+            <Typography
+              variant="h4"
+              sx={{
+                fontWeight: "bold",
+                color: "#0f172a",
+                mb: 1,
+              }}
+            >
+              Welcome Back
+            </Typography>
+
+            <Typography
+              variant="body2"
+              sx={{
+                color: "gray",
+              }}
+            >
+              Login to continue
+            </Typography>
+          </Box>
+
+          {/* EMAIL */}
           <TextField
             inputRef={emailRef}
             label="Email"
             variant="outlined"
             name="email"
+            fullWidth
+            sx={{
+              "& .MuiOutlinedInput-root": {
+                borderRadius: "14px",
+                backgroundColor: "white",
+              },
+            }}
           />
+
+          {/* PASSWORD */}
           <TextField
-            sx={{ width: "100%" }}
             inputRef={passwordRef}
             label="Password"
             variant="outlined"
             type="password"
             name="password"
             fullWidth
+            sx={{
+              "& .MuiOutlinedInput-root": {
+                borderRadius: "14px",
+                backgroundColor: "white",
+              },
+            }}
           />
+
+          {/* BUTTON */}
           <Button
             onClick={onSubmit}
             variant="contained"
-            color="primary"
             type="submit"
+            sx={{
+              py: 1.5,
+              borderRadius: "14px",
+              textTransform: "none",
+              fontSize: "16px",
+              fontWeight: "bold",
+              background: "linear-gradient(135deg, #2563eb, #1d4ed8)",
+              boxShadow: "0 8px 20px rgba(37,99,235,0.3)",
+
+              "&:hover": {
+                background: "linear-gradient(135deg, #1d4ed8, #1e40af)",
+                boxShadow: "0 10px 25px rgba(37,99,235,0.4)",
+              },
+            }}
           >
             Login
           </Button>
-          {error && <Typography sx={{ color: "red" }}>{error}</Typography>}
+
+          {/* ERROR */}
+          {error && (
+            <Typography
+              sx={{
+                color: "#dc2626",
+                textAlign: "center",
+                fontWeight: 500,
+              }}
+            >
+              {error}
+            </Typography>
+          )}
+
+          {/* REGISTER */}
           <Typography
             variant="body2"
-            sx={{ mt: 2, textAlign: "center", color: "text.secondary" }}
+            sx={{
+              textAlign: "center",
+              color: "gray",
+            }}
           >
             Don't have an account?{" "}
-            <a href="/register" style={{ color: "primary" }}>
+            <a
+              href="/register"
+              style={{
+                color: "#2563eb",
+                fontWeight: "bold",
+                textDecoration: "none",
+              }}
+            >
               Sign up
             </a>
           </Typography>

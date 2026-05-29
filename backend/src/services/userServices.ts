@@ -63,9 +63,14 @@ export interface myOrder {
   userId: string;
 }
 
-export const getMyOrder = ({ userId: myOrder }) => {
+export const getMyOrder = async ({ userId }) => {
   try {
-    return { data: orderModel.find({ userId }), statusCode: 200 };
+    const orders = await orderModel.find({ userId });
+
+    return {
+      data: orders,
+      statusCode: 200,
+    };
   } catch (err) {
     throw err;
   }
