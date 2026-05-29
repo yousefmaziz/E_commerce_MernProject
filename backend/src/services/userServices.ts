@@ -63,7 +63,7 @@ export interface myOrder {
   userId: string;
 }
 
-export const getMyOrder = async ({ userId }) => {
+export const getMyOrder = async ({ userId }: myOrder) => {
   try {
     const orders = await orderModel.find({ userId });
 

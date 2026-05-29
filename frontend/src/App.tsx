@@ -12,6 +12,7 @@ import Order from "./pages/Order";
 import MyOrder from "./pages/MyOrder";
 import DashBoard from "./pages/DashBoard";
 import { Toaster } from "react-hot-toast";
+import { HashRouter } from "react-router-dom";
 
 function App() {
   return (
@@ -20,7 +21,7 @@ function App() {
 
       <AuthProvider>
         <CartProvider>
-          <BrowserRouter>
+          <HashRouter>
             <Navbar />
             <Routes>
               <Route path="/" element={<Home />} />
@@ -34,7 +35,7 @@ function App() {
                 <Route path="/dashboard" element={<DashBoard />} />
               </Route>
             </Routes>
-          </BrowserRouter>
+          </HashRouter>
         </CartProvider>
       </AuthProvider>
     </>
