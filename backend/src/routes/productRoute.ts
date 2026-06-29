@@ -1,6 +1,7 @@
 import express from "express";
 import { getAllProducts } from "../services/productServices.js";
 import product from "../models/productModel.js";
+import { isValidObjectId } from "mongoose";
 
 const router = express.Router();
 
@@ -8,7 +9,29 @@ router.get("/", async (req, res) => {
   const products = await getAllProducts();
   res.status(200).send(products);
 });
+router.get("/test", (req, res) => {
+  res.send("Route is working");
+});
+router.get("/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
 
+    // تحقق إن الـ ID صيغته صح قبل ما تروح للـ DB
+    if (!isValidObjectId(id)) {
+      return res.status(400).json({ message: "Invalid product ID" });
+    }
+
+    const foundProduct = await product.findById(id);
+
+    if (!foundProduct) {
+      return res.status(404).json({ message: "Product not found" });
+    }
+
+    return res.status(200).json(foundProduct);
+  } catch (err) {
+    return res.status(500).json({ message: "Server error" });
+  }
+});
 router.delete("/:id", async (req, res) => {
   try {
     const productId = req.params.id;
@@ -49,9 +72,12 @@ router.post("/", async (req, res) => {
       message: "Product created successfully",
       product: newProduct,
     });
-  } catch (err) {
+  } catch (err: any) {
+    console.error(err);
+
     return res.status(400).json({
-      message: "Bad request",
+      message: err.message,
+      error: err,
     });
   }
 });

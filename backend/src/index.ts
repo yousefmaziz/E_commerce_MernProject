@@ -5,25 +5,28 @@ import { seedInitialProducts } from "./services/productServices.js";
 import productRoute from "./routes/productRoute.js";
 import cartRoute from "./routes/cartRoute.js";
 import cors from "cors";
+
 const app = express();
-const port = 3002;
 
 app.use(express.json());
 app.use(cors());
+
+// ✅ سجل الـ routes برا الـ mongoose connect
+app.use("/user", userRoute);
+app.use("/product", productRoute);
+app.use("/cart", cartRoute);
+app.get("/test", (req, res) => {
+  res.send("TEST");
+});
 
 mongoose
   .connect("mongodb://localhost:27017/ecommerce")
   .then(async () => {
     console.log("Connected to MongoDB");
+    await seedInitialProducts();
 
-    seedInitialProducts(); // Seed initial products if the collection is empty
-
-    app.use("/user", userRoute);
-    app.use("/product", productRoute);
-    app.use("/cart", cartRoute);
-
-    app.listen(port, () => {
-      console.log(`Server is running on port ${port}`);
+    app.listen(process.env.PORT || 3002, () => {
+      console.log("🚀 MY SERVER IS RUNNING");
     });
   })
   .catch((err) => console.log("Failed to connect to MongoDB", err));

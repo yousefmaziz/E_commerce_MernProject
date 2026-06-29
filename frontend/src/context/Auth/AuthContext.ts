@@ -8,10 +8,15 @@ interface AuthContextType {
   role: string | null;
 
   isAuthenticated: boolean;
-
+  firstName: string | null;
   myorder: any[];
 
-  login: (username: string, token: string, role: string) => void;
+  login: (
+    username: string,
+    token: string,
+    role: string,
+    firstName: string,
+  ) => void;
 
   logout?: () => void;
 
@@ -20,7 +25,7 @@ interface AuthContextType {
 
 export const AuthContext = createContext<AuthContextType | null>({
   username: null,
-
+  firstName: null,
   token: null,
 
   role: null,

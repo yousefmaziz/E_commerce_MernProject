@@ -13,6 +13,7 @@ import MyOrder from "./pages/MyOrder";
 import DashBoard from "./pages/DashBoard";
 import { Toaster } from "react-hot-toast";
 import { HashRouter } from "react-router-dom";
+import ProductDetails from "./pages/ProductDetails";
 
 function App() {
   return (
@@ -33,6 +34,7 @@ function App() {
                 <Route path="/order" element={<Order />} />
                 <Route path="/myorder" element={<MyOrder />} />
                 <Route path="/dashboard" element={<DashBoard />} />
+                <Route path="/product/:id" element={<ProductDetails />} />
               </Route>
             </Routes>
           </HashRouter>

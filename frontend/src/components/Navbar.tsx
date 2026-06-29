@@ -1,5 +1,4 @@
 import * as React from "react";
-
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
@@ -11,69 +10,89 @@ import IconButton from "@mui/material/IconButton";
 import List from "@mui/material/List";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemText from "@mui/material/ListItemText";
+import ListItemIcon from "@mui/material/ListItemIcon";
 import Badge from "@mui/material/Badge";
+import Divider from "@mui/material/Divider";
+import Avatar from "@mui/material/Avatar";
 import useMediaQuery from "@mui/material/useMediaQuery";
 
 import MenuIcon from "@mui/icons-material/Menu";
-import AdbIcon from "@mui/icons-material/Adb";
+import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import ReceiptLongIcon from "@mui/icons-material/ReceiptLong";
+import DashboardRoundedIcon from "@mui/icons-material/DashboardRounded";
+import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
+import LoginRoundedIcon from "@mui/icons-material/LoginRounded";
+import StorefrontRoundedIcon from "@mui/icons-material/StorefrontRounded";
 
 import { useTheme } from "@mui/material/styles";
-import { useNavigate } from "react-router-dom";
-
+import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/Auth/AuthContext";
 import { useCart } from "../context/cart/CartContext";
 
 function Navbar() {
   const { username, isAuthenticated, logout } = useAuth()!;
-
   const { cartItems } = useCart()!;
-
   const navigate = useNavigate();
-
+  const location = useLocation();
   const theme = useTheme();
-
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
-
   const [openDrawer, setOpenDrawer] = React.useState(false);
+
+  const isActive = (path: string) => location.pathname === path;
 
   const handleLogout = () => {
     logout();
     navigate("/login");
   };
 
-  const menuItems = [
-    {
-      label: "Home",
-      action: () => navigate("/"),
-    },
-
+  // ===== NAV LINKS (Desktop + Mobile) =====
+  const navLinks = [
+    { label: "Home", path: "/", icon: <HomeRoundedIcon fontSize="small" /> },
     ...(isAuthenticated
       ? [
           {
             label: "My Orders",
-            action: () => navigate("/myorder"),
+            path: "/myorder",
+            icon: <ReceiptLongIcon fontSize="small" />,
           },
-
           {
             label: "Dashboard",
-            action: () => navigate("/dashboard"),
-          },
-
-          {
-            label: "Cart",
-            action: () => navigate("/cart"),
+            path: "/dashboard",
+            icon: <DashboardRoundedIcon fontSize="small" />,
           },
         ]
       : []),
   ];
+
+  // Active button styles
+  const activeNavBtn = {
+    color: "#a5b4fc",
+    fontWeight: 700,
+    background: "rgba(99,102,241,0.12)",
+    borderRadius: "10px",
+    px: 1.8,
+  };
+
+  const inactiveNavBtn = {
+    color: "rgba(203,213,225,0.8)",
+    fontWeight: 500,
+    px: 1.8,
+    borderRadius: "10px",
+    "&:hover": {
+      color: "#e2e8f0",
+      background: "rgba(255,255,255,0.06)",
+    },
+  };
 
   return (
     <>
       <AppBar
         position="sticky"
         sx={{
-          backgroundColor: "#0f172a",
+          background: "rgba(9,14,28,0.85)",
+          backdropFilter: "blur(16px)",
+          borderBottom: "1px solid rgba(255,255,255,0.06)",
           boxShadow: "none",
           zIndex: 1400,
         }}
@@ -85,33 +104,39 @@ function Navbar() {
               display: "flex",
               justifyContent: "space-between",
               alignItems: "center",
-              minHeight: "70px",
+              minHeight: "68px",
             }}
           >
-            {/* LEFT SIDE */}
-
+            {/* ===== LOGO ===== */}
             <Button
               variant="text"
-              sx={{
-                color: "white",
-                textTransform: "none",
-                p: 0,
-              }}
               onClick={() => navigate("/")}
+              sx={{ p: 0, textTransform: "none", minWidth: 0 }}
             >
-              <Box
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                }}
-              >
-                <AdbIcon sx={{ mr: 1 }} />
-
+              <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                <Box
+                  sx={{
+                    width: 36,
+                    height: 36,
+                    borderRadius: "10px",
+                    background: "linear-gradient(135deg, #6366f1, #8b5cf6)",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    boxShadow: "0 4px 12px rgba(99,102,241,0.4)",
+                  }}
+                >
+                  <StorefrontRoundedIcon sx={{ color: "#fff", fontSize: 20 }} />
+                </Box>
                 <Typography
                   variant="h6"
                   sx={{
-                    fontWeight: "bold",
-                    letterSpacing: 1,
+                    fontWeight: 800,
+                    letterSpacing: "-0.02em",
+                    background: "linear-gradient(135deg, #e0e7ff, #a5b4fc)",
+                    WebkitBackgroundClip: "text",
+                    WebkitTextFillColor: "transparent",
+                    backgroundClip: "text",
                   }}
                 >
                   Tech Store
@@ -119,84 +144,113 @@ function Navbar() {
               </Box>
             </Button>
 
-            {/* DESKTOP MENU */}
-
+            {/* ===== DESKTOP MENU ===== */}
             {!isMobile && (
-              <Box
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 2,
-                }}
-              >
-                <Button
-                  onClick={() => navigate("/")}
-                  sx={{
-                    color: "white",
-                    textTransform: "none",
-                    fontWeight: "bold",
-                  }}
-                >
-                  Home
-                </Button>
+              <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+                {navLinks.map((item) => (
+                  <Button
+                    key={item.path}
+                    onClick={() => navigate(item.path)}
+                    startIcon={item.icon}
+                    sx={{
+                      textTransform: "none",
+                      fontSize: "0.9rem",
+                      transition: "all 0.2s",
+                      ...(isActive(item.path) ? activeNavBtn : inactiveNavBtn),
+                    }}
+                  >
+                    {item.label}
+                  </Button>
+                ))}
 
+                {/* Cart */}
                 {isAuthenticated && (
-                  <>
-                    <Button
-                      onClick={() => navigate("/myorder")}
+                  <IconButton
+                    onClick={() => navigate("/cart")}
+                    sx={{
+                      mx: 0.5,
+                      color: isActive("/cart")
+                        ? "#a5b4fc"
+                        : "rgba(203,213,225,0.7)",
+                      background: isActive("/cart")
+                        ? "rgba(99,102,241,0.12)"
+                        : "transparent",
+                      borderRadius: "10px",
+                      "&:hover": { background: "rgba(255,255,255,0.06)" },
+                    }}
+                  >
+                    <Badge
+                      badgeContent={cartItems.length}
                       sx={{
-                        color: "white",
-                        textTransform: "none",
-                        fontWeight: "bold",
+                        "& .MuiBadge-badge": {
+                          background:
+                            "linear-gradient(135deg, #6366f1, #8b5cf6)",
+                          color: "#fff",
+                          fontWeight: 700,
+                          fontSize: "0.65rem",
+                        },
                       }}
                     >
-                      My Orders
-                    </Button>
+                      <ShoppingCartIcon fontSize="small" />
+                    </Badge>
+                  </IconButton>
+                )}
 
-                    <Button
-                      onClick={() => navigate("/dashboard")}
+                {/* Username avatar */}
+                {isAuthenticated && (
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 1,
+                      mx: 1,
+                      px: 1.5,
+                      py: 0.5,
+                      borderRadius: "10px",
+                      background: "rgba(255,255,255,0.04)",
+                      border: "1px solid rgba(255,255,255,0.07)",
+                    }}
+                  >
+                    <Avatar
                       sx={{
-                        color: "white",
-                        textTransform: "none",
-                        fontWeight: "bold",
+                        width: 26,
+                        height: 26,
+                        fontSize: "0.75rem",
+                        background: "linear-gradient(135deg, #6366f1, #8b5cf6)",
+                        fontWeight: 700,
                       }}
                     >
-                      Dashboard
-                    </Button>
-
-                    <Button
-                      onClick={() => navigate("/cart")}
-                      sx={{
-                        color: "white",
-                        minWidth: "auto",
-                      }}
-                    >
-                      <Badge badgeContent={cartItems.length} color="error">
-                        <ShoppingCartIcon />
-                      </Badge>
-                    </Button>
-
+                      {username?.charAt(0).toUpperCase()}
+                    </Avatar>
                     <Typography
                       sx={{
-                        color: "white",
-                        fontWeight: "bold",
+                        color: "#e2e8f0",
+                        fontSize: "0.88rem",
+                        fontWeight: 600,
                       }}
                     >
                       {username}
                     </Typography>
-                  </>
+                  </Box>
                 )}
 
+                {/* Login / Logout */}
                 {isAuthenticated ? (
                   <Button
-                    variant="contained"
-                    color="error"
+                    variant="outlined"
                     onClick={handleLogout}
+                    startIcon={<LogoutRoundedIcon sx={{ fontSize: 17 }} />}
                     sx={{
                       borderRadius: "10px",
                       textTransform: "none",
-                      fontWeight: "bold",
-                      boxShadow: "none",
+                      fontWeight: 600,
+                      fontSize: "0.88rem",
+                      color: "#f87171",
+                      border: "1px solid rgba(239,68,68,0.35)",
+                      "&:hover": {
+                        background: "rgba(239,68,68,0.1)",
+                        border: "1px solid rgba(239,68,68,0.6)",
+                      },
                     }}
                   >
                     Logout
@@ -205,11 +259,17 @@ function Navbar() {
                   <Button
                     variant="contained"
                     onClick={() => navigate("/login")}
+                    startIcon={<LoginRoundedIcon sx={{ fontSize: 17 }} />}
                     sx={{
                       borderRadius: "10px",
                       textTransform: "none",
-                      fontWeight: "bold",
-                      boxShadow: "none",
+                      fontWeight: 700,
+                      background: "linear-gradient(135deg, #6366f1, #8b5cf6)",
+                      boxShadow: "0 4px 14px rgba(99,102,241,0.35)",
+                      "&:hover": {
+                        background: "linear-gradient(135deg, #4f46e5, #7c3aed)",
+                        boxShadow: "0 6px 20px rgba(99,102,241,0.5)",
+                      },
                     }}
                   >
                     Login
@@ -218,64 +278,150 @@ function Navbar() {
               </Box>
             )}
 
-            {/* MOBILE MENU BUTTON */}
-
+            {/* ===== MOBILE MENU BUTTON ===== */}
             {isMobile && (
-              <IconButton onClick={() => setOpenDrawer(true)}>
-                <MenuIcon sx={{ color: "white" }} />
-              </IconButton>
+              <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                {isAuthenticated && (
+                  <IconButton
+                    onClick={() => navigate("/cart")}
+                    sx={{ color: "rgba(203,213,225,0.8)" }}
+                  >
+                    <Badge
+                      badgeContent={cartItems.length}
+                      sx={{
+                        "& .MuiBadge-badge": {
+                          background:
+                            "linear-gradient(135deg, #6366f1, #8b5cf6)",
+                          color: "#fff",
+                          fontWeight: 700,
+                        },
+                      }}
+                    ></Badge>
+                  </IconButton>
+                )}
+                <IconButton
+                  onClick={() => setOpenDrawer(true)}
+                  sx={{
+                    color: "white",
+                    background: "rgba(255,255,255,0.06)",
+                    border: "1px solid rgba(255,255,255,0.08)",
+                    borderRadius: "10px",
+                    width: 40,
+                    height: 40,
+                    "&:hover": { background: "rgba(255,255,255,0.1)" },
+                  }}
+                >
+                  <MenuIcon fontSize="small" />
+                </IconButton>
+              </Box>
             )}
           </Toolbar>
         </Container>
       </AppBar>
 
-      {/* MOBILE DRAWER */}
-
+      {/* ===== MOBILE DRAWER ===== */}
       <Drawer
         anchor="right"
         open={openDrawer}
         onClose={() => setOpenDrawer(false)}
+        PaperProps={{
+          sx: {
+            width: 270,
+            background: "rgba(9,14,28,0.97)",
+            backdropFilter: "blur(20px)",
+            borderLeft: "1px solid rgba(255,255,255,0.07)",
+            color: "white",
+          },
+        }}
       >
         <Box
           sx={{
-            width: 260,
             height: "100%",
-            backgroundColor: "#0f172a",
-            color: "white",
-            p: 2,
+            display: "flex",
+            flexDirection: "column",
+            p: 2.5,
           }}
         >
-          <Typography
-            variant="h6"
-            sx={{
-              mb: 3,
-              fontWeight: "bold",
-            }}
-          >
-            Menu
-          </Typography>
+          {/* Drawer Header */}
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1.5, mb: 3 }}>
+            <Box
+              sx={{
+                width: 36,
+                height: 36,
+                borderRadius: "10px",
+                background: "linear-gradient(135deg, #6366f1, #8b5cf6)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <StorefrontRoundedIcon sx={{ color: "#fff", fontSize: 20 }} />
+            </Box>
+            <Typography
+              sx={{ fontWeight: 800, fontSize: "1.1rem", color: "#e2e8f0" }}
+            >
+              Tech Store
+            </Typography>
+          </Box>
 
-          <List>
-            {menuItems.map((item) => (
+          <Divider sx={{ borderColor: "rgba(255,255,255,0.07)", mb: 2 }} />
+
+          {/* Nav Links */}
+          <List disablePadding sx={{ flex: 1 }}>
+            {navLinks.map((item) => (
               <ListItemButton
-                key={item.label}
+                key={item.path}
                 onClick={() => {
-                  item.action();
+                  item.action?.();
+                  navigate(item.path);
                   setOpenDrawer(false);
                 }}
                 sx={{
-                  borderRadius: 2,
-                  mb: 1,
-
-                  "&:hover": {
-                    backgroundColor: "#1e293b",
-                  },
+                  borderRadius: "12px",
+                  mb: 0.5,
+                  px: 1.5,
+                  py: 1.1,
+                  background: isActive(item.path)
+                    ? "rgba(99,102,241,0.15)"
+                    : "transparent",
+                  border: isActive(item.path)
+                    ? "1px solid rgba(99,102,241,0.3)"
+                    : "1px solid transparent",
+                  "&:hover": { background: "rgba(255,255,255,0.06)" },
                 }}
               >
-                <ListItemText primary={item.label} />
+                <ListItemIcon
+                  sx={{
+                    minWidth: 36,
+                    color: isActive(item.path)
+                      ? "#a5b4fc"
+                      : "rgba(148,163,184,0.7)",
+                  }}
+                >
+                  {item.icon}
+                </ListItemIcon>
+                <ListItemText
+                  primary={item.label}
+                  primaryTypographyProps={{
+                    fontSize: "0.92rem",
+                    fontWeight: isActive(item.path) ? 700 : 500,
+                    color: isActive(item.path) ? "#a5b4fc" : "#cbd5e1",
+                  }}
+                />
+                {isActive(item.path) && (
+                  <Box
+                    sx={{
+                      width: 6,
+                      height: 6,
+                      borderRadius: "50%",
+                      background: "#818cf8",
+                    }}
+                  />
+                )}
               </ListItemButton>
             ))}
 
+            {/* Cart in drawer */}
             {isAuthenticated && (
               <ListItemButton
                 onClick={() => {
@@ -283,57 +429,121 @@ function Navbar() {
                   setOpenDrawer(false);
                 }}
                 sx={{
-                  borderRadius: 2,
-                  mb: 1,
-
-                  "&:hover": {
-                    backgroundColor: "#1e293b",
-                  },
+                  borderRadius: "12px",
+                  mb: 0.5,
+                  px: 1.5,
+                  py: 1.1,
+                  background: isActive("/cart")
+                    ? "rgba(99,102,241,0.15)"
+                    : "transparent",
+                  border: isActive("/cart")
+                    ? "1px solid rgba(99,102,241,0.3)"
+                    : "1px solid transparent",
+                  "&:hover": { background: "rgba(255,255,255,0.06)" },
                 }}
               >
-                <Badge
-                  badgeContent={cartItems.length}
-                  color="error"
-                  sx={{ mr: 2 }}
+                <ListItemIcon
+                  sx={{
+                    minWidth: 36,
+                    color: isActive("/cart")
+                      ? "#a5b4fc"
+                      : "rgba(148,163,184,0.7)",
+                  }}
                 >
-                  <ShoppingCartIcon sx={{ color: "white" }} />
-                </Badge>
-
-                <ListItemText primary="Cart" />
+                  <Badge
+                    badgeContent={cartItems.length}
+                    sx={{
+                      "& .MuiBadge-badge": {
+                        background: "linear-gradient(135deg, #6366f1, #8b5cf6)",
+                        color: "#fff",
+                        fontSize: "0.6rem",
+                        fontWeight: 700,
+                      },
+                    }}
+                  >
+                    <ShoppingCartIcon fontSize="small" />
+                  </Badge>
+                </ListItemIcon>
+                <ListItemText
+                  primary="Cart"
+                  primaryTypographyProps={{
+                    fontSize: "0.92rem",
+                    fontWeight: isActive("/cart") ? 700 : 500,
+                    color: isActive("/cart") ? "#a5b4fc" : "#cbd5e1",
+                  }}
+                />
               </ListItemButton>
             )}
           </List>
 
-          {/* USER */}
+          {/* Bottom: User + Auth */}
+          <Divider sx={{ borderColor: "rgba(255,255,255,0.07)", mb: 2 }} />
 
-          {isAuthenticated && (
-            <Box sx={{ mt: 3 }}>
-              <Typography
+          {isAuthenticated ? (
+            <Box sx={{ display: "flex", flexDirection: "column", gap: 1.5 }}>
+              <Box
                 sx={{
-                  mb: 2,
-                  fontWeight: "bold",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 1.5,
+                  px: 1.5,
+                  py: 1,
+                  borderRadius: "12px",
+                  background: "rgba(255,255,255,0.04)",
+                  border: "1px solid rgba(255,255,255,0.07)",
                 }}
               >
-                {username}
-              </Typography>
+                <Avatar
+                  sx={{
+                    width: 32,
+                    height: 32,
+                    fontSize: "0.85rem",
+                    background: "linear-gradient(135deg, #6366f1, #8b5cf6)",
+                    fontWeight: 700,
+                  }}
+                >
+                  {username?.charAt(0).toUpperCase()}
+                </Avatar>
+                <Box>
+                  <Typography
+                    sx={{
+                      fontSize: "0.88rem",
+                      fontWeight: 700,
+                      color: "#e2e8f0",
+                    }}
+                  >
+                    {username}
+                  </Typography>
+                  <Typography
+                    sx={{ fontSize: "0.72rem", color: "rgba(148,163,184,0.6)" }}
+                  >
+                    Logged in
+                  </Typography>
+                </Box>
+              </Box>
 
               <Button
                 fullWidth
-                variant="contained"
-                color="error"
+                variant="outlined"
                 onClick={handleLogout}
+                startIcon={<LogoutRoundedIcon />}
                 sx={{
-                  borderRadius: "10px",
+                  borderRadius: "12px",
                   textTransform: "none",
-                  fontWeight: "bold",
+                  fontWeight: 700,
+                  color: "#f87171",
+                  border: "1px solid rgba(239,68,68,0.35)",
+                  py: 1.1,
+                  "&:hover": {
+                    background: "rgba(239,68,68,0.1)",
+                    border: "1px solid rgba(239,68,68,0.6)",
+                  },
                 }}
               >
                 Logout
               </Button>
             </Box>
-          )}
-
-          {!isAuthenticated && (
+          ) : (
             <Button
               fullWidth
               variant="contained"
@@ -341,11 +551,17 @@ function Navbar() {
                 navigate("/login");
                 setOpenDrawer(false);
               }}
+              startIcon={<LoginRoundedIcon />}
               sx={{
-                mt: 2,
-                borderRadius: "10px",
+                borderRadius: "12px",
                 textTransform: "none",
-                fontWeight: "bold",
+                fontWeight: 700,
+                py: 1.2,
+                background: "linear-gradient(135deg, #6366f1, #8b5cf6)",
+                boxShadow: "0 4px 14px rgba(99,102,241,0.35)",
+                "&:hover": {
+                  background: "linear-gradient(135deg, #4f46e5, #7c3aed)",
+                },
               }}
             >
               Login

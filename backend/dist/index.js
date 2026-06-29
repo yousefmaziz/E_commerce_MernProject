@@ -6,7 +6,6 @@ import productRoute from "./routes/productRoute.js";
 import cartRoute from "./routes/cartRoute.js";
 import cors from "cors";
 const app = express();
-const port = 3002;
 app.use(express.json());
 app.use(cors());
 mongoose
@@ -17,8 +16,8 @@ mongoose
     app.use("/user", userRoute);
     app.use("/product", productRoute);
     app.use("/cart", cartRoute);
-    app.listen(port, () => {
-        console.log(`Server is running on port ${port}`);
+    app.listen(process.env.PORT || 3002, () => {
+        console.log(`Server is running on port ${process.env.PORT || 3002}`);
     });
 })
     .catch((err) => console.log("Failed to connect to MongoDB", err));
