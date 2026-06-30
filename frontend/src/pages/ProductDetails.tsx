@@ -12,6 +12,7 @@ import {
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import LocalShippingIcon from "@mui/icons-material/LocalShipping";
 import { useCart } from "../context/cart/CartContext";
+const API = import.meta.env.BACK_API;
 interface Product {
   _id: string;
   title: string;
@@ -25,7 +26,7 @@ export default function ProductDetails() {
   const { addToCart } = useCart();
   const [product, setProduct] = useState<Product>();
   const getSingleProduct = async () => {
-    const response = await fetch(`http://localhost:3002/product/${id}`);
+    const response = await fetch(`${API}/product/${id}`);
     const data = await response.json();
     setProduct(data);
     console.log(data);

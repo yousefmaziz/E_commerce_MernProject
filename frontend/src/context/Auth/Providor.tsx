@@ -2,6 +2,7 @@ import { useState, type PropsWithChildren, type FC } from "react";
 import { AuthContext } from "./AuthContext";
 
 const AuthProvider: FC<PropsWithChildren> = ({ children }) => {
+  const API = import.meta.env.BACK_API;
   const [username, setUsername] = useState<string | null>(
     localStorage.getItem("authUsername"),
   );
@@ -54,7 +55,7 @@ const AuthProvider: FC<PropsWithChildren> = ({ children }) => {
 
   const getMyorder = async () => {
     try {
-      const response = await fetch("http://localhost:3002/user/myorder", {
+      const response = await fetch(`${API}/user/myorder`, {
         method: "GET",
 
         headers: {

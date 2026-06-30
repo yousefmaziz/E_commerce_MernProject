@@ -49,7 +49,7 @@ import { useEffect, useState } from "react";
 import { useTheme } from "@mui/material/styles";
 import { useAuth } from "../context/Auth/AuthContext";
 import { toast } from "react-hot-toast";
-
+const API = import.meta.env.BACK_API;
 const drawerWidth = 240;
 
 const menuItems = [
@@ -75,7 +75,7 @@ export default function Dashboard() {
 
   const fetchData = async () => {
     try {
-      const res = await fetch("http://localhost:3002/user");
+      const res = await fetch(`${API}/user`);
       const data = await res.json();
       setUsers(Array.isArray(data) ? data : []);
     } catch (err) {
@@ -85,7 +85,7 @@ export default function Dashboard() {
 
   const fetchProducts = async () => {
     try {
-      const res = await fetch("http://localhost:3002/product");
+      const res = await fetch(`${API}/product`);
       const data = await res.json();
       setProducts(Array.isArray(data) ? data : []);
     } catch (err) {
@@ -95,7 +95,7 @@ export default function Dashboard() {
 
   const deleteUser = async (id: string) => {
     try {
-      await fetch(`http://localhost:3002/user/${id}`, { method: "DELETE" });
+      await fetch(`${API}/user/${id}`, { method: "DELETE" });
       setUsers((prev) => prev.filter((u) => u._id !== id));
       toast.success("User deleted successfully!");
     } catch (err) {
@@ -105,7 +105,7 @@ export default function Dashboard() {
 
   const deleteProduct = async (id: string) => {
     try {
-      await fetch(`http://localhost:3002/product/${id}`, { method: "DELETE" });
+      await fetch(`${API}/product/${id}`, { method: "DELETE" });
       setProducts((prev) => prev.filter((p) => p._id !== id));
       toast.success("Product deleted successfully!");
     } catch (err) {
@@ -166,7 +166,7 @@ export default function Dashboard() {
 
   const addUser = async () => {
     try {
-      await fetch("http://localhost:3002/user/register", {
+      await fetch(`${API}/user/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
@@ -181,7 +181,7 @@ export default function Dashboard() {
 
   const addProduct = async () => {
     try {
-      const res = await fetch("http://localhost:3002/product", {
+      const res = await fetch(`${API}/product`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
@@ -201,14 +201,11 @@ export default function Dashboard() {
 
   const updateUser = async () => {
     try {
-      const res = await fetch(
-        `http://localhost:3002/user/${selectedItem._id}`,
-        {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(formData),
-        },
-      );
+      const res = await fetch(`${API}/user/${selectedItem._id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
       const updated = await res.json();
       setUsers((prev: any[]) =>
         prev.map((u) => (u._id === updated._id ? updated : u)),
@@ -222,14 +219,11 @@ export default function Dashboard() {
 
   const updateProduct = async () => {
     try {
-      const res = await fetch(
-        `http://localhost:3002/product/${selectedItem._id}`,
-        {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(formData),
-        },
-      );
+      const res = await fetch(`${API}/product/${selectedItem._id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
       const data = await res.json();
       const updated = data.product || data;
       setProducts((prev: any[]) =>

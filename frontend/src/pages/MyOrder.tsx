@@ -2,14 +2,14 @@ import { Box, Typography } from "@mui/material";
 import { Container } from "@mui/system";
 import { useAuth } from "../context/Auth/AuthContext";
 import { useEffect, useState } from "react";
-
+const API = import.meta.env.BACK_API;
 export default function MyOrder() {
   const { token } = useAuth()!;
 
   const [orders, setOrders] = useState<Order[]>([]);
   const myOrders = async () => {
     try {
-      const response = await fetch("http://localhost:3002/user/myorder", {
+      const response = await fetch(`${API}/user/myorder`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",

@@ -5,7 +5,7 @@ import { useRef, useState } from "react";
 import { useAuth } from "../context/Auth/AuthContext";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
-
+const API = import.meta.env.BACK_API;
 export default function Register() {
   const [error, setError] = useState("");
   const firstNameRef = useRef<HTMLInputElement>(null);
@@ -23,7 +23,7 @@ export default function Register() {
     const password = passwordRef.current?.value;
     console.log({ firstName, lastName, email, password });
 
-    const response = await fetch("http://localhost:3002/user/register", {
+    const response = await fetch(`${API}/user/register`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

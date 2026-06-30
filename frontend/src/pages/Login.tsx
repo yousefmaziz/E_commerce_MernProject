@@ -5,6 +5,7 @@ import { useRef, useState } from "react";
 import { useAuth } from "../context/Auth/AuthContext";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+const API = import.meta.env.BACK_API;
 export default function Login() {
   const [error, setError] = useState("");
   const emailRef = useRef<HTMLInputElement>(null);
@@ -17,7 +18,7 @@ export default function Login() {
     const email = emailRef.current?.value;
     const password = passwordRef.current?.value;
 
-    const response = await fetch("http://localhost:3002/user/login", {
+    const response = await fetch(`${API}/user/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

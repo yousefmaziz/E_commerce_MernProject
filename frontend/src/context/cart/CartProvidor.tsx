@@ -3,9 +3,9 @@ import { CartContext } from "./CartContext";
 import { CartItem } from "../cart/CartContext";
 import { useAuth } from "../Auth/AuthContext";
 import toast from "react-hot-toast";
+const API = import.meta.env.BACK_API;
 const CartProvider: FC<PropsWithChildren> = ({ children }) => {
   const { token } = useAuth()!;
-
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [totalPrice, setTotalPrice] = useState<number>(0);
   const [error, setError] = useState<string | null>(null);
@@ -40,7 +40,7 @@ const CartProvider: FC<PropsWithChildren> = ({ children }) => {
 
     const fetchCart = async () => {
       try {
-        const response = await fetch(`http://localhost:3002/cart`, {
+        const response = await fetch(`${API}/cart`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -75,7 +75,7 @@ const CartProvider: FC<PropsWithChildren> = ({ children }) => {
     if (!token) return;
 
     try {
-      const response = await fetch(`http://localhost:3002/cart/items`, {
+      const response = await fetch(`${API}/cart/items`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -109,7 +109,7 @@ const CartProvider: FC<PropsWithChildren> = ({ children }) => {
     if (quantity <= 0) return;
 
     try {
-      const response = await fetch(`http://localhost:3002/cart/items`, {
+      const response = await fetch(`${API}/cart/items`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -143,7 +143,7 @@ const CartProvider: FC<PropsWithChildren> = ({ children }) => {
 
     try {
       const response = await fetch(
-        `http://localhost:3002/cart/items/${productId}`,
+        `${API}/cart/items/${productId}`,
         {
           method: "DELETE",
           headers: {
@@ -172,7 +172,7 @@ const CartProvider: FC<PropsWithChildren> = ({ children }) => {
     if (!token) return;
 
     try {
-      const response = await fetch(`http://localhost:3002/cart`, {
+      const response = await fetch(`${API}/cart`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`,

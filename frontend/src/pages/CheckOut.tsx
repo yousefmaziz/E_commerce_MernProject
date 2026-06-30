@@ -11,7 +11,7 @@ import { useCart } from "../context/cart/CartContext";
 import { useAuth } from "../context/Auth/AuthContext";
 import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-
+const API = import.meta.env.BACK_API;
 export default function CheckoutPage() {
   const { token } = useAuth()!;
   const { cartItems, totalPrice, clearCart } = useCart()!;
@@ -33,7 +33,7 @@ export default function CheckoutPage() {
     setAddressError("");
 
     try {
-      const response = await fetch("http://localhost:3002/cart/checkout", {
+      const response = await fetch(`${API}/cart/checkout`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

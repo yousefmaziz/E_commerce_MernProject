@@ -11,7 +11,7 @@ import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 import { useNavigate } from "react-router-dom";
 import { useCart } from "../context/cart/CartContext";
 
-
+const API = import.meta.env.BACK_API;
 interface props {
   _id: string;
   title: string;
