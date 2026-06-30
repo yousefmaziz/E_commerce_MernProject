@@ -9,9 +9,7 @@ router.get("/", async (req, res) => {
   const products = await getAllProducts();
   res.status(200).send(products);
 });
-router.get("/test", (req, res) => {
-  res.send("Route is working");
-});
+
 router.get("/:id", async (req, res) => {
   try {
     const { id } = req.params;
