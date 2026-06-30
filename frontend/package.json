@@ -1,6 +1,5 @@
 {
   "name": "frontend",
-  "homepage":"https://yousefmaziz.github.io/E_commerce_MernProject",  
   "private": true,
   "version": "0.0.0",
   "type": "module",
