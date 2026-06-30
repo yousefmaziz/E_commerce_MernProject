@@ -20,7 +20,7 @@ app.use("/user", userRoute);
 app.use("/product", productRoute);
 app.use("/cart", cartRoute);
 
-// MongoDB Connection
+// MongoDB Connections
 mongoose
   .connect(process.env.MONGO_URI as string)
   .then(async () => {
