@@ -12,7 +12,7 @@ import {
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import LocalShippingIcon from "@mui/icons-material/LocalShipping";
 import { useCart } from "../context/cart/CartContext";
-const API = import.meta.env.BACK_API;
+const API = import.meta.env.VITE_BACK_API;
 interface Product {
   _id: string;
   title: string;

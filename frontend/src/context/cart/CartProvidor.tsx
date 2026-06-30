@@ -3,7 +3,7 @@ import { CartContext } from "./CartContext";
 import { CartItem } from "../cart/CartContext";
 import { useAuth } from "../Auth/AuthContext";
 import toast from "react-hot-toast";
-const API = import.meta.env.BACK_API;
+const API = import.meta.env.VITE_BACK_API;
 const CartProvider: FC<PropsWithChildren> = ({ children }) => {
   const { token } = useAuth()!;
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
@@ -142,15 +142,12 @@ const CartProvider: FC<PropsWithChildren> = ({ children }) => {
     if (!token) return;
 
     try {
-      const response = await fetch(
-        `${API}/cart/items/${productId}`,
-        {
-          method: "DELETE",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+      const response = await fetch(`${API}/cart/items/${productId}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
         },
-      );
+      });
 
       const result = await response.json();
 

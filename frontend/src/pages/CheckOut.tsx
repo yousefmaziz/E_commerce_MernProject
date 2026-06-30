@@ -11,7 +11,7 @@ import { useCart } from "../context/cart/CartContext";
 import { useAuth } from "../context/Auth/AuthContext";
 import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-const API = import.meta.env.BACK_API;
+const API = import.meta.env.VITE_BACK_API;
 export default function CheckoutPage() {
   const { token } = useAuth()!;
   const { cartItems, totalPrice, clearCart } = useCart()!;

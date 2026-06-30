@@ -49,7 +49,7 @@ import { useEffect, useState } from "react";
 import { useTheme } from "@mui/material/styles";
 import { useAuth } from "../context/Auth/AuthContext";
 import { toast } from "react-hot-toast";
-const API = import.meta.env.BACK_API;
+const API = import.meta.env.VITE_BACK_API;
 const drawerWidth = 240;
 
 const menuItems = [

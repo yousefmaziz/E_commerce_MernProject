@@ -3,7 +3,7 @@ import Grid from "@mui/material/Grid";
 import CardProduct from "../components/CardProduct";
 import { useEffect, useState } from "react";
 import { Box, Typography, Button, Stack, Chip } from "@mui/material";
-const API = import.meta.env.BACK_API;
+const API = import.meta.env.VITE_BACK_API;
 interface Product {
   _id: string;
   title: string;
@@ -18,6 +18,7 @@ const Home = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
+        console.log(API);
         const res = await fetch(`${API}/product`);
         const data = await res.json();
         setProducts(data);

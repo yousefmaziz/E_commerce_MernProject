@@ -2,7 +2,7 @@ import { useState, type PropsWithChildren, type FC } from "react";
 import { AuthContext } from "./AuthContext";
 
 const AuthProvider: FC<PropsWithChildren> = ({ children }) => {
-  const API = import.meta.env.BACK_API;
+  const API = import.meta.env.VITE_BACK_API;
   const [username, setUsername] = useState<string | null>(
     localStorage.getItem("authUsername"),
   );

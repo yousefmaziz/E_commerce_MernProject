@@ -5,7 +5,7 @@ import { useRef, useState } from "react";
 import { useAuth } from "../context/Auth/AuthContext";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
-const API = import.meta.env.BACK_API;
+const API = import.meta.env.VITE_BACK_API;
 export default function Login() {
   const [error, setError] = useState("");
   const emailRef = useRef<HTMLInputElement>(null);
