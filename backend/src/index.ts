@@ -15,22 +15,32 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-// Routes
 app.use("/user", userRoute);
 app.use("/product", productRoute);
 app.use("/cart", cartRoute);
 
-// MongoDB Connections
+app.get("/", (req, res) => {
+  res.send("Backend is running 🚀");
+});
+
 mongoose
   .connect(process.env.MONGO_URI as string)
   .then(async () => {
-    console.log("✅ Connected to MongoDB");
+    console.log("DB:", mongoose.connection.db?.databaseName);
 
     await seedInitialProducts();
+
+    // يشغل السيرفر لوكال فقط
+    if (!process.env.VERCEL) {
+      const PORT = process.env.PORT || 3002;
+
+      app.listen(PORT, () => {
+        console.log(`🚀 Server running on http://localhost:${PORT}`);
+      });
+    }
   })
   .catch((err) => {
-    console.error("❌ MongoDB Error:", err);
+    console.error("MongoDB Error:", err);
   });
 
-// Export app for Vercel
 export default app;
