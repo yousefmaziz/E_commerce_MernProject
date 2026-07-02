@@ -1,10 +1,6 @@
 import {
   Box,
-  Drawer,
   List,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
   Typography,
   Table,
   TableBody,
@@ -33,7 +29,6 @@ import {
   HomeRounded,
   People,
   Inventory,
-  Menu,
   StorefrontRounded,
   PersonAddRounded,
   AddBoxRounded,
@@ -50,19 +45,17 @@ import { useTheme } from "@mui/material/styles";
 import { useAuth } from "../context/Auth/AuthContext";
 import { toast } from "react-hot-toast";
 const API = import.meta.env.VITE_BACK_API;
-const drawerWidth = 240;
 
 const menuItems = [
-  { text: "Home", icon: <HomeRounded /> },
-  { text: "Users", icon: <People /> },
-  { text: "Products", icon: <Inventory /> },
+  { text: "Home", icon: <HomeRounded fontSize="small" /> },
+  { text: "Users", icon: <People fontSize="small" /> },
+  { text: "Products", icon: <Inventory fontSize="small" /> },
 ];
 
 export default function Dashboard() {
   const theme = useTheme();
   const isMdUp = useMediaQuery(theme.breakpoints.up("md"));
 
-  const [mobileOpen, setMobileOpen] = useState(false);
   const [activePage, setActivePage] = useState("Home");
   const { username, firstName } = useAuth()!;
   const [users, setUsers] = useState([]);
@@ -286,278 +279,148 @@ export default function Dashboard() {
         }),
   });
 
-  // ===== DRAWER CONTENT =====
-  const drawerContent = (
-    <Box sx={{ height: "100%", display: "flex", flexDirection: "column" }}>
-      {/* Logo */}
-      <Box sx={{ p: 2.5, display: "flex", alignItems: "center", gap: 1.5 }}>
-        <Box
-          sx={{
-            width: 36,
-            height: 36,
-            borderRadius: "10px",
-            background: "linear-gradient(135deg, #6366f1, #8b5cf6)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            boxShadow: "0 4px 12px rgba(99,102,241,0.4)",
-          }}
-        >
-          <StorefrontRounded sx={{ color: "#fff", fontSize: 20 }} />
-        </Box>
-        <Typography
-          sx={{
-            fontWeight: 800,
-            fontSize: "1rem",
-            color: "#e2e8f0",
-            letterSpacing: "-0.01em",
-          }}
-        >
-          Tech Store
-        </Typography>
-      </Box>
-
-      <Divider sx={{ borderColor: "rgba(255,255,255,0.07)", mx: 2 }} />
-
-      {/* Label */}
-      <Typography
-        sx={{
-          px: 2.5,
-          pt: 2.5,
-          pb: 1,
-          fontSize: "0.7rem",
-          fontWeight: 700,
-          letterSpacing: "0.1em",
-          color: "rgba(148,163,184,0.5)",
-          textTransform: "uppercase",
-        }}
-      >
-        Navigation
-      </Typography>
-
-      {/* Menu */}
-      <List sx={{ px: 1.5, flex: 1 }}>
-        {menuItems.map((item) => {
-          const active = activePage === item.text;
-          return (
-            <ListItemButton
-              key={item.text}
-              onClick={() => {
-                setActivePage(item.text);
-                if (!isMdUp) setMobileOpen(false);
-              }}
-              sx={{
-                borderRadius: "12px",
-                mb: 0.5,
-                px: 1.5,
-                py: 1.1,
-                background: active ? "rgba(99,102,241,0.15)" : "transparent",
-                border: active
-                  ? "1px solid rgba(99,102,241,0.3)"
-                  : "1px solid transparent",
-                "&:hover": {
-                  background: active
-                    ? "rgba(99,102,241,0.2)"
-                    : "rgba(255,255,255,0.05)",
-                },
-              }}
-            >
-              <ListItemIcon
-                sx={{
-                  color: active ? "#a5b4fc" : "rgba(148,163,184,0.6)",
-                  minWidth: 38,
-                }}
-              >
-                {item.icon}
-              </ListItemIcon>
-              <ListItemText
-                primary={item.text}
-                primaryTypographyProps={{
-                  fontSize: "0.9rem",
-                  fontWeight: active ? 700 : 500,
-                  color: active ? "#a5b4fc" : "#94a3b8",
-                }}
-              />
-              {active && (
-                <Box
-                  sx={{
-                    width: 6,
-                    height: 6,
-                    borderRadius: "50%",
-                    background: "#818cf8",
-                    flexShrink: 0,
-                  }}
-                />
-              )}
-            </ListItemButton>
-          );
-        })}
-      </List>
-
-      {/* User card at bottom */}
-      <Divider sx={{ borderColor: "rgba(255,255,255,0.07)", mx: 2, mb: 2 }} />
-      <Box
-        sx={{
-          mx: 1.5,
-          mb: 2,
-          px: 1.5,
-          py: 1.2,
-          borderRadius: "12px",
-          background: "rgba(255,255,255,0.04)",
-          border: "1px solid rgba(255,255,255,0.07)",
-          display: "flex",
-          alignItems: "center",
-          gap: 1.2,
-        }}
-      >
-        <Avatar
-          sx={{
-            width: 30,
-            height: 30,
-            fontSize: "0.8rem",
-            background: "linear-gradient(135deg, #6366f1, #8b5cf6)",
-            fontWeight: 700,
-          }}
-        >
-          {username?.charAt(0).toUpperCase()}
-        </Avatar>
-        <Box>
-          <Typography
-            sx={{
-              fontSize: "0.85rem",
-              fontWeight: 700,
-              color: "#e2e8f0",
-              lineHeight: 1.2,
-            }}
-          >
-            {username}
-          </Typography>
-          <Typography
-            sx={{ fontSize: "0.7rem", color: "rgba(148,163,184,0.55)" }}
-          >
-            Admin
-          </Typography>
-        </Box>
-      </Box>
-    </Box>
-  );
-
   return (
     <Box
       sx={{
-        display: "flex",
         minHeight: "100vh",
         background: "linear-gradient(160deg, #020617 0%, #0f172a 100%)",
       }}
     >
       <CssBaseline />
 
-      {/* Mobile AppBar */}
-      {!isMdUp && (
-        <Box
-          sx={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            right: 0,
-            zIndex: theme.zIndex.drawer + 1,
-            background: "rgba(9,14,28,0.9)",
-            backdropFilter: "blur(16px)",
-            borderBottom: "1px solid rgba(255,255,255,0.06)",
-            display: "flex",
-            alignItems: "center",
-            px: 2,
-            height: 64,
-          }}
-        >
-          <IconButton
-            onClick={() => setMobileOpen(true)}
-            sx={{
-              color: "white",
-              background: "rgba(255,255,255,0.06)",
-              border: "1px solid rgba(255,255,255,0.08)",
-              borderRadius: "10px",
-              width: 38,
-              height: 38,
-              mr: 1.5,
-            }}
-          >
-            <Menu fontSize="small" />
-          </IconButton>
-          <Typography
-            sx={{ fontWeight: 800, color: "#e2e8f0", fontSize: "1rem" }}
-          >
-            Dashboard
-          </Typography>
-        </Box>
-      )}
-
-      {/* Drawer */}
+      {/* ===== TOP NAVBAR ===== */}
       <Box
-        component="nav"
-        sx={{ width: { md: drawerWidth }, flexShrink: { md: 0 } }}
-      >
-        <Drawer
-          variant={isMdUp ? "permanent" : "temporary"}
-          open={isMdUp ? true : mobileOpen}
-          onClose={() => setMobileOpen(false)}
-          ModalProps={{ keepMounted: true }}
-          sx={{
-            "& .MuiDrawer-paper": {
-              width: drawerWidth,
-              background: "rgba(9,14,28,0.97)",
-              backdropFilter: "blur(20px)",
-              borderRight: "1px solid rgba(255,255,255,0.06)",
-              color: "white",
-            },
-          }}
-        >
-          {drawerContent}
-        </Drawer>
-      </Box>
-
-      {/* Main */}
-      <Box
-        component="main"
+        component="header"
         sx={{
-          flexGrow: 1,
-          p: { xs: 2, sm: 3, md: 4 },
-          pt: { xs: "80px", md: 4 },
-          width: { xs: "100%", md: `calc(100% - ${drawerWidth}px)` },
+          position: "sticky",
+          top: 0,
+          zIndex: theme.zIndex.appBar,
+          background: "rgba(9,14,28,0.9)",
+          backdropFilter: "blur(16px)",
+          borderBottom: "1px solid rgba(255,255,255,0.06)",
         }}
       >
-        {/* Top bar */}
         <Box
           sx={{
-            mb: 4,
             display: "flex",
-            justifyContent: "space-between",
             alignItems: "center",
-            px: 2.5,
-            py: 1.8,
-            background: "rgba(255,255,255,0.03)",
-            backdropFilter: "blur(12px)",
-            border: "1px solid rgba(255,255,255,0.07)",
-            borderRadius: "16px",
+            justifyContent: "space-between",
+            px: { xs: 2, md: 4 },
+            height: 64,
+            gap: 2,
           }}
         >
-          <Box>
-            <Typography
-              sx={{ fontWeight: 800, fontSize: "1.2rem", color: "#e2e8f0" }}
+          {/* Logo */}
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              gap: 1.2,
+              flexShrink: 0,
+            }}
+          >
+            <Box
+              sx={{
+                width: 34,
+                height: 34,
+                borderRadius: "10px",
+                background: "linear-gradient(135deg, #6366f1, #8b5cf6)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                boxShadow: "0 4px 12px rgba(99,102,241,0.4)",
+                flexShrink: 0,
+              }}
             >
-              {activePage}
-            </Typography>
-            <Typography
-              sx={{ fontSize: "0.78rem", color: "rgba(148,163,184,0.6)" }}
-            >
-              {new Date().toLocaleDateString("en-US", {
-                weekday: "long",
-                month: "long",
-                day: "numeric",
-              })}
-            </Typography>
+              <StorefrontRounded sx={{ color: "#fff", fontSize: 18 }} />
+            </Box>
+            {isMdUp && (
+              <Typography
+                sx={{
+                  fontWeight: 800,
+                  fontSize: "1rem",
+                  color: "#e2e8f0",
+                  letterSpacing: "-0.01em",
+                  whiteSpace: "nowrap",
+                }}
+              >
+                Tech Store
+              </Typography>
+            )}
           </Box>
-          <Box sx={{ display: "flex", alignItems: "center", gap: 1.2 }}>
+
+          {/* Nav items — scrollable on mobile */}
+          <List
+            sx={{
+              display: "flex",
+              gap: 0.75,
+              p: 0,
+              overflowX: "auto",
+              flex: 1,
+              justifyContent: { xs: "flex-start", md: "center" },
+              "&::-webkit-scrollbar": { display: "none" },
+            }}
+          >
+            {menuItems.map((item) => {
+              const active = activePage === item.text;
+              return (
+                <Box
+                  key={item.text}
+                  onClick={() => setActivePage(item.text)}
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 0.8,
+                    cursor: "pointer",
+                    px: 1.6,
+                    py: 0.9,
+                    borderRadius: "10px",
+                    flexShrink: 0,
+                    background: active
+                      ? "rgba(99,102,241,0.15)"
+                      : "transparent",
+                    border: active
+                      ? "1px solid rgba(99,102,241,0.3)"
+                      : "1px solid transparent",
+                    "&:hover": {
+                      background: active
+                        ? "rgba(99,102,241,0.2)"
+                        : "rgba(255,255,255,0.05)",
+                    },
+                  }}
+                >
+                  <Box
+                    sx={{
+                      color: active ? "#a5b4fc" : "rgba(148,163,184,0.6)",
+                      display: "flex",
+                    }}
+                  >
+                    {item.icon}
+                  </Box>
+                  <Typography
+                    sx={{
+                      fontSize: "0.85rem",
+                      fontWeight: active ? 700 : 500,
+                      color: active ? "#a5b4fc" : "#94a3b8",
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    {item.text}
+                  </Typography>
+                </Box>
+              );
+            })}
+          </List>
+
+          {/* User */}
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              gap: 1.2,
+              flexShrink: 0,
+            }}
+          >
             <Avatar
               sx={{
                 width: 32,
@@ -569,17 +432,42 @@ export default function Dashboard() {
             >
               {username?.charAt(0).toUpperCase()}
             </Avatar>
-            <Typography
-              sx={{
-                color: "#e2e8f0",
-                fontWeight: 600,
-                fontSize: "0.88rem",
-                display: { xs: "none", sm: "block" },
-              }}
-            >
-              {firstName}
-            </Typography>
+            {isMdUp && (
+              <Typography
+                sx={{ color: "#e2e8f0", fontWeight: 600, fontSize: "0.88rem" }}
+              >
+                {firstName}
+              </Typography>
+            )}
           </Box>
+        </Box>
+      </Box>
+
+      {/* ===== MAIN ===== */}
+      <Box
+        component="main"
+        sx={{
+          p: { xs: 2, sm: 3, md: 4 },
+          maxWidth: 1400,
+          mx: "auto",
+        }}
+      >
+        {/* Page title row */}
+        <Box sx={{ mb: 3 }}>
+          <Typography
+            sx={{ fontWeight: 800, fontSize: "1.2rem", color: "#e2e8f0" }}
+          >
+            {activePage}
+          </Typography>
+          <Typography
+            sx={{ fontSize: "0.78rem", color: "rgba(148,163,184,0.6)" }}
+          >
+            {new Date().toLocaleDateString("en-US", {
+              weekday: "long",
+              month: "long",
+              day: "numeric",
+            })}
+          </Typography>
         </Box>
 
         {/* ===== HOME ===== */}
@@ -1088,7 +976,7 @@ export default function Dashboard() {
             }}
           >
             <Typography
-              sx={{ fontWeight: 800, fontSize: "1.1rem", color: "#balck" }}
+              sx={{ fontWeight: 800, fontSize: "1.1rem", color: "#e2e8f0" }}
             >
               {dialogType === "user"
                 ? selectedItem
@@ -1117,13 +1005,15 @@ export default function Dashboard() {
           <DialogContent
             sx={{ display: "flex", flexDirection: "column", gap: 2, pt: 3 }}
           >
-            {/* Shared TextField styles */}
             {(() => {
               const inputSx = {
                 "& .MuiOutlinedInput-root": {
                   borderRadius: "12px",
-                  color: "#black",
+                  color: "#e2e8f0",
                   background: "rgba(255,255,255,0.03)",
+                },
+                "& .MuiInputLabel-root": {
+                  color: "rgba(148,163,184,0.7)",
                 },
               };
 
@@ -1239,7 +1129,7 @@ export default function Dashboard() {
                 borderRadius: "10px",
                 textTransform: "none",
                 fontWeight: 600,
-                color: "black",
+                color: "#e2e8f0",
                 border: "1px solid rgba(255,255,255,0.08)",
                 px: 2.5,
                 "&:hover": { background: "rgba(255,255,255,0.05)" },

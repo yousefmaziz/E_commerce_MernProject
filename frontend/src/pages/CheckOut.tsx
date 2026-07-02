@@ -70,7 +70,7 @@ export default function CheckoutPage() {
   }
 
   return (
-    <Container sx={{ mt: 5 }}>
+    <Container sx={{ mt: 5, mx: "auto", maxWidth: "md" }}>
       <Typography variant="h4" gutterBottom>
         Checkout
       </Typography>
@@ -78,12 +78,20 @@ export default function CheckoutPage() {
       <Box
         sx={{
           display: "flex",
-          gap: 4,
-          flexWrap: "wrap",
+          flexDirection: { xs: "column", md: "row" },
+          gap: { xs: 2, sm: 3, md: 4 },
+          width: "100%",
         }}
       >
         {/* 🧾 Order Summary */}
-        <Paper sx={{ flex: 1, p: 3, borderRadius: 3 }}>
+        <Paper
+          sx={{
+            flex: 1,
+            minWidth: 0, // prevents flex overflow on small screens
+            p: { xs: 2, sm: 3 },
+            borderRadius: 3,
+          }}
+        >
           <Typography variant="h6" gutterBottom>
             Order Summary
           </Typography>
@@ -94,10 +102,12 @@ export default function CheckoutPage() {
               sx={{
                 display: "flex",
                 justifyContent: "space-between",
+                flexWrap: "wrap",
+                gap: 1,
                 mb: 1,
               }}
             >
-              <Typography>
+              <Typography sx={{ wordBreak: "break-word" }}>
                 {item.title} x {item.quantity}
               </Typography>
               <Typography>
@@ -112,7 +122,14 @@ export default function CheckoutPage() {
         </Paper>
 
         {/* 📦 Checkout Form */}
-        <Paper sx={{ flex: 1, p: 3, borderRadius: 3 }}>
+        <Paper
+          sx={{
+            flex: 1,
+            minWidth: 0,
+            p: { xs: 2, sm: 3 },
+            borderRadius: 3,
+          }}
+        >
           <Typography variant="h6" gutterBottom>
             Shipping & Payment
           </Typography>

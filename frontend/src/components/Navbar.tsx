@@ -285,19 +285,7 @@ function Navbar() {
                   <IconButton
                     onClick={() => navigate("/cart")}
                     sx={{ color: "rgba(203,213,225,0.8)" }}
-                  >
-                    <Badge
-                      badgeContent={cartItems.length}
-                      sx={{
-                        "& .MuiBadge-badge": {
-                          background:
-                            "linear-gradient(135deg, #6366f1, #8b5cf6)",
-                          color: "#fff",
-                          fontWeight: 700,
-                        },
-                      }}
-                    ></Badge>
-                  </IconButton>
+                  ></IconButton>
                 )}
                 <IconButton
                   onClick={() => setOpenDrawer(true)}
