@@ -1,8 +1,6 @@
-import mongoose from "mongoose";
-import { Schema, Document } from "mongoose";
-import { title } from "node:process";
+import mongoose, { Schema, Document } from "mongoose";
 
-export interface Iproduct extends Document {
+export interface IProduct extends Document {
   title: string;
   image: string;
   price: number;
@@ -10,13 +8,43 @@ export interface Iproduct extends Document {
   description: string;
 }
 
-const produceSchema = new Schema<Iproduct>({
-  title: { type: String },
-  image: { type: String },
-  price: { type: Number },
-  stock: { type: Number, default: 0 },
-  description: { type: String },
-});
+const productSchema = new Schema<IProduct>(
+  {
+    title: {
+      type: String,
+      required: true,
+      trim: true,
+    },
 
-const product = mongoose.model<Iproduct>("product", produceSchema);
-export default product;
+    image: {
+      type: String,
+      required: true,
+    },
+
+    price: {
+      type: Number,
+      required: true,
+      min: 0,
+    },
+
+    stock: {
+      type: Number,
+      required: true,
+      default: 0,
+      min: 0,
+    },
+
+    description: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+  },
+  {
+    timestamps: true,
+  },
+);
+
+const Product = mongoose.model<IProduct>("Product", productSchema);
+
+export default Product;

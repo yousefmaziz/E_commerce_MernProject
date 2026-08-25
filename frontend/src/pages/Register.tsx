@@ -40,7 +40,7 @@ export default function Register() {
       setError("No token received. Please try again.");
       return;
     }
-    login(email, token);
+
     toast.success("Registration successful!");
     navigate("/login");
   };
@@ -68,6 +68,7 @@ export default function Register() {
             width: { xs: "90%", sm: 420 },
             display: "flex",
             flexDirection: "column",
+            mt: 8,
             gap: 3,
             px: { xs: 3, sm: 5 },
             py: 4,
@@ -208,8 +209,9 @@ export default function Register() {
           >
             Already have an account?{" "}
             <a
-              href="/login"
+              onClick={() => navigate("/login")}
               style={{
+                cursor: "pointer",
                 color: "#2563eb",
                 fontWeight: "bold",
                 textDecoration: "none",

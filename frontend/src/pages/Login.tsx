@@ -172,8 +172,9 @@ export default function Login() {
           >
             Don't have an account?{" "}
             <a
-              href="/register"
+              onClick={() => navigate("/register")}
               style={{
+                cursor: "pointer",
                 color: "#2563eb",
                 fontWeight: "bold",
                 textDecoration: "none",

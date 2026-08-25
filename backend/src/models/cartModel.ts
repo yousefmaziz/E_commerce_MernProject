@@ -1,39 +1,81 @@
-import mongoose, { ObjectId } from "mongoose";
-import { Schema, Document } from "mongoose";
-import { Iproduct } from "./productModel.js";
+import mongoose, { Schema, Document } from "mongoose";
 
-const cartStatusEnum = ["active", "completed", "cancelled"] as const;
-export interface IcartItem {
-  product: Iproduct;
+export interface ICartItem {
+  product: mongoose.Types.ObjectId;
   quantity: number;
+
+  // Snapshot
   unitPrice: number;
   title: string;
   imageUrl: string;
 }
 
-export interface Icart extends Document {
-  userId: ObjectId | string;
-  items: IcartItem[];
+export interface ICart extends Document {
+  userId: mongoose.Types.ObjectId;
+  items: ICartItem[];
   totalPrice: number;
-  status: "active" | "completed" | "cancelled";
 }
 
-const cartItemSchema = new Schema<IcartItem>({
-  product: { type: Schema.Types.ObjectId, ref: "product", required: true },
-  quantity: { type: Number, required: true, default: 1 },
-  unitPrice: { type: Number, required: true },
-  title: { type: String, required: true },
-  imageUrl: { type: String, required: true },
-});
+const cartItemSchema = new Schema<ICartItem>(
+  {
+    product: {
+      type: Schema.Types.ObjectId,
+      ref: "Product",
+      required: true,
+    },
 
-const cartSchema = new Schema<Icart>({
-  userId: { type: Schema.Types.ObjectId, ref: "User", required: true },
-  items: [cartItemSchema],
-  totalPrice: { type: Number, default: 0 },
-  status: {
-    type: String,
-    enum: cartStatusEnum,
+    quantity: {
+      type: Number,
+      required: true,
+      min: 1,
+    },
+
+    unitPrice: {
+      type: Number,
+      required: true,
+      min: 0,
+    },
+
+    title: {
+      type: String,
+      required: true,
+    },
+
+    imageUrl: {
+      type: String,
+      required: true,
+    },
   },
-});
+  {
+    _id: false,
+  },
+);
 
-export const cartModel = mongoose.model<Icart>("Cart", cartSchema);
+const cartSchema = new Schema<ICart>(
+  {
+    userId: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+      unique: true,
+    },
+
+    items: {
+      type: [cartItemSchema],
+      default: [],
+    },
+
+    totalPrice: {
+      type: Number,
+      default: 0,
+      min: 0,
+    },
+  },
+  {
+    timestamps: true,
+  },
+);
+
+const Cart = mongoose.model<ICart>("Cart", cartSchema);
+
+export default Cart;

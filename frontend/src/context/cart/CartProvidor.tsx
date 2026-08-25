@@ -126,6 +126,8 @@ const CartProvider: FC<PropsWithChildren> = ({ children }) => {
       if (!response.ok) {
         console.log("SERVER:", result);
         setError(result.message || "Failed to update cart");
+        toast.error("More than available quantity");
+
         return;
       }
 
