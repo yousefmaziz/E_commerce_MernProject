@@ -13,7 +13,9 @@ const CartProvider: FC<PropsWithChildren> = ({ children }) => {
   // ✅ mapping
   const mapCart = (cartData: any): CartItem[] => {
     return cartData.items.map((item: any) => ({
-      productId: item.product,
+      productId:
+        typeof item.product === "object" ? item.product._id : item.product,
+
       title: item.title,
       unitPrice: item.unitPrice,
       quantity: item.quantity,
@@ -125,6 +127,7 @@ const CartProvider: FC<PropsWithChildren> = ({ children }) => {
 
       if (!response.ok) {
         console.log("SERVER:", result);
+        console.log("SERVER:", productId, quantity);
         setError(result.message || "Failed to update cart");
         toast.error("More than available quantity");
 
