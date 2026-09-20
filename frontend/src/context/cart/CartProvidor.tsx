@@ -12,15 +12,17 @@ const CartProvider: FC<PropsWithChildren> = ({ children }) => {
 
   // ✅ mapping
   const mapCart = (cartData: any): CartItem[] => {
-    return cartData.items.map((item: any) => ({
-      productId:
-        typeof item.product === "object" ? item.product._id : item.product,
+    return cartData.items
+      .filter((item: any) => item.product != null)
+      .map((item: any) => ({
+        productId:
+          typeof item.product === "object" ? item.product._id : item.product,
 
-      title: item.title,
-      unitPrice: item.unitPrice,
-      quantity: item.quantity,
-      imageUrl: item.imageUrl,
-    }));
+        title: item.title,
+        unitPrice: item.unitPrice,
+        quantity: item.quantity,
+        imageUrl: item.imageUrl,
+      }));
   };
 
   // ✅ helper موحد للتعامل مع response
