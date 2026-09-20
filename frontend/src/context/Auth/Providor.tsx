@@ -78,6 +78,7 @@ const AuthProvider: FC<PropsWithChildren> = ({ children }) => {
       value={{
         username,
         token,
+        firstName: username,
         role,
         login,
         logout,

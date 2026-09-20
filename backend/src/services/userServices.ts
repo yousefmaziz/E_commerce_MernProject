@@ -46,11 +46,15 @@ export const login = async ({ email, password }: loginData) => {
     return { data: "Invalid password", statusCode: 400 };
   }
   return {
-    data: generateToken({
-      email,
+    data: {
+      token: generateToken({
+        email,
+        firstName: findUser.firstName,
+        lastName: findUser.lastName,
+      }),
+      role: findUser.role,
       firstName: findUser.firstName,
-      lastName: findUser.lastName,
-    }),
+    },
     statusCode: 200,
   };
 };

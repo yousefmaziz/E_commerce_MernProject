@@ -2,6 +2,8 @@ import express from "express";
 import { getAllProducts } from "../services/productServices.js";
 import product from "../models/productModel.js";
 import { isValidObjectId } from "mongoose";
+import adminOnly from "../middlewares/adminOnly.js";
+import validateJwt from "../middlewares/validateJwt.js";
 
 const router = express.Router();
 
@@ -30,7 +32,7 @@ router.get("/:id", async (req, res) => {
     return res.status(500).json({ message: "Server error" });
   }
 });
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", validateJwt, adminOnly, async (req, res) => {
   try {
     const productId = req.params.id;
     await product.findByIdAndDelete(productId);
@@ -43,7 +45,7 @@ router.delete("/:id", async (req, res) => {
     });
   }
 });
-router.put("/:id", async (req, res) => {
+router.put("/:id", validateJwt, adminOnly, async (req, res) => {
   try {
     const productId = req.params.id;
     const updatedProduct = await product.findByIdAndUpdate(

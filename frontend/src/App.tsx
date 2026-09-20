@@ -14,6 +14,8 @@ import DashBoard from "./pages/DashBoard";
 import { Toaster } from "react-hot-toast";
 import { HashRouter } from "react-router-dom";
 import ProductDetails from "./pages/ProductDetails";
+import Dashboard from "./pages/DashBoard";
+import Admin from "./components/Admin";
 
 function App() {
   return (
@@ -33,7 +35,15 @@ function App() {
                 <Route path="/checkout" element={<CheckOut />} />
                 <Route path="/order" element={<Order />} />
                 <Route path="/myorder" element={<MyOrder />} />
-                <Route path="/dashboard" element={<DashBoard />} />
+
+                <Route
+                  path="/dashboard"
+                  element={
+                    <Admin>
+                      <Dashboard />
+                    </Admin>
+                  }
+                />
                 <Route path="/product/:id" element={<ProductDetails />} />
               </Route>
             </Routes>

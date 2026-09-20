@@ -29,13 +29,17 @@ export default function Login() {
       setError("Login failed. Please try again.");
       return;
     }
-    const token = await response.json();
+    const data = await response.json();
 
-    if (!token) {
+    console.log(data);
+
+    if (!data.token) {
       setError("No token received. Please try again.");
       return;
     }
-    login(email, token);
+
+    login(email!, data.token, data.role);
+
     toast.success("Login successful!");
     navigate("/");
   };

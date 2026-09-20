@@ -2,9 +2,11 @@ import express from "express";
 import { register, login, getMyOrder } from "../services/userServices.js";
 import validateJwt from "../middlewares/validateJwt.js";
 import User from "../models/userModel.js";
+import { validateBody } from "../middlewares/Authvalidate.js";
+import { signupSchema } from "../validators/AuthValidate.js";
 const router = express.Router();
 
-router.post("/register", async (req, res) => {
+router.post("/register", validateBody(signupSchema), async (req, res) => {
   const { firstName, lastName, email, password } = req.body;
   const { data, statusCode } = await register({
     firstName,
