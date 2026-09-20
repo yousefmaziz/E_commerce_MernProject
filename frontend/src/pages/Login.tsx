@@ -38,7 +38,7 @@ export default function Login() {
       return;
     }
 
-    login(email!, data.token, data.role);
+    login(email!, data.token, data.role, data.firstName);
 
     toast.success("Login successful!");
     navigate("/");

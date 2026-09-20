@@ -57,7 +57,7 @@ export default function Dashboard() {
   const isMdUp = useMediaQuery(theme.breakpoints.up("md"));
 
   const [activePage, setActivePage] = useState("Home");
-  const { username, firstName } = useAuth()!;
+  const { username, firstName, token } = useAuth()!;
   const [users, setUsers] = useState([]);
   const [products, setProducts] = useState([]);
 
@@ -68,7 +68,12 @@ export default function Dashboard() {
 
   const fetchData = async () => {
     try {
-      const res = await fetch(`${API}/user`);
+      const res = await fetch(`${API}/user`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
       const data = await res.json();
       setUsers(Array.isArray(data) ? data : []);
     } catch (err) {
@@ -78,7 +83,12 @@ export default function Dashboard() {
 
   const fetchProducts = async () => {
     try {
-      const res = await fetch(`${API}/product`);
+      const res = await fetch(`${API}/product`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
       const data = await res.json();
       setProducts(Array.isArray(data) ? data : []);
     } catch (err) {
@@ -88,7 +98,13 @@ export default function Dashboard() {
 
   const deleteUser = async (id: string) => {
     try {
-      await fetch(`${API}/user/${id}`, { method: "DELETE" });
+      await fetch(`${API}/user/${id}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
       setUsers((prev) => prev.filter((u) => u._id !== id));
       toast.success("User deleted successfully!");
     } catch (err) {
@@ -98,7 +114,13 @@ export default function Dashboard() {
 
   const deleteProduct = async (id: string) => {
     try {
-      await fetch(`${API}/product/${id}`, { method: "DELETE" });
+      await fetch(`${API}/product/${id}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
       setProducts((prev) => prev.filter((p) => p._id !== id));
       toast.success("Product deleted successfully!");
     } catch (err) {
@@ -159,11 +181,20 @@ export default function Dashboard() {
 
   const addUser = async () => {
     try {
-      await fetch(`${API}/user/register`, {
+      const res = await fetch(`${API}/user/register`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify(formData),
       });
+
+      if (!res.ok) {
+        const data = await res.json();
+        toast.error(data.message || "Failed to add user");
+        return;
+      }
+
       fetchData();
       setOpen(false);
       toast.success("User added successfully!");
@@ -176,14 +207,20 @@ export default function Dashboard() {
     try {
       const res = await fetch(`${API}/product`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
         body: JSON.stringify(formData),
       });
+
       const data = await res.json();
+
       if (!res.ok) {
         toast.error(data.message);
         return;
       }
+
       fetchProducts();
       setOpen(false);
       toast.success("Product added successfully!");
@@ -196,13 +233,24 @@ export default function Dashboard() {
     try {
       const res = await fetch(`${API}/user/${selectedItem._id}`, {
         method: "PUT",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
         body: JSON.stringify(formData),
       });
+
       const updated = await res.json();
+
+      if (!res.ok) {
+        toast.error(updated.message || "Failed to update user");
+        return;
+      }
+
       setUsers((prev: any[]) =>
         prev.map((u) => (u._id === updated._id ? updated : u)),
       );
+
       setOpen(false);
       toast.success("User updated successfully!");
     } catch (err) {
@@ -214,14 +262,26 @@ export default function Dashboard() {
     try {
       const res = await fetch(`${API}/product/${selectedItem._id}`, {
         method: "PUT",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
         body: JSON.stringify(formData),
       });
+
       const data = await res.json();
+
+      if (!res.ok) {
+        toast.error(data.message || "Failed to update product");
+        return;
+      }
+
       const updated = data.product || data;
+
       setProducts((prev: any[]) =>
         prev.map((p) => (p._id === updated._id ? updated : p)),
       );
+
       setOpen(false);
       toast.success("Product updated successfully!");
     } catch (err) {

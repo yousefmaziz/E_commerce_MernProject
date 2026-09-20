@@ -64,7 +64,7 @@ router.put("/:id", validateJwt, adminOnly, async (req, res) => {
   }
 });
 
-router.post("/", async (req, res) => {
+router.post("/", validateJwt, adminOnly, async (req, res) => {
   try {
     const newProduct = new product(req.body);
     await newProduct.save();

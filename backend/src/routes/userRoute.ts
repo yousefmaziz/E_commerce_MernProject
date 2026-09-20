@@ -4,6 +4,7 @@ import validateJwt from "../middlewares/validateJwt.js";
 import User from "../models/userModel.js";
 import { validateBody } from "../middlewares/Authvalidate.js";
 import { signupSchema } from "../validators/AuthValidate.js";
+import adminOnly from "../middlewares/adminOnly.js";
 const router = express.Router();
 
 router.post("/register", validateBody(signupSchema), async (req, res) => {
@@ -35,9 +36,9 @@ router.get("/myorder", validateJwt, async (req, res) => {
   }
 });
 
-router.get("/", async (req, res) => {
+router.get("/", validateJwt, adminOnly, async (req, res) => {
   try {
-    const users = await User.find();
+    const users = await User.find().select("-password");
     return res.status(200).json(users);
   } catch (err) {
     return res.status(404).json({
@@ -45,7 +46,7 @@ router.get("/", async (req, res) => {
     });
   }
 });
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", validateJwt, adminOnly, async (req, res) => {
   try {
     await User.findByIdAndDelete(req.params.id);
     return res.status(200).json({
@@ -57,7 +58,7 @@ router.delete("/:id", async (req, res) => {
     });
   }
 });
-router.put("/:id", async (req, res) => {
+router.put("/:id", validateJwt, adminOnly, async (req, res) => {
   try {
     const { firstName, lastName, email, role } = req.body;
     const updatedUser = await User.findByIdAndUpdate(
