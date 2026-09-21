@@ -40,143 +40,304 @@ export default function ProductDetails() {
         minHeight: "100vh",
         display: "flex",
         justifyContent: "center",
-        alignItems: "flex-start",
-        py: { xs: 5, md: 10 },
+        alignItems: "center",
+
+        py: { xs: 5, md: 9 },
         px: 2,
-        background: `
-          radial-gradient(circle at top left, rgba(37,99,235,0.18) 0%, transparent 30%),
-          radial-gradient(circle at bottom right, rgba(168,85,247,0.18) 0%, transparent 30%),
-          linear-gradient(160deg, #020617 0%, #0f172a 45%, #111827 100%)
-        `,
+
+        backgroundColor: "#F7F3EE",
       }}
     >
       <Card
         elevation={0}
         sx={{
-          maxWidth: 1040,
+          maxWidth: 1050,
           width: "100%",
+
           display: "flex",
-          flexDirection: { xs: "column", md: "row" },
-          borderRadius: "20px",
+          flexDirection: {
+            xs: "column",
+            md: "row",
+          },
+
+          borderRadius: "22px",
           overflow: "hidden",
-          bgcolor: "#FCFBF9",
-          boxShadow:
-            "0 30px 70px rgba(0,0,0,.45), 0 0 0 1px rgba(255,255,255,.04)",
+
+          backgroundColor: "#FFFDFC",
+
+          border: "1px solid #E9DED4",
+
+          boxShadow: "0 18px 50px rgba(47, 33, 28, 0.12)",
         }}
       >
-        {/* Image */}
+        {/* ================= IMAGE ================= */}
+
         <Box
           sx={{
-            width: { xs: "100%", md: "50%" },
-            bgcolor: "#F3F1EC",
+            width: {
+              xs: "100%",
+              md: "50%",
+            },
+
+            minHeight: {
+              xs: 350,
+              md: 560,
+            },
+
+            backgroundColor: "#F3EDE7",
+
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
-            py: { xs: 6, md: 0 },
-            px: { xs: 4, md: 8 },
+
+            py: {
+              xs: 5,
+              md: 7,
+            },
+
+            px: {
+              xs: 4,
+              md: 7,
+            },
+
+            position: "relative",
+            overflow: "hidden",
           }}
         >
+          {/* Product Image */}
+
           <CardMedia
             component="img"
             image={product?.image}
             alt={product?.title}
             sx={{
               width: "100%",
-              maxWidth: 260,
+              maxWidth: 330,
+              maxHeight: 400,
+
               objectFit: "contain",
-              transition: "transform .4s ease",
-              "&:hover": { transform: "scale(1.03)" },
+
+              position: "relative",
+              zIndex: 1,
+
+              transition: "transform 0.4s ease",
+
+              "&:hover": {
+                transform: "scale(1.04)",
+              },
             }}
           />
         </Box>
 
-        {/* Details */}
+        {/* ================= DETAILS ================= */}
+
         <Box
           sx={{
             flex: 1,
-            p: { xs: 4, md: 7 },
+
+            p: {
+              xs: 3,
+              sm: 4,
+              md: 6,
+            },
+
             display: "flex",
             flexDirection: "column",
             justifyContent: "center",
           }}
         >
-          <Typography
+          {/* STOCK */}
+
+          <Box
             sx={{
-              fontSize: 11,
-              letterSpacing: "0.14em",
-              color: inStock ? "#5B7A63" : "#B4463C",
-              mb: 2,
-              textTransform: "uppercase",
-              fontWeight: 600,
+              alignSelf: "flex-start",
+
+              px: 1.5,
+              py: 0.6,
+
+              mb: 2.5,
+
+              borderRadius: "999px",
+
+              backgroundColor: inStock ? "#F0E8DF" : "#FFF1F0",
+
+              border: inStock ? "1px solid #DFCAB7" : "1px solid #F3CBC7",
             }}
           >
-            {inStock ? "In Stock" : "Out of Stock"}
-          </Typography>
+            <Typography
+              sx={{
+                fontSize: "0.7rem",
+
+                letterSpacing: "0.08em",
+
+                color: inStock ? "#6F4E37" : "#B42318",
+
+                textTransform: "uppercase",
+
+                fontWeight: 700,
+              }}
+            >
+              {inStock ? "In Stock" : "Out of Stock"}
+            </Typography>
+          </Box>
+
+          {/* PRODUCT TITLE */}
 
           <Typography
             sx={{
-              fontWeight: 400,
-              fontSize: { xs: 26, md: 30 },
-              lineHeight: 1.3,
-              color: "#1C1C1A",
-              mb: 1.5,
+              fontWeight: 800,
+
+              fontSize: {
+                xs: "1.7rem",
+                md: "2.2rem",
+              },
+
+              lineHeight: 1.25,
+
+              letterSpacing: "-0.02em",
+
+              color: "#2F211C",
+
+              mb: 2,
             }}
           >
             {product?.title || "Loading…"}
           </Typography>
 
+          {/* PRICE */}
+
           <Typography
             sx={{
-              fontWeight: 500,
-              fontSize: 20,
-              color: "#1C1C1A",
-              mb: 4,
+              fontWeight: 800,
+
+              fontSize: "1.6rem",
+
+              color: "#6F4E37",
+
+              mb: 3,
             }}
           >
             ${product?.price?.toFixed(2)}
           </Typography>
 
+          {/* DIVIDER */}
+
+          <Box
+            sx={{
+              width: "100%",
+              height: "1px",
+
+              backgroundColor: "#E9DED4",
+
+              mb: 3,
+            }}
+          />
+
+          {/* DESCRIPTION */}
+
           <Typography
             sx={{
-              fontSize: 14.5,
-              lineHeight: 1.9,
-              color: "#6B6862",
-              mb: 5,
-              maxWidth: 420,
+              fontSize: "0.95rem",
+
+              lineHeight: 1.8,
+
+              color: "#806F64",
+
+              mb: 4,
+
+              maxWidth: 450,
             }}
           >
             {product?.description}
           </Typography>
 
-          <Stack direction="row" alignItems="center" spacing={1} sx={{ mb: 5 }}>
+          {/* SHIPPING */}
+
+          <Stack
+            direction="row"
+            alignItems="center"
+            spacing={1.2}
+            sx={{
+              mb: 4,
+
+              backgroundColor: "#F8F3EE",
+
+              border: "1px solid #EEE3D9",
+
+              borderRadius: "12px",
+
+              px: 2,
+              py: 1.4,
+
+              alignSelf: "flex-start",
+            }}
+          >
             <LocalShippingOutlinedIcon
-              sx={{ fontSize: 16, color: "#A6A39C" }}
+              sx={{
+                fontSize: 19,
+                color: "#A47551",
+              }}
             />
-            <Typography sx={{ fontSize: 13, color: "#A6A39C" }}>
+
+            <Typography
+              sx={{
+                fontSize: "0.85rem",
+                color: "#6F4E37",
+                fontWeight: 600,
+              }}
+            >
               Free shipping
             </Typography>
           </Stack>
+
+          {/* ADD TO CART */}
 
           <Button
             disabled={!inStock}
             variant="contained"
             disableElevation
-            startIcon={<ShoppingCartIcon sx={{ fontSize: 18 }} />}
-            onClick={() => addToCart(id)}
+            startIcon={
+              <ShoppingCartIcon
+                sx={{
+                  fontSize: 18,
+                }}
+              />
+            }
+            onClick={() => id && addToCart(id)}
             sx={{
-              alignSelf: "flex-start",
+              alignSelf: {
+                xs: "stretch",
+                sm: "flex-start",
+              },
+
               px: 4,
-              height: 46,
-              fontSize: 13.5,
-              fontWeight: 500,
-              letterSpacing: "0.03em",
+              py: 1.4,
+
+              minWidth: 180,
+
+              fontSize: "0.95rem",
+              fontWeight: 700,
+
               textTransform: "none",
-              borderRadius: "999px",
-              bgcolor: "#1C1C1A",
-              "&:hover": { bgcolor: "#000000" },
+
+              borderRadius: "12px",
+
+              backgroundColor: "#6F4E37",
+              color: "#FFFFFF",
+
+              transition: "all 0.25s ease",
+
+              "&:hover": {
+                backgroundColor: "#4E342E",
+
+                transform: "translateY(-2px)",
+
+                boxShadow: "0 8px 20px rgba(78, 52, 46, 0.25)",
+              },
+
               "&.Mui-disabled": {
-                bgcolor: "#F0EFEC",
-                color: "#BDBAB3",
+                backgroundColor: "#E7DED7",
+                color: "#A99B91",
               },
             }}
           >

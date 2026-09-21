@@ -1,194 +1,365 @@
-import { Box, Typography } from "@mui/material";
-import TextField from "@mui/material/TextField";
-import Button from "@mui/material/Button";
+import { Box, Typography, TextField, Button } from "@mui/material";
 import { useRef, useState } from "react";
 import { useAuth } from "../context/Auth/AuthContext";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+
 const API = import.meta.env.VITE_BACK_API;
+
 export default function Login() {
   const [error, setError] = useState("");
+
   const emailRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
+
   const { login } = useAuth()!;
   const navigate = useNavigate();
 
-  const onSubmit = async (e) => {
+  // ================= LOGIN =================
+
+  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
     const email = emailRef.current?.value;
     const password = passwordRef.current?.value;
 
-    const response = await fetch(`${API}/user/login`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ email, password }),
-    });
-    if (!response.ok) {
-      setError("Login failed. Please try again.");
-      return;
+    setError("");
+
+    try {
+      const response = await fetch(`${API}/user/login`, {
+        method: "POST",
+
+        headers: {
+          "Content-Type": "application/json",
+        },
+
+        body: JSON.stringify({
+          email,
+          password,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setError(data.message || "Login failed. Please try again.");
+        return;
+      }
+
+      if (!data.token) {
+        setError("No token received. Please try again.");
+        return;
+      }
+
+      login(email!, data.token, data.role, data.firstName);
+
+      toast.success("Login successful!");
+
+      navigate("/");
+    } catch (err) {
+      console.error("Login error:", err);
+
+      setError("Something went wrong. Please try again.");
     }
-    const data = await response.json();
-
-    console.log(data);
-
-    if (!data.token) {
-      setError("No token received. Please try again.");
-      return;
-    }
-
-    login(email!, data.token, data.role, data.firstName);
-
-    toast.success("Login successful!");
-    navigate("/");
   };
+
+  // ================= INPUT STYLE =================
+
+  const inputSx = {
+    "& .MuiOutlinedInput-root": {
+      borderRadius: "12px",
+
+      backgroundColor: "#FAF7F4",
+
+      transition: "all 0.2s ease",
+
+      "& fieldset": {
+        borderColor: "#DED0C4",
+      },
+
+      "&:hover fieldset": {
+        borderColor: "#C69C72",
+      },
+
+      "&.Mui-focused fieldset": {
+        borderColor: "#6F4E37",
+        borderWidth: "1.5px",
+      },
+    },
+
+    "& .MuiInputLabel-root": {
+      color: "#806F64",
+    },
+
+    "& .MuiInputLabel-root.Mui-focused": {
+      color: "#6F4E37",
+    },
+  };
+
   return (
-    <>
+    <Box
+      sx={{
+        minHeight: "100vh",
+
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+
+        backgroundColor: "#2F211C",
+
+        overflow: "hidden",
+        position: "relative",
+
+        px: 2,
+        py: 4,
+      }}
+    >
+      {/* ================= DECORATION ================= */}
+
       <Box
         sx={{
-          minHeight: "100vh",
+          position: "absolute",
+
+          width: 350,
+          height: 350,
+
+          borderRadius: "50%",
+
+          backgroundColor: "rgba(198, 156, 114, 0.08)",
+
+          top: -150,
+          left: -120,
+        }}
+      />
+
+      <Box
+        sx={{
+          position: "absolute",
+
+          width: 300,
+          height: 300,
+
+          borderRadius: "50%",
+
+          backgroundColor: "rgba(215, 176, 138, 0.06)",
+
+          bottom: -120,
+          right: -100,
+        }}
+      />
+
+      {/* ================= LOGIN CARD ================= */}
+
+      <Box
+        component="form"
+        onSubmit={onSubmit}
+        sx={{
+          width: "100%",
+          maxWidth: 420,
+
           display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
+          flexDirection: "column",
 
-          background: `
-  radial-gradient(circle at top left, rgba(37,99,235,0.18) 0%, transparent 30%),
-  radial-gradient(circle at bottom right, rgba(168,85,247,0.18) 0%, transparent 30%),
-  linear-gradient(160deg, #020617 0%, #0f172a 45%, #111827 100%)
-`,
+          gap: 2.3,
 
-          overflow: "hidden",
+          p: {
+            xs: 3,
+            sm: 4,
+          },
+
+          borderRadius: "20px",
+
+          backgroundColor: "#FFFDFC",
+
+          border: "1px solid #E9DED4",
+
+          boxShadow: "0 18px 50px rgba(47, 33, 28, 0.18)",
+
           position: "relative",
+          zIndex: 1,
         }}
       >
+        {/* ================= TITLE ================= */}
+
         <Box
           sx={{
-            width: { xs: "90%", sm: 400 },
-            display: "flex",
-            flexDirection: "column",
-            gap: 3,
-            p: { xs: 3, sm: 4 },
-            borderRadius: "24px",
-            background: "rgba(255,255,255,0.9)",
-            backdropFilter: "blur(12px)",
-            boxShadow: "0 10px 40px rgba(0,0,0,0.12)",
-            border: "1px solid rgba(255,255,255,0.3)",
+            textAlign: "center",
+            mb: 1.5,
           }}
         >
-          {/* TITLE */}
-          <Box sx={{ textAlign: "center" }}>
-            <Typography
-              variant="h4"
-              sx={{
-                fontWeight: "bold",
-                color: "#0f172a",
-                mb: 1,
-              }}
-            >
-              Welcome Back
-            </Typography>
-
-            <Typography
-              variant="body2"
-              sx={{
-                color: "gray",
-              }}
-            >
-              Login to continue
-            </Typography>
-          </Box>
-
-          {/* EMAIL */}
-          <TextField
-            inputRef={emailRef}
-            label="Email"
-            variant="outlined"
-            name="email"
-            fullWidth
+          <Typography
+            variant="h4"
             sx={{
-              "& .MuiOutlinedInput-root": {
-                borderRadius: "14px",
-                backgroundColor: "white",
-              },
-            }}
-          />
+              fontWeight: 800,
 
-          {/* PASSWORD */}
-          <TextField
-            inputRef={passwordRef}
-            label="Password"
-            variant="outlined"
-            type="password"
-            name="password"
-            fullWidth
-            sx={{
-              "& .MuiOutlinedInput-root": {
-                borderRadius: "14px",
-                backgroundColor: "white",
-              },
-            }}
-          />
+              color: "#2F211C",
 
-          {/* BUTTON */}
-          <Button
-            onClick={onSubmit}
-            variant="contained"
-            type="submit"
-            sx={{
-              py: 1.5,
-              borderRadius: "14px",
-              textTransform: "none",
-              fontSize: "16px",
-              fontWeight: "bold",
-              background: "linear-gradient(135deg, #2563eb, #1d4ed8)",
-              boxShadow: "0 8px 20px rgba(37,99,235,0.3)",
+              letterSpacing: "-0.025em",
 
-              "&:hover": {
-                background: "linear-gradient(135deg, #1d4ed8, #1e40af)",
-                boxShadow: "0 10px 25px rgba(37,99,235,0.4)",
+              fontSize: {
+                xs: "1.8rem",
+                sm: "2rem",
               },
+
+              mb: 0.8,
             }}
           >
-            Login
-          </Button>
+            Welcome Back
+          </Typography>
 
-          {/* ERROR */}
-          {error && (
+          <Typography
+            sx={{
+              color: "#806F64",
+
+              fontSize: "0.9rem",
+            }}
+          >
+            Sign in to continue shopping
+          </Typography>
+        </Box>
+
+        {/* ================= EMAIL ================= */}
+
+        <TextField
+          inputRef={emailRef}
+          label="Email"
+          name="email"
+          type="email"
+          variant="outlined"
+          fullWidth
+          required
+          autoComplete="email"
+          sx={inputSx}
+        />
+
+        {/* ================= PASSWORD ================= */}
+
+        <TextField
+          inputRef={passwordRef}
+          label="Password"
+          name="password"
+          type="password"
+          variant="outlined"
+          fullWidth
+          required
+          autoComplete="current-password"
+          sx={inputSx}
+        />
+
+        {/* ================= ERROR ================= */}
+
+        {error && (
+          <Box
+            sx={{
+              backgroundColor: "#FFF1F0",
+
+              border: "1px solid #F3CBC7",
+
+              borderRadius: "10px",
+
+              px: 2,
+              py: 1.2,
+            }}
+          >
             <Typography
               sx={{
-                color: "#dc2626",
+                color: "#B42318",
+
                 textAlign: "center",
+
                 fontWeight: 500,
+
+                fontSize: "0.85rem",
               }}
             >
               {error}
             </Typography>
-          )}
+          </Box>
+        )}
 
-          {/* REGISTER */}
-          <Typography
-            variant="body2"
+        {/* ================= LOGIN BUTTON ================= */}
+
+        <Button
+          variant="contained"
+          type="submit"
+          fullWidth
+          sx={{
+            py: 1.35,
+
+            mt: 0.5,
+
+            borderRadius: "12px",
+
+            textTransform: "none",
+
+            fontSize: "0.95rem",
+
+            fontWeight: 700,
+
+            backgroundColor: "#6F4E37",
+
+            color: "#FFFFFF",
+
+            boxShadow: "none",
+
+            transition: "all 0.2s ease",
+
+            "&:hover": {
+              backgroundColor: "#4E342E",
+
+              transform: "translateY(-1px)",
+
+              boxShadow: "0 7px 18px rgba(78, 52, 46, 0.22)",
+            },
+
+            "&:active": {
+              transform: "translateY(0)",
+            },
+          }}
+        >
+          Login
+        </Button>
+
+        {/* ================= REGISTER ================= */}
+
+        <Typography
+          variant="body2"
+          sx={{
+            textAlign: "center",
+
+            color: "#806F64",
+
+            mt: 0.5,
+
+            fontSize: "0.875rem",
+          }}
+        >
+          Don't have an account?{" "}
+          <Box
+            component="span"
+            onClick={() => navigate("/register")}
             sx={{
-              textAlign: "center",
-              color: "gray",
+              cursor: "pointer",
+
+              color: "#6F4E37",
+
+              fontWeight: 700,
+
+              transition: "color 0.2s ease",
+
+              "&:hover": {
+                color: "#4E342E",
+
+                textDecoration: "underline",
+
+                textUnderlineOffset: "3px",
+              },
             }}
           >
-            Don't have an account?{" "}
-            <a
-              onClick={() => navigate("/register")}
-              style={{
-                cursor: "pointer",
-                color: "#2563eb",
-                fontWeight: "bold",
-                textDecoration: "none",
-              }}
-            >
-              Sign up
-            </a>
-          </Typography>
-        </Box>
+            Sign up
+          </Box>
+        </Typography>
       </Box>
-    </>
+    </Box>
   );
 }

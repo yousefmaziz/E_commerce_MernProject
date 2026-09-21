@@ -18,7 +18,6 @@ const Home = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        console.log(API);
         const res = await fetch(`${API}/product`);
         const data = await res.json();
         setProducts(data);
@@ -37,11 +36,7 @@ const Home = () => {
     <Box
       sx={{
         minHeight: "100vh",
-        background: `
-          radial-gradient(circle at top left, rgba(37,99,235,0.18) 0%, transparent 30%),
-          radial-gradient(circle at bottom right, rgba(168,85,247,0.18) 0%, transparent 30%),
-          linear-gradient(160deg, #020617 0%, #0f172a 45%, #111827 100%)
-        `,
+        backgroundColor: "#F7F3EE",
       }}
     >
       {/* ===== HERO SECTION ===== */}
@@ -50,32 +45,32 @@ const Home = () => {
           position: "relative",
           overflow: "hidden",
           pt: { xs: 10, md: 14 },
-          pb: { xs: 8, md: 12 },
+          pb: { xs: 8, md: 11 },
+          backgroundColor: "#2F211C",
         }}
       >
-        {/* Decorative blobs */}
+        {/* Decorative Circle */}
         <Box
           sx={{
             position: "absolute",
-            top: "-80px",
-            left: "-80px",
-            width: 360,
-            height: 360,
-            background:
-              "radial-gradient(circle, rgba(99,102,241,0.25) 0%, transparent 70%)",
+            top: "-120px",
+            left: "-100px",
+            width: 380,
+            height: 380,
+            backgroundColor: "rgba(196, 164, 132, 0.08)",
             borderRadius: "50%",
             pointerEvents: "none",
           }}
         />
+
         <Box
           sx={{
             position: "absolute",
-            bottom: "-60px",
-            right: "-60px",
-            width: 300,
-            height: 300,
-            background:
-              "radial-gradient(circle, rgba(168,85,247,0.2) 0%, transparent 70%)",
+            bottom: "-140px",
+            right: "-100px",
+            width: 360,
+            height: 360,
+            backgroundColor: "rgba(215, 190, 165, 0.07)",
             borderRadius: "50%",
             pointerEvents: "none",
           }}
@@ -87,9 +82,9 @@ const Home = () => {
             <Chip
               label="✦ New Collection 2025"
               sx={{
-                background: "rgba(99,102,241,0.15)",
-                border: "1px solid rgba(99,102,241,0.35)",
-                color: "#a5b4fc",
+                backgroundColor: "rgba(215, 190, 165, 0.12)",
+                border: "1px solid rgba(215, 190, 165, 0.3)",
+                color: "#E8D5C4",
                 fontWeight: 600,
                 fontSize: "0.78rem",
                 letterSpacing: "0.04em",
@@ -101,15 +96,15 @@ const Home = () => {
             <Typography
               variant="h1"
               sx={{
-                fontSize: { xs: "2.4rem", sm: "3.5rem", md: "4.5rem" },
+                fontSize: {
+                  xs: "2.4rem",
+                  sm: "3.5rem",
+                  md: "4.5rem",
+                },
                 fontWeight: 800,
                 lineHeight: 1.1,
-                letterSpacing: "-0.02em",
-                background:
-                  "linear-gradient(135deg, #e0e7ff 0%, #a5b4fc 40%, #c084fc 100%)",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-                backgroundClip: "text",
+                letterSpacing: "-0.03em",
+                color: "#FFF9F3",
                 maxWidth: 780,
               }}
             >
@@ -120,9 +115,12 @@ const Home = () => {
             <Typography
               variant="h6"
               sx={{
-                color: "rgba(148,163,184,0.9)",
+                color: "#CDBEB4",
                 fontWeight: 400,
-                fontSize: { xs: "1rem", md: "1.2rem" },
+                fontSize: {
+                  xs: "1rem",
+                  md: "1.2rem",
+                },
                 maxWidth: 520,
                 lineHeight: 1.7,
               }}
@@ -131,36 +129,41 @@ const Home = () => {
               handpicked catalog.
             </Typography>
 
-            {/* CTAs */}
+            {/* CTA */}
             <Stack direction={{ xs: "column", sm: "row" }} spacing={2} pt={1}>
               <Button
                 variant="contained"
                 size="large"
                 onClick={() =>
-                  document
-                    .getElementById("products-grid")
-                    ?.scrollIntoView({ behavior: "smooth" })
+                  document.getElementById("products-grid")?.scrollIntoView({
+                    behavior: "smooth",
+                  })
                 }
                 sx={{
-                  background: "linear-gradient(135deg, #6366f1, #8b5cf6)",
+                  backgroundColor: "#C69C72",
+                  color: "#241914",
                   px: 4,
                   py: 1.5,
                   borderRadius: "12px",
                   fontWeight: 700,
                   fontSize: "1rem",
                   textTransform: "none",
-                  boxShadow: "0 4px 24px rgba(99,102,241,0.4)",
+                  boxShadow: "0 8px 25px rgba(0,0,0,0.18)",
+
                   "&:hover": {
-                    background: "linear-gradient(135deg, #4f46e5, #7c3aed)",
-                    boxShadow: "0 6px 30px rgba(99,102,241,0.55)",
+                    backgroundColor: "#D7B08A",
+                    transform: "translateY(-2px)",
+                    boxShadow: "0 10px 30px rgba(0,0,0,0.25)",
                   },
+
+                  transition: "all 0.25s ease",
                 }}
               >
                 Shop Now
               </Button>
             </Stack>
 
-            {/* Stats row */}
+            {/* Stats */}
             <Stack
               direction="row"
               spacing={{ xs: 3, sm: 5 }}
@@ -169,31 +172,41 @@ const Home = () => {
                 <Box
                   sx={{
                     width: "1px",
-                    background: "rgba(255,255,255,0.1)",
+                    backgroundColor: "rgba(255,255,255,0.12)",
                     my: 0.5,
                   }}
                 />
               }
             >
               {[
-                { value: `${products.length}+`, label: "Products" },
-                { value: "99%", label: "Happy Customers" },
-                { value: "24/7", label: "Support" },
+                {
+                  value: `${products.length}+`,
+                  label: "Products",
+                },
+                {
+                  value: "99%",
+                  label: "Happy Customers",
+                },
+                {
+                  value: "24/7",
+                  label: "Support",
+                },
               ].map((stat) => (
                 <Stack key={stat.label} alignItems="center" spacing={0.3}>
                   <Typography
                     sx={{
                       fontWeight: 700,
                       fontSize: "1.4rem",
-                      color: "#e0e7ff",
+                      color: "#FFF9F3",
                     }}
                   >
                     {stat.value}
                   </Typography>
+
                   <Typography
                     sx={{
                       fontSize: "0.78rem",
-                      color: "rgba(148,163,184,0.7)",
+                      color: "#AFA097",
                       letterSpacing: "0.05em",
                     }}
                   >
@@ -206,11 +219,93 @@ const Home = () => {
         </Container>
       </Box>
 
-      {/* ===== PRODUCTS GRID ===== */}
-      <Container sx={{ mt: 2, pb: 8 }} id="products-grid">
-        <Grid container spacing={2}>
+      {/* ===== PRODUCTS SECTION ===== */}
+      <Container
+        id="products-grid"
+        maxWidth="lg"
+        sx={{
+          pt: { xs: 6, md: 8 },
+          pb: { xs: 8, md: 12 },
+        }}
+      >
+        {/* Section Header */}
+        <Box
+          sx={{
+            mb: 5,
+          }}
+        >
+          {/* Small label */}
+          <Typography
+            sx={{
+              color: "#A47551",
+              fontSize: "0.78rem",
+              fontWeight: 700,
+              textTransform: "uppercase",
+              letterSpacing: "0.12em",
+              mb: 1,
+            }}
+          >
+            Shop Collection
+          </Typography>
+
+          {/* Main title */}
+          <Typography
+            variant="h4"
+            sx={{
+              color: "#2F211C",
+              fontWeight: 800,
+              fontSize: {
+                xs: "1.8rem",
+                md: "2.3rem",
+              },
+              letterSpacing: "-0.02em",
+              mb: 1,
+            }}
+          >
+            Our Products
+          </Typography>
+
+          {/* Subtitle */}
+          <Typography
+            sx={{
+              color: "#806F64",
+              fontSize: "0.95rem",
+              lineHeight: 1.6,
+              maxWidth: 500,
+            }}
+          >
+            Explore our latest collection and find something you'll love.
+          </Typography>
+
+          {/* Accent line */}
+          <Box
+            sx={{
+              width: 55,
+              height: 3,
+              backgroundColor: "#C69C72",
+              borderRadius: "10px",
+              mt: 2.5,
+            }}
+          />
+        </Box>
+
+        {/* Products */}
+        <Grid
+          container
+          spacing={{
+            xs: 2.5,
+            md: 3,
+          }}
+        >
           {products.map((p) => (
-            <Grid key={p._id} size={{ xs: 12, sm: 6, md: 3 }}>
+            <Grid
+              key={p._id}
+              size={{
+                xs: 12,
+                sm: 6,
+                md: 3,
+              }}
+            >
               <CardProduct {...p} />
             </Grid>
           ))}

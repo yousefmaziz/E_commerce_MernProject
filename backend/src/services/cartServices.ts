@@ -581,14 +581,19 @@ export const checkoutCart = async ({ userId, address }: CheckoutInput) => {
     // =========================
 
     try {
-      await sendOrderEmail(user.email, order._id.toString(), order.totalPrice);
-    } catch (emailError) {
-      console.error("Order created, but email failed:", emailError);
-    }
+      await sendOrderEmail(
+        user.email,
+        user.firstName,
+        order._id.toString(),
+        address,
+        orderItems,
+        order.totalPrice,
+      );
 
-    // =========================
-    // Success
-    // =========================
+      console.log("EMAIL FUNCTION FINISHED ✅");
+    } catch (emailError) {
+      console.error("EMAIL SEND FAILED ❌", emailError);
+    }
 
     return {
       data: order,

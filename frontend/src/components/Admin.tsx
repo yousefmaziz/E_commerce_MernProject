@@ -4,9 +4,6 @@ import { useAuth } from "../context/Auth/AuthContext";
 const Admin = ({ children }: { children: React.ReactNode }) => {
   const auth = useAuth();
 
-  console.log("AUTH:", auth);
-  console.log("ROLE:", auth?.role);
-  console.log("IS AUTH:", auth?.isAuthenticated);
 
   if (!auth?.isAuthenticated) {
     return <Navigate to="/login" replace />;

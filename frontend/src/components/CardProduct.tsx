@@ -11,8 +11,7 @@ import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 import { useNavigate } from "react-router-dom";
 import { useCart } from "../context/cart/CartContext";
 
-const API = import.meta.env.VITE_BACK_API;
-interface props {
+interface Props {
   _id: string;
   title: string;
   image: string;
@@ -26,9 +25,10 @@ export default function CardProduct({
   image,
   price,
   description,
-}: props) {
+}: Props) {
   const { addToCart } = useCart();
   const navigate = useNavigate();
+
   const handleProductPage = () => {
     navigate(`/product/${_id}`);
   };
@@ -36,34 +36,43 @@ export default function CardProduct({
   return (
     <Card
       sx={{
-        borderRadius: "24px",
+        height: "100%",
+        display: "flex",
+        flexDirection: "column",
+
+        borderRadius: "20px",
         overflow: "hidden",
-        background: "rgba(15, 23, 42, 0.6)",
-        backdropFilter: "blur(20px)",
-        border: "1px solid rgba(255,255,255,0.07)",
-        transition: "transform 0.35s ease, box-shadow 0.35s ease",
+
+        backgroundColor: "#FFFDFC",
+
+        border: "1px solid #E9DED4",
+
+        boxShadow: "0 6px 22px rgba(47, 33, 28, 0.08)",
+
+        transition:
+          "transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease",
+
         "&:hover": {
-          transform: "translateY(-8px)",
-          boxShadow:
-            "0 24px 48px rgba(0,0,0,0.4), 0 0 0 1px rgba(99,102,241,0.3)",
+          transform: "translateY(-7px)",
+          boxShadow: "0 18px 40px rgba(47, 33, 28, 0.15)",
+          borderColor: "#D5B89D",
         },
+
         "&:hover .card-img": {
-          transform: "scale(1.07)",
-        },
-        "&:hover .add-btn": {
-          background: "linear-gradient(135deg, #6366f1, #8b5cf6)",
-          borderColor: "transparent",
+          transform: "scale(1.05)",
         },
       }}
     >
-      {/* IMAGE */}
+      {/* ================= IMAGE ================= */}
+
       <Box
-        onClick={() => handleProductPage()}
+        onClick={handleProductPage}
         sx={{
           cursor: "pointer",
           position: "relative",
           overflow: "hidden",
           height: 230,
+          backgroundColor: "#F3EDE7",
         }}
       >
         <CardMedia
@@ -73,69 +82,57 @@ export default function CardProduct({
           className="card-img"
           sx={{
             height: "100%",
+            width: "100%",
             objectFit: "cover",
             transition: "transform 0.5s ease",
           }}
         />
 
-        {/* Gradient overlay */}
-        <Box
-          sx={{
-            position: "absolute",
-            inset: 0,
-            background:
-              "linear-gradient(to top, rgba(15,23,42,0.7) 0%, transparent 50%)",
-          }}
-        />
+        {/* NEW BADGE */}
 
-        {/* Top badges */}
-        <Box
+        <Chip
+          label="New"
+          size="small"
           sx={{
             position: "absolute",
             top: 12,
             left: 12,
-            right: 12,
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
-        >
-          <Chip
-            label="New"
-            size="small"
-            sx={{
-              background: "rgba(99,102,241,0.85)",
-              color: "#fff",
-              fontWeight: 700,
-              fontSize: "0.7rem",
-              height: 24,
-              backdropFilter: "blur(8px)",
-            }}
-          />
-        </Box>
 
-        {/* Price tag on image bottom */}
+            backgroundColor: "#2F211C",
+            color: "#FFF9F3",
+
+            fontWeight: 700,
+            fontSize: "0.7rem",
+            height: 25,
+
+            border: "1px solid rgba(255,255,255,0.15)",
+          }}
+        />
+
+        {/* PRICE */}
+
         <Box
           sx={{
             position: "absolute",
             bottom: 12,
             right: 12,
-            background: "rgba(15,23,42,0.75)",
-            backdropFilter: "blur(10px)",
-            border: "1px solid rgba(99,102,241,0.35)",
+
+            backgroundColor: "#FFF9F3",
+
+            border: "1px solid #E3D4C7",
             borderRadius: "10px",
+
             px: 1.5,
-            py: 0.5,
+            py: 0.6,
+
+            boxShadow: "0 4px 12px rgba(47,33,28,0.12)",
           }}
         >
           <Typography
             sx={{
               fontWeight: 800,
-              fontSize: "1.1rem",
-              background: "linear-gradient(135deg, #a5b4fc, #c084fc)",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-              backgroundClip: "text",
+              fontSize: "1.05rem",
+              color: "#6F4E37",
               lineHeight: 1.3,
             }}
           >
@@ -144,33 +141,53 @@ export default function CardProduct({
         </Box>
       </Box>
 
-      {/* CONTENT */}
-      <CardContent sx={{ px: 2.5, pt: 2.5, pb: 1.5 }}>
+      {/* ================= CONTENT ================= */}
+
+      <CardContent
+        sx={{
+          px: 2.5,
+          pt: 2.5,
+          pb: 1.5,
+
+          flexGrow: 1,
+        }}
+      >
+        {/* TITLE */}
+
         <Typography
           variant="h6"
-          fontWeight={700}
           sx={{
-            color: "#e2e8f0",
+            color: "#2F211C",
+
+            fontWeight: 700,
             fontSize: "1rem",
             lineHeight: 1.4,
-            minHeight: 56,
+
+            minHeight: 45,
+
             display: "-webkit-box",
             WebkitLineClamp: 2,
             WebkitBoxOrient: "vertical",
             overflow: "hidden",
+
             mb: 1,
           }}
         >
           {title}
         </Typography>
 
+        {/* DESCRIPTION */}
+
         <Typography
           variant="body2"
           sx={{
-            color: "rgba(148,163,184,0.75)",
+            color: "#806F64",
+
             fontSize: "0.82rem",
             lineHeight: 1.6,
-            minHeight: 40,
+
+            minHeight: 42,
+
             display: "-webkit-box",
             WebkitLineClamp: 2,
             WebkitBoxOrient: "vertical",
@@ -181,29 +198,49 @@ export default function CardProduct({
         </Typography>
       </CardContent>
 
-      {/* ACTIONS */}
-      <CardActions sx={{ px: 2.5, pb: 2.5, pt: 1 }}>
+      {/* ================= ACTIONS ================= */}
+
+      <CardActions
+        sx={{
+          px: 2.5,
+          pb: 2.5,
+          pt: 1,
+        }}
+      >
         <Button
           fullWidth
-          variant="outlined"
-          className="add-btn"
-          startIcon={<ShoppingCartOutlinedIcon sx={{ fontSize: 18 }} />}
+          variant="contained"
+          startIcon={
+            <ShoppingCartOutlinedIcon
+              sx={{
+                fontSize: 18,
+              }}
+            />
+          }
           onClick={() => addToCart(_id)}
           sx={{
-            borderRadius: "12px",
+            borderRadius: "11px",
+
             textTransform: "none",
+
             fontWeight: 700,
-            py: 1.3,
             fontSize: "0.92rem",
-            border: "1px solid rgba(99,102,241,0.45)",
-            color: "#a5b4fc",
-            background: "rgba(99,102,241,0.08)",
-            transition: "all 0.3s ease",
+
+            py: 1.25,
+
+            backgroundColor: "#6F4E37",
+            color: "#FFFFFF",
+
+            boxShadow: "none",
+
+            transition: "all 0.25s ease",
+
             "&:hover": {
-              background: "linear-gradient(135deg, #6366f1, #8b5cf6)",
-              border: "1px solid transparent",
-              color: "#fff",
-              boxShadow: "0 8px 24px rgba(99,102,241,0.4)",
+              backgroundColor: "#4E342E",
+
+              transform: "translateY(-1px)",
+
+              boxShadow: "0 7px 18px rgba(78, 52, 46, 0.25)",
             },
           }}
         >

@@ -1,10 +1,19 @@
 import nodemailer from "nodemailer";
-console.log("EMAIL_USER:", process.env.EMAIL_USER);
-console.log(
-  "EMAIL_PASSWORD:",
-  process.env.EMAIL_PASSWORD ? "EXISTS ✅" : "MISSING ❌",
-);
-console.log("ADMIN_EMAIL:", process.env.ADMIN_EMAIL);
+
+// =========================
+// Types
+// =========================
+
+interface EmailItem {
+  productTitle: string;
+  price: number;
+  quantity: number;
+}
+
+// =========================
+// Transporter
+// =========================
+
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
@@ -12,6 +21,7 @@ const transporter = nodemailer.createTransport({
     pass: process.env.EMAIL_PASSWORD,
   },
 });
+
 transporter.verify((error) => {
   if (error) {
     console.error("EMAIL ERROR:", error);
@@ -19,63 +29,275 @@ transporter.verify((error) => {
     console.log("EMAIL SERVER READY ✅");
   }
 });
+
+// =========================
+// Send Order Email
+// =========================
+
 export const sendOrderEmail = async (
   customerEmail: string,
+  customerName: string,
   orderId: string,
+  address: string,
+  items: EmailItem[],
   totalPrice: number,
 ) => {
+  console.log("sendOrderEmail CALLED 📧");
+  console.log("CUSTOMER:", customerEmail);
+  console.log("ADMIN:", process.env.ADMIN_EMAIL);
+
   // =========================
-  // Email to Customer
+  // Items HTML
   // =========================
 
-  await transporter.sendMail({
+  const itemsHtml = items
+    .map(
+      (item) => `
+        <tr>
+          <td style="padding: 10px; border-bottom: 1px solid #ddd;">
+            ${item.productTitle}
+          </td>
+
+          <td style="padding: 10px; border-bottom: 1px solid #ddd;">
+            ${item.quantity}
+          </td>
+
+          <td style="padding: 10px; border-bottom: 1px solid #ddd;">
+            $${item.price.toFixed(2)}
+          </td>
+
+          <td style="padding: 10px; border-bottom: 1px solid #ddd;">
+            $${(item.price * item.quantity).toFixed(2)}
+          </td>
+        </tr>
+      `,
+    )
+    .join("");
+
+  // =========================
+  // Customer Email
+  // =========================
+
+  const customerInfo = await transporter.sendMail({
     from: process.env.EMAIL_USER,
     to: customerEmail,
-    subject: "Order Confirmation",
+    subject: `Order Confirmation - ${orderId}`,
+
     html: `
-      <h2>Order Confirmed ✅</h2>
+      <div
+        style="
+          font-family: Arial, sans-serif;
+          max-width: 650px;
+          margin: auto;
+          padding: 20px;
+        "
+      >
 
-      <p>Your order has been created successfully.</p>
+        <h2>Order Confirmed ✅</h2>
 
-      <p>
-        <strong>Order ID:</strong>
-        ${orderId}
-      </p>
+        <p>Hi ${customerName},</p>
 
-      <p>
-        <strong>Total Price:</strong>
-        $${totalPrice}
-      </p>
+        <p>
+          Thank you for your order!
+          Your order has been created successfully.
+        </p>
 
-      <p>Thank you for your order!</p>
+        <hr />
+
+        <h3>Order Details</h3>
+
+        <p>
+          <strong>Order ID:</strong>
+          ${orderId}
+        </p>
+
+        <p>
+          <strong>Delivery Address:</strong>
+          ${address}
+        </p>
+
+        <table
+          style="
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+          "
+        >
+          <thead>
+            <tr>
+              <th
+                style="
+                  text-align: left;
+                  padding: 10px;
+                  border-bottom: 2px solid #ddd;
+                "
+              >
+                Product
+              </th>
+
+              <th
+                style="
+                  text-align: left;
+                  padding: 10px;
+                  border-bottom: 2px solid #ddd;
+                "
+              >
+                Quantity
+              </th>
+
+              <th
+                style="
+                  text-align: left;
+                  padding: 10px;
+                  border-bottom: 2px solid #ddd;
+                "
+              >
+                Price
+              </th>
+
+              <th
+                style="
+                  text-align: left;
+                  padding: 10px;
+                  border-bottom: 2px solid #ddd;
+                "
+              >
+                Subtotal
+              </th>
+            </tr>
+          </thead>
+
+          <tbody>
+            ${itemsHtml}
+          </tbody>
+        </table>
+
+        <h3 style="margin-top: 25px;">
+          Total: $${totalPrice.toFixed(2)}
+        </h3>
+
+        <hr />
+
+        <p>
+          Thank you for shopping with us! ❤️
+        </p>
+
+      </div>
     `,
   });
 
+  console.log("CUSTOMER EMAIL SENT ✅", customerInfo.messageId);
+
   // =========================
-  // Email to Admin
+  // Admin Email
   // =========================
 
-  await transporter.sendMail({
+  const adminInfo = await transporter.sendMail({
     from: process.env.EMAIL_USER,
     to: process.env.ADMIN_EMAIL,
-    subject: "New Order Received",
+    subject: `New Order Received - ${orderId}`,
+
     html: `
-      <h2>New Order Received 🛒</h2>
+      <div
+        style="
+          font-family: Arial, sans-serif;
+          max-width: 650px;
+          margin: auto;
+          padding: 20px;
+        "
+      >
 
-      <p>
-        <strong>Customer:</strong>
-        ${customerEmail}
-      </p>
+        <h2>New Order Received 🛒</h2>
 
-      <p>
-        <strong>Order ID:</strong>
-        ${orderId}
-      </p>
+        <h3>Customer Details</h3>
 
-      <p>
-        <strong>Total Price:</strong>
-        $${totalPrice}
-      </p>
+        <p>
+          <strong>Name:</strong>
+          ${customerName}
+        </p>
+
+        <p>
+          <strong>Email:</strong>
+          ${customerEmail}
+        </p>
+
+        <p>
+          <strong>Delivery Address:</strong>
+          ${address}
+        </p>
+
+        <hr />
+
+        <h3>Order Details</h3>
+
+        <p>
+          <strong>Order ID:</strong>
+          ${orderId}
+        </p>
+
+        <table
+          style="
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+          "
+        >
+          <thead>
+            <tr>
+              <th
+                style="
+                  text-align: left;
+                  padding: 10px;
+                  border-bottom: 2px solid #ddd;
+                "
+              >
+                Product
+              </th>
+
+              <th
+                style="
+                  text-align: left;
+                  padding: 10px;
+                  border-bottom: 2px solid #ddd;
+                "
+              >
+                Quantity
+              </th>
+
+              <th
+                style="
+                  text-align: left;
+                  padding: 10px;
+                  border-bottom: 2px solid #ddd;
+                "
+              >
+                Price
+              </th>
+
+              <th
+                style="
+                  text-align: left;
+                  padding: 10px;
+                  border-bottom: 2px solid #ddd;
+                "
+              >
+                Subtotal
+              </th>
+            </tr>
+          </thead>
+
+          <tbody>
+            ${itemsHtml}
+          </tbody>
+        </table>
+
+        <h3 style="margin-top: 25px;">
+          Total: $${totalPrice.toFixed(2)}
+        </h3>
+
+      </div>
     `,
   });
+
+  console.log("ADMIN EMAIL SENT ✅", adminInfo.messageId);
 };

@@ -7,15 +7,9 @@ import Container from "@mui/material/Container";
 import Button from "@mui/material/Button";
 import Drawer from "@mui/material/Drawer";
 import IconButton from "@mui/material/IconButton";
-import List from "@mui/material/List";
-import ListItemButton from "@mui/material/ListItemButton";
-import ListItemText from "@mui/material/ListItemText";
-import ListItemIcon from "@mui/material/ListItemIcon";
 import Badge from "@mui/material/Badge";
-import Divider from "@mui/material/Divider";
 import Avatar from "@mui/material/Avatar";
 import useMediaQuery from "@mui/material/useMediaQuery";
-
 import MenuIcon from "@mui/icons-material/Menu";
 import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
@@ -24,15 +18,11 @@ import DashboardRoundedIcon from "@mui/icons-material/DashboardRounded";
 import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
 import LoginRoundedIcon from "@mui/icons-material/LoginRounded";
 import StorefrontRoundedIcon from "@mui/icons-material/StorefrontRounded";
-
 import { useTheme } from "@mui/material/styles";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/Auth/AuthContext";
-import { useCart } from "../context/cart/CartContext";
-
 function Navbar() {
-  const { username, isAuthenticated, logout } = useAuth()!;
-  const { cartItems } = useCart()!;
+  const { username, isAuthenticated, logout, role } = useAuth()!;
   const navigate = useNavigate();
   const location = useLocation();
   const theme = useTheme();
@@ -48,7 +38,12 @@ function Navbar() {
 
   // ===== NAV LINKS (Desktop + Mobile) =====
   const navLinks = [
-    { label: "Home", path: "/", icon: <HomeRoundedIcon fontSize="small" /> },
+    {
+      label: "Home",
+      path: "/",
+      icon: <HomeRoundedIcon fontSize="small" />,
+    },
+
     ...(isAuthenticated
       ? [
           {
@@ -56,6 +51,11 @@ function Navbar() {
             path: "/myorder",
             icon: <ReceiptLongIcon fontSize="small" />,
           },
+        ]
+      : []),
+
+    ...(isAuthenticated && role === "admin"
+      ? [
           {
             label: "Dashboard",
             path: "/dashboard",
@@ -64,24 +64,24 @@ function Navbar() {
         ]
       : []),
   ];
-
   // Active button styles
   const activeNavBtn = {
-    color: "#a5b4fc",
+    color: "#FFF9F3",
     fontWeight: 700,
-    background: "rgba(99,102,241,0.12)",
+    backgroundColor: "rgba(198, 156, 114, 0.18)",
     borderRadius: "10px",
     px: 1.8,
   };
 
   const inactiveNavBtn = {
-    color: "rgba(203,213,225,0.8)",
+    color: "#CDBEB4",
     fontWeight: 500,
     px: 1.8,
     borderRadius: "10px",
+
     "&:hover": {
-      color: "#e2e8f0",
-      background: "rgba(255,255,255,0.06)",
+      color: "#FFF9F3",
+      backgroundColor: "rgba(255,255,255,0.06)",
     },
   };
 
@@ -90,10 +90,9 @@ function Navbar() {
       <AppBar
         position="sticky"
         sx={{
-          background: "rgba(9,14,28,0.85)",
-          backdropFilter: "blur(16px)",
+          backgroundColor: "#2F211C",
           borderBottom: "1px solid rgba(255,255,255,0.06)",
-          boxShadow: "none",
+          boxShadow: "0 3px 18px rgba(47,33,28,0.12)",
           zIndex: 1400,
         }}
       >
@@ -111,32 +110,47 @@ function Navbar() {
             <Button
               variant="text"
               onClick={() => navigate("/")}
-              sx={{ p: 0, textTransform: "none", minWidth: 0 }}
+              sx={{
+                p: 0,
+                textTransform: "none",
+                minWidth: 0,
+              }}
             >
-              <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 1.2,
+                }}
+              >
                 <Box
                   sx={{
                     width: 36,
                     height: 36,
+
                     borderRadius: "10px",
-                    background: "linear-gradient(135deg, #6366f1, #8b5cf6)",
+
+                    backgroundColor: "#C69C72",
+
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    boxShadow: "0 4px 12px rgba(99,102,241,0.4)",
                   }}
                 >
-                  <StorefrontRoundedIcon sx={{ color: "#fff", fontSize: 20 }} />
+                  <StorefrontRoundedIcon
+                    sx={{
+                      color: "#2F211C",
+                      fontSize: 20,
+                    }}
+                  />
                 </Box>
+
                 <Typography
                   variant="h6"
                   sx={{
                     fontWeight: 800,
                     letterSpacing: "-0.02em",
-                    background: "linear-gradient(135deg, #e0e7ff, #a5b4fc)",
-                    WebkitBackgroundClip: "text",
-                    WebkitTextFillColor: "transparent",
-                    backgroundClip: "text",
+                    color: "#FFF9F3",
                   }}
                 >
                   Tech Store
@@ -169,24 +183,28 @@ function Navbar() {
                     onClick={() => navigate("/cart")}
                     sx={{
                       mx: 0.5,
-                      color: isActive("/cart")
-                        ? "#a5b4fc"
-                        : "rgba(203,213,225,0.7)",
-                      background: isActive("/cart")
-                        ? "rgba(99,102,241,0.12)"
+
+                      color: isActive("/cart") ? "#FFF9F3" : "#CDBEB4",
+
+                      backgroundColor: isActive("/cart")
+                        ? "rgba(198,156,114,0.18)"
                         : "transparent",
+
                       borderRadius: "10px",
-                      "&:hover": { background: "rgba(255,255,255,0.06)" },
+
+                      "&:hover": {
+                        backgroundColor: "rgba(255,255,255,0.06)",
+                      },
                     }}
                   >
                     <Badge
-                      badgeContent={cartItems.length}
+                      badgeContent={0}
                       sx={{
                         "& .MuiBadge-badge": {
-                          background:
-                            "linear-gradient(135deg, #6366f1, #8b5cf6)",
-                          color: "#fff",
-                          fontWeight: 700,
+                          backgroundColor: "#C69C72",
+                          color: "#2F211C",
+
+                          fontWeight: 800,
                           fontSize: "0.65rem",
                         },
                       }}
@@ -203,11 +221,14 @@ function Navbar() {
                       display: "flex",
                       alignItems: "center",
                       gap: 1,
+
                       mx: 1,
                       px: 1.5,
                       py: 0.5,
+
                       borderRadius: "10px",
-                      background: "rgba(255,255,255,0.04)",
+
+                      backgroundColor: "rgba(255,255,255,0.04)",
                       border: "1px solid rgba(255,255,255,0.07)",
                     }}
                   >
@@ -215,16 +236,21 @@ function Navbar() {
                       sx={{
                         width: 26,
                         height: 26,
+
                         fontSize: "0.75rem",
-                        background: "linear-gradient(135deg, #6366f1, #8b5cf6)",
-                        fontWeight: 700,
+
+                        backgroundColor: "#C69C72",
+                        color: "#2F211C",
+
+                        fontWeight: 800,
                       }}
                     >
                       {username?.charAt(0).toUpperCase()}
                     </Avatar>
+
                     <Typography
                       sx={{
-                        color: "#e2e8f0",
+                        color: "#FFF9F3",
                         fontSize: "0.88rem",
                         fontWeight: 600,
                       }}
@@ -262,13 +288,19 @@ function Navbar() {
                     startIcon={<LoginRoundedIcon sx={{ fontSize: 17 }} />}
                     sx={{
                       borderRadius: "10px",
+
                       textTransform: "none",
+
                       fontWeight: 700,
-                      background: "linear-gradient(135deg, #6366f1, #8b5cf6)",
-                      boxShadow: "0 4px 14px rgba(99,102,241,0.35)",
+
+                      backgroundColor: "#C69C72",
+                      color: "#2F211C",
+
+                      boxShadow: "none",
+
                       "&:hover": {
-                        background: "linear-gradient(135deg, #4f46e5, #7c3aed)",
-                        boxShadow: "0 6px 20px rgba(99,102,241,0.5)",
+                        backgroundColor: "#D7B08A",
+                        boxShadow: "none",
                       },
                     }}
                   >
@@ -315,248 +347,15 @@ function Navbar() {
         PaperProps={{
           sx: {
             width: 270,
-            background: "rgba(9,14,28,0.97)",
-            backdropFilter: "blur(20px)",
+
+            backgroundColor: "#2F211C",
+
             borderLeft: "1px solid rgba(255,255,255,0.07)",
-            color: "white",
+
+            color: "#FFF9F3",
           },
         }}
-      >
-        <Box
-          sx={{
-            height: "100%",
-            display: "flex",
-            flexDirection: "column",
-            p: 2.5,
-          }}
-        >
-          {/* Drawer Header */}
-          <Box sx={{ display: "flex", alignItems: "center", gap: 1.5, mb: 3 }}>
-            <Box
-              sx={{
-                width: 36,
-                height: 36,
-                borderRadius: "10px",
-                background: "linear-gradient(135deg, #6366f1, #8b5cf6)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <StorefrontRoundedIcon sx={{ color: "#fff", fontSize: 20 }} />
-            </Box>
-            <Typography
-              sx={{ fontWeight: 800, fontSize: "1.1rem", color: "#e2e8f0" }}
-            >
-              Tech Store
-            </Typography>
-          </Box>
-
-          <Divider sx={{ borderColor: "rgba(255,255,255,0.07)", mb: 2 }} />
-
-          {/* Nav Links */}
-          <List disablePadding sx={{ flex: 1 }}>
-            {navLinks.map((item) => (
-              <ListItemButton
-                key={item.path}
-                onClick={() => {
-                  item.action?.();
-                  navigate(item.path);
-                  setOpenDrawer(false);
-                }}
-                sx={{
-                  borderRadius: "12px",
-                  mb: 0.5,
-                  px: 1.5,
-                  py: 1.1,
-                  background: isActive(item.path)
-                    ? "rgba(99,102,241,0.15)"
-                    : "transparent",
-                  border: isActive(item.path)
-                    ? "1px solid rgba(99,102,241,0.3)"
-                    : "1px solid transparent",
-                  "&:hover": { background: "rgba(255,255,255,0.06)" },
-                }}
-              >
-                <ListItemIcon
-                  sx={{
-                    minWidth: 36,
-                    color: isActive(item.path)
-                      ? "#a5b4fc"
-                      : "rgba(148,163,184,0.7)",
-                  }}
-                >
-                  {item.icon}
-                </ListItemIcon>
-                <ListItemText
-                  primary={item.label}
-                  primaryTypographyProps={{
-                    fontSize: "0.92rem",
-                    fontWeight: isActive(item.path) ? 700 : 500,
-                    color: isActive(item.path) ? "#a5b4fc" : "#cbd5e1",
-                  }}
-                />
-                {isActive(item.path) && (
-                  <Box
-                    sx={{
-                      width: 6,
-                      height: 6,
-                      borderRadius: "50%",
-                      background: "#818cf8",
-                    }}
-                  />
-                )}
-              </ListItemButton>
-            ))}
-
-            {/* Cart in drawer */}
-            {isAuthenticated && (
-              <ListItemButton
-                onClick={() => {
-                  navigate("/cart");
-                  setOpenDrawer(false);
-                }}
-                sx={{
-                  borderRadius: "12px",
-                  mb: 0.5,
-                  px: 1.5,
-                  py: 1.1,
-                  background: isActive("/cart")
-                    ? "rgba(99,102,241,0.15)"
-                    : "transparent",
-                  border: isActive("/cart")
-                    ? "1px solid rgba(99,102,241,0.3)"
-                    : "1px solid transparent",
-                  "&:hover": { background: "rgba(255,255,255,0.06)" },
-                }}
-              >
-                <ListItemIcon
-                  sx={{
-                    minWidth: 36,
-                    color: isActive("/cart")
-                      ? "#a5b4fc"
-                      : "rgba(148,163,184,0.7)",
-                  }}
-                >
-                  <Badge
-                    badgeContent={cartItems.length}
-                    sx={{
-                      "& .MuiBadge-badge": {
-                        background: "linear-gradient(135deg, #6366f1, #8b5cf6)",
-                        color: "#fff",
-                        fontSize: "0.6rem",
-                        fontWeight: 700,
-                      },
-                    }}
-                  >
-                    <ShoppingCartIcon fontSize="small" />
-                  </Badge>
-                </ListItemIcon>
-                <ListItemText
-                  primary="Cart"
-                  primaryTypographyProps={{
-                    fontSize: "0.92rem",
-                    fontWeight: isActive("/cart") ? 700 : 500,
-                    color: isActive("/cart") ? "#a5b4fc" : "#cbd5e1",
-                  }}
-                />
-              </ListItemButton>
-            )}
-          </List>
-
-          {/* Bottom: User + Auth */}
-          <Divider sx={{ borderColor: "rgba(255,255,255,0.07)", mb: 2 }} />
-
-          {isAuthenticated ? (
-            <Box sx={{ display: "flex", flexDirection: "column", gap: 1.5 }}>
-              <Box
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 1.5,
-                  px: 1.5,
-                  py: 1,
-                  borderRadius: "12px",
-                  background: "rgba(255,255,255,0.04)",
-                  border: "1px solid rgba(255,255,255,0.07)",
-                }}
-              >
-                <Avatar
-                  sx={{
-                    width: 32,
-                    height: 32,
-                    fontSize: "0.85rem",
-                    background: "linear-gradient(135deg, #6366f1, #8b5cf6)",
-                    fontWeight: 700,
-                  }}
-                >
-                  {username?.charAt(0).toUpperCase()}
-                </Avatar>
-                <Box>
-                  <Typography
-                    sx={{
-                      fontSize: "0.88rem",
-                      fontWeight: 700,
-                      color: "#e2e8f0",
-                    }}
-                  >
-                    {username}
-                  </Typography>
-                  <Typography
-                    sx={{ fontSize: "0.72rem", color: "rgba(148,163,184,0.6)" }}
-                  >
-                    Logged in
-                  </Typography>
-                </Box>
-              </Box>
-
-              <Button
-                fullWidth
-                variant="outlined"
-                onClick={handleLogout}
-                startIcon={<LogoutRoundedIcon />}
-                sx={{
-                  borderRadius: "12px",
-                  textTransform: "none",
-                  fontWeight: 700,
-                  color: "#f87171",
-                  border: "1px solid rgba(239,68,68,0.35)",
-                  py: 1.1,
-                  "&:hover": {
-                    background: "rgba(239,68,68,0.1)",
-                    border: "1px solid rgba(239,68,68,0.6)",
-                  },
-                }}
-              >
-                Logout
-              </Button>
-            </Box>
-          ) : (
-            <Button
-              fullWidth
-              variant="contained"
-              onClick={() => {
-                navigate("/login");
-                setOpenDrawer(false);
-              }}
-              startIcon={<LoginRoundedIcon />}
-              sx={{
-                borderRadius: "12px",
-                textTransform: "none",
-                fontWeight: 700,
-                py: 1.2,
-                background: "linear-gradient(135deg, #6366f1, #8b5cf6)",
-                boxShadow: "0 4px 14px rgba(99,102,241,0.35)",
-                "&:hover": {
-                  background: "linear-gradient(135deg, #4f46e5, #7c3aed)",
-                },
-              }}
-            >
-              Login
-            </Button>
-          )}
-        </Box>
-      </Drawer>
+      ></Drawer>
     </>
   );
 }
