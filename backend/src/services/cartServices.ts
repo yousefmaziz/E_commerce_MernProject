@@ -3,6 +3,8 @@ import mongoose from "mongoose";
 import cartModel from "../models/cartModel.js";
 import orderModel, { IOrderItem } from "../models/orderModel.js";
 import productModel from "../models/productModel.js";
+import userModel from "../models/userModel.js";
+import { sendOrderEmail } from "../utils/sendMail.js";
 
 // =========================
 // Types
@@ -437,6 +439,19 @@ export const checkoutCart = async ({ userId, address }: CheckoutInput) => {
     };
   }
 
+  // =========================
+  // Get User
+  // =========================
+
+  const user = await userModel.findById(userId);
+
+  if (!user) {
+    return {
+      message: "User not found",
+      statusCode: 404,
+    };
+  }
+
   const session = await mongoose.startSession();
 
   try {
@@ -488,7 +503,7 @@ export const checkoutCart = async ({ userId, address }: CheckoutInput) => {
       }
 
       // =========================
-      // Snapshot
+      // Order Snapshot
       // =========================
 
       const orderItem: IOrderItem = {
@@ -523,6 +538,7 @@ export const checkoutCart = async ({ userId, address }: CheckoutInput) => {
     // =========================
     // 4. Decrease Stock
     // =========================
+
     for (const item of cart.items) {
       const result = await productModel.updateOne(
         {
@@ -537,12 +553,6 @@ export const checkoutCart = async ({ userId, address }: CheckoutInput) => {
           session,
         },
       );
-
-      console.log("================================");
-      console.log("PRODUCT ID:", item.product);
-      console.log("QUANTITY:", item.quantity);
-      console.log("UPDATE RESULT:", result);
-      console.log("================================");
 
       if (result.matchedCount !== 1) {
         throw new Error(`Failed to update stock for product ${item.product}`);
@@ -561,10 +571,24 @@ export const checkoutCart = async ({ userId, address }: CheckoutInput) => {
     });
 
     // =========================
-    // 6. COMMIT
+    // 6. COMMIT TRANSACTION
     // =========================
 
     await session.commitTransaction();
+
+    // =========================
+    // 7. Send Confirmation Email
+    // =========================
+
+    try {
+      await sendOrderEmail(user.email, order._id.toString(), order.totalPrice);
+    } catch (emailError) {
+      console.error("Order created, but email failed:", emailError);
+    }
+
+    // =========================
+    // Success
+    // =========================
 
     return {
       data: order,
