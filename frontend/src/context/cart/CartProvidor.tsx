@@ -95,15 +95,14 @@ const CartProvider: FC<PropsWithChildren> = ({ children }) => {
 
       if (!response.ok) {
         console.log("SERVER:", result);
-        setError(result.message || "Failed to add to cart");
+        toast.error(result.message || "Failed to add to cart");
         return;
       }
 
       handleCartResponse(result);
       toast.success("Item added to cart!");
     } catch (err) {
-      console.error("Add error:", err);
-      setError("Something went wrong");
+      toast.error("out of stock");
     }
   };
 

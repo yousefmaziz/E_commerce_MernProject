@@ -27,9 +27,13 @@ import ChevronRightRoundedIcon from "@mui/icons-material/ChevronRightRounded";
 import { useTheme } from "@mui/material/styles";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/Auth/AuthContext";
-
+import { useCart } from "../context/cart/CartContext";
 function Navbar() {
   const { username, isAuthenticated, logout, role } = useAuth()!;
+  const { cartItems } = useCart()!;
+
+  const cartCount =
+    cartItems?.reduce((sum, item) => sum + (item.quantity ?? 1), 0) ?? 0;
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -330,7 +334,8 @@ function Navbar() {
                     }}
                   >
                     <Badge
-                      badgeContent={0}
+                      badgeContent={cartCount}
+                      max={99}
                       sx={{
                         "& .MuiBadge-badge": {
                           backgroundColor: "#FFFFFF",
@@ -541,7 +546,8 @@ function Navbar() {
                     }}
                   >
                     <Badge
-                      badgeContent={0}
+                      badgeContent={cartCount}
+                      max={99}
                       sx={{
                         "& .MuiBadge-badge": {
                           backgroundColor: "#6F4E37",
@@ -886,7 +892,25 @@ function Navbar() {
           {isAuthenticated && (
             <Button
               onClick={() => handleMobileNavigate("/cart")}
-              startIcon={<ShoppingCartIcon fontSize="small" />}
+              startIcon={
+                <Badge
+                  badgeContent={cartCount}
+                  max={99}
+                  sx={{
+                    "& .MuiBadge-badge": {
+                      backgroundColor: "#6F4E37",
+                      color: "#FFFFFF",
+                      border: "1px solid #FFF9F3",
+                      fontWeight: 800,
+                      fontSize: "0.6rem",
+                      minWidth: 15,
+                      height: 15,
+                    },
+                  }}
+                >
+                  <ShoppingCartIcon fontSize="small" />
+                </Badge>
+              }
               endIcon={
                 <ChevronRightRoundedIcon
                   sx={{

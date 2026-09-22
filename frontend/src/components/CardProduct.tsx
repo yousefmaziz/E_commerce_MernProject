@@ -17,6 +17,7 @@ interface Props {
   image: string;
   price: number;
   description: string;
+  stock: number;
 }
 
 export default function CardProduct({
@@ -25,6 +26,7 @@ export default function CardProduct({
   image,
   price,
   description,
+  stock,
 }: Props) {
   const { addToCart } = useCart();
   const navigate = useNavigate();
@@ -91,7 +93,7 @@ export default function CardProduct({
         {/* NEW BADGE */}
 
         <Chip
-          label="New"
+          label={`${stock > 0 ? `${stock} In Stock` : "Out of Stock"}`}
           size="small"
           sx={{
             position: "absolute",
@@ -99,7 +101,7 @@ export default function CardProduct({
             left: 12,
 
             backgroundColor: "#2F211C",
-            color: "#FFF9F3",
+            color: "white",
 
             fontWeight: 700,
             fontSize: "0.7rem",
