@@ -44,6 +44,7 @@ import { useEffect, useState } from "react";
 import { useTheme } from "@mui/material/styles";
 import { useAuth } from "../context/Auth/AuthContext";
 import { toast } from "react-hot-toast";
+import Loading from "../components/loading";
 
 const API = import.meta.env.VITE_BACK_API;
 
@@ -527,1297 +528,1310 @@ export default function Dashboard() {
   // =====================================================
 
   return (
-    <Box
-      sx={{
-        minHeight: "100vh",
+    <>
+      {users.length === 0 ? (
+        <Loading />
+      ) : (
+        <Box
+          sx={{
+            minHeight: "100vh",
 
-        backgroundColor: "#F7F3EE",
-      }}
-    >
-      <CssBaseline />
+            backgroundColor: "#F7F3EE",
+          }}
+        >
+          <CssBaseline />
 
-      {/* =================================================
+          {/* =================================================
                           TOP NAVBAR
       ================================================= */}
 
-      <Box
-        component="header"
-        sx={{
-          position: "sticky",
-
-          top: 0,
-
-          zIndex: theme.zIndex.appBar,
-
-          backgroundColor: "#2F211C",
-
-          borderBottom: "1px solid rgba(255,255,255,0.06)",
-
-          boxShadow: "0 3px 18px rgba(47,33,28,0.14)",
-        }}
-      >
-        <Box
-          sx={{
-            display: "flex",
-
-            alignItems: "center",
-
-            justifyContent: "space-between",
-
-            px: {
-              xs: 2,
-              md: 4,
-            },
-
-            height: 64,
-
-            gap: 2,
-          }}
-        >
-          {/* LOGO */}
-
           <Box
+            component="header"
             sx={{
-              display: "flex",
+              position: "sticky",
 
-              alignItems: "center",
+              top: 0,
 
-              gap: 1.2,
+              zIndex: theme.zIndex.appBar,
 
-              flexShrink: 0,
+              backgroundColor: "#2F211C",
+
+              borderBottom: "1px solid rgba(255,255,255,0.06)",
+
+              boxShadow: "0 3px 18px rgba(47,33,28,0.14)",
             }}
           >
             <Box
               sx={{
-                width: 34,
-
-                height: 34,
-
-                borderRadius: "10px",
-
-                backgroundColor: "#C69C72",
-
                 display: "flex",
 
                 alignItems: "center",
 
-                justifyContent: "center",
+                justifyContent: "space-between",
 
-                flexShrink: 0,
+                px: {
+                  xs: 2,
+                  md: 4,
+                },
+
+                height: 64,
+
+                gap: 2,
               }}
             >
-              <StorefrontRounded
+              {/* LOGO */}
+
+              <Box
                 sx={{
-                  color: "#2F211C",
+                  display: "flex",
 
-                  fontSize: 18,
-                }}
-              />
-            </Box>
+                  alignItems: "center",
 
-            {isMdUp && (
-              <Typography
-                sx={{
-                  fontWeight: 800,
+                  gap: 1.2,
 
-                  fontSize: "1rem",
-
-                  color: "#FFF9F3",
-
-                  letterSpacing: "-0.01em",
-
-                  whiteSpace: "nowrap",
+                  flexShrink: 0,
                 }}
               >
-                Tech Store
-              </Typography>
-            )}
-          </Box>
-
-          {/* NAVIGATION */}
-
-          <List
-            sx={{
-              display: "flex",
-
-              gap: 0.75,
-
-              p: 0,
-
-              overflowX: "auto",
-
-              flex: 1,
-
-              justifyContent: {
-                xs: "flex-start",
-
-                md: "center",
-              },
-
-              "&::-webkit-scrollbar": {
-                display: "none",
-              },
-            }}
-          >
-            {menuItems.map((item) => {
-              const active = activePage === item.text;
-
-              return (
                 <Box
-                  key={item.text}
-                  onClick={() => setActivePage(item.text)}
                   sx={{
+                    width: 34,
+
+                    height: 34,
+
+                    borderRadius: "10px",
+
+                    backgroundColor: "#C69C72",
+
                     display: "flex",
 
                     alignItems: "center",
 
-                    gap: 0.8,
-
-                    cursor: "pointer",
-
-                    px: 1.6,
-
-                    py: 0.9,
-
-                    borderRadius: "10px",
+                    justifyContent: "center",
 
                     flexShrink: 0,
-
-                    backgroundColor: active
-                      ? "rgba(198,156,114,0.18)"
-                      : "transparent",
-
-                    border: active
-                      ? "1px solid rgba(198,156,114,0.25)"
-                      : "1px solid transparent",
-
-                    transition: "all 0.2s ease",
-
-                    "&:hover": {
-                      backgroundColor: active
-                        ? "rgba(198,156,114,0.22)"
-                        : "rgba(255,255,255,0.05)",
-                    },
                   }}
                 >
-                  <Box
+                  <StorefrontRounded
                     sx={{
-                      color: active ? "#C69C72" : "#CDBEB4",
+                      color: "#2F211C",
 
-                      display: "flex",
+                      fontSize: 18,
                     }}
-                  >
-                    {item.icon}
-                  </Box>
+                  />
+                </Box>
 
+                {isMdUp && (
                   <Typography
                     sx={{
-                      fontSize: "0.85rem",
+                      fontWeight: 800,
 
-                      fontWeight: active ? 700 : 500,
+                      fontSize: "1rem",
 
-                      color: active ? "#FFF9F3" : "#CDBEB4",
+                      color: "#FFF9F3",
+
+                      letterSpacing: "-0.01em",
 
                       whiteSpace: "nowrap",
                     }}
                   >
-                    {item.text}
+                    Tech Store
                   </Typography>
-                </Box>
-              );
-            })}
-          </List>
+                )}
+              </Box>
 
-          {/* USER */}
+              {/* NAVIGATION */}
 
-          <Box
-            sx={{
-              display: "flex",
-
-              alignItems: "center",
-
-              gap: 1.2,
-
-              flexShrink: 0,
-            }}
-          >
-            <Avatar
-              sx={{
-                width: 32,
-
-                height: 32,
-
-                fontSize: "0.85rem",
-
-                backgroundColor: "#C69C72",
-
-                color: "#2F211C",
-
-                fontWeight: 800,
-              }}
-            >
-              {username?.charAt(0).toUpperCase()}
-            </Avatar>
-
-            {isMdUp && (
-              <Typography
+              <List
                 sx={{
-                  color: "#FFF9F3",
+                  display: "flex",
 
-                  fontWeight: 600,
+                  gap: 0.75,
 
-                  fontSize: "0.88rem",
+                  p: 0,
+
+                  overflowX: "auto",
+
+                  flex: 1,
+
+                  justifyContent: {
+                    xs: "flex-start",
+
+                    md: "center",
+                  },
+
+                  "&::-webkit-scrollbar": {
+                    display: "none",
+                  },
                 }}
               >
-                {firstName}
-              </Typography>
-            )}
-          </Box>
-        </Box>
-      </Box>
+                {menuItems.map((item) => {
+                  const active = activePage === item.text;
 
-      {/* =================================================
-                              MAIN
-      ================================================= */}
-
-      <Box
-        component="main"
-        sx={{
-          p: {
-            xs: 2,
-
-            sm: 3,
-
-            md: 4,
-          },
-
-          maxWidth: 1400,
-
-          mx: "auto",
-        }}
-      >
-        {/* PAGE TITLE */}
-
-        <Box sx={{ mb: 3 }}>
-          <Typography
-            sx={{
-              fontWeight: 800,
-
-              fontSize: "1.3rem",
-
-              color: "#2F211C",
-            }}
-          >
-            {activePage}
-          </Typography>
-
-          <Typography
-            sx={{
-              fontSize: "0.78rem",
-
-              color: "#806F64",
-            }}
-          >
-            {new Date().toLocaleDateString("en-US", {
-              weekday: "long",
-
-              month: "long",
-
-              day: "numeric",
-            })}
-          </Typography>
-        </Box>
-
-        {/* =================================================
-                              HOME
-        ================================================= */}
-
-        {activePage === "Home" && (
-          <Box>
-            {/* STATS */}
-
-            <Box
-              sx={{
-                display: "grid",
-
-                gridTemplateColumns: {
-                  xs: "1fr",
-
-                  sm: "1fr 1fr",
-
-                  md: "1fr 1fr 1fr",
-                },
-
-                gap: 2,
-
-                mb: 4,
-              }}
-            >
-              {[
-                {
-                  label: "Total Users",
-
-                  value: users.length,
-
-                  icon: <PeopleAltRounded />,
-
-                  color: "#6F4E37",
-
-                  bg: "#F0E6DD",
-                },
-
-                {
-                  label: "Total Products",
-
-                  value: products.length,
-
-                  icon: <Inventory2Rounded />,
-
-                  color: "#A47551",
-
-                  bg: "#F4EAE1",
-                },
-
-                {
-                  label: "Total Revenue",
-
-                  value: `$${products
-                    .reduce(
-                      (
-                        a: number,
-
-                        p: any,
-                      ) => a + (p.price || 0),
-
-                      0,
-                    )
-                    .toLocaleString()}`,
-
-                  icon: <TrendingUpRounded />,
-
-                  color: "#8B684D",
-
-                  bg: "#EFE4D8",
-                },
-              ].map((stat) => (
-                <Card
-                  key={stat.label}
-                  elevation={0}
-                  sx={{
-                    backgroundColor: "#FFFDFC",
-
-                    border: "1px solid #E9DED4",
-
-                    borderRadius: "16px",
-
-                    boxShadow: "0 6px 20px rgba(47,33,28,0.06)",
-
-                    transition: "all 0.25s ease",
-
-                    "&:hover": {
-                      borderColor: "#D5B89D",
-
-                      transform: "translateY(-2px)",
-
-                      boxShadow: "0 10px 28px rgba(47,33,28,0.1)",
-                    },
-                  }}
-                >
-                  <CardContent
-                    sx={{
-                      display: "flex",
-
-                      alignItems: "center",
-
-                      gap: 2,
-
-                      p: "20px !important",
-                    }}
-                  >
+                  return (
                     <Box
+                      key={item.text}
+                      onClick={() => setActivePage(item.text)}
                       sx={{
-                        width: 48,
-
-                        height: 48,
-
-                        borderRadius: "12px",
-
-                        backgroundColor: stat.bg,
-
                         display: "flex",
 
                         alignItems: "center",
 
-                        justifyContent: "center",
+                        gap: 0.8,
 
-                        color: stat.color,
+                        cursor: "pointer",
+
+                        px: 1.6,
+
+                        py: 0.9,
+
+                        borderRadius: "10px",
 
                         flexShrink: 0,
+
+                        backgroundColor: active
+                          ? "rgba(198,156,114,0.18)"
+                          : "transparent",
+
+                        border: active
+                          ? "1px solid rgba(198,156,114,0.25)"
+                          : "1px solid transparent",
+
+                        transition: "all 0.2s ease",
+
+                        "&:hover": {
+                          backgroundColor: active
+                            ? "rgba(198,156,114,0.22)"
+                            : "rgba(255,255,255,0.05)",
+                        },
                       }}
                     >
-                      {stat.icon}
-                    </Box>
-
-                    <Box>
-                      <Typography
+                      <Box
                         sx={{
-                          fontSize: "0.75rem",
+                          color: active ? "#C69C72" : "#CDBEB4",
 
-                          color: "#806F64",
-
-                          fontWeight: 600,
-
-                          letterSpacing: "0.04em",
-
-                          textTransform: "uppercase",
+                          display: "flex",
                         }}
                       >
-                        {stat.label}
-                      </Typography>
+                        {item.icon}
+                      </Box>
 
                       <Typography
                         sx={{
-                          fontSize: "1.6rem",
+                          fontSize: "0.85rem",
 
-                          fontWeight: 800,
+                          fontWeight: active ? 700 : 500,
 
-                          color: "#2F211C",
+                          color: active ? "#FFF9F3" : "#CDBEB4",
 
-                          lineHeight: 1.2,
+                          whiteSpace: "nowrap",
                         }}
                       >
-                        {stat.value}
+                        {item.text}
                       </Typography>
                     </Box>
-                  </CardContent>
-                </Card>
-              ))}
-            </Box>
+                  );
+                })}
+              </List>
 
-            {/* WELCOME */}
+              {/* USER */}
 
-            <Box
-              sx={{
-                p: {
-                  xs: 3,
-
-                  md: 4,
-                },
-
-                borderRadius: "20px",
-
-                backgroundColor: "#FFFDFC",
-
-                border: "1px solid #E9DED4",
-
-                boxShadow: "0 8px 25px rgba(47,33,28,0.06)",
-              }}
-            >
-              <Typography
+              <Box
                 sx={{
-                  fontSize: "1.6rem",
+                  display: "flex",
 
-                  fontWeight: 800,
+                  alignItems: "center",
 
-                  color: "#2F211C",
+                  gap: 1.2,
 
-                  mb: 0.5,
+                  flexShrink: 0,
                 }}
               >
-                Welcome back
-              </Typography>
+                <Avatar
+                  sx={{
+                    width: 32,
 
-              <Typography
-                sx={{
-                  color: "#806F64",
+                    height: 32,
 
-                  fontSize: "0.95rem",
-                }}
-              >
-                You have {users.length} users and {products.length} products in
-                your store.
-              </Typography>
+                    fontSize: "0.85rem",
+
+                    backgroundColor: "#C69C72",
+
+                    color: "#2F211C",
+
+                    fontWeight: 800,
+                  }}
+                >
+                  {username?.charAt(0).toUpperCase()}
+                </Avatar>
+
+                {isMdUp && (
+                  <Typography
+                    sx={{
+                      color: "#FFF9F3",
+
+                      fontWeight: 600,
+
+                      fontSize: "0.88rem",
+                    }}
+                  >
+                    {firstName}
+                  </Typography>
+                )}
+              </Box>
             </Box>
           </Box>
-        )}
 
-        {/* =================================================
+          {/* =================================================
+                              MAIN
+      ================================================= */}
+
+          <Box
+            component="main"
+            sx={{
+              p: {
+                xs: 2,
+
+                sm: 3,
+
+                md: 4,
+              },
+
+              maxWidth: 1400,
+
+              mx: "auto",
+            }}
+          >
+            {/* PAGE TITLE */}
+
+            <Box sx={{ mb: 3 }}>
+              <Typography
+                sx={{
+                  fontWeight: 800,
+
+                  fontSize: "1.3rem",
+
+                  color: "#2F211C",
+                }}
+              >
+                {activePage}
+              </Typography>
+
+              <Typography
+                sx={{
+                  fontSize: "0.78rem",
+
+                  color: "#806F64",
+                }}
+              >
+                {new Date().toLocaleDateString("en-US", {
+                  weekday: "long",
+
+                  month: "long",
+
+                  day: "numeric",
+                })}
+              </Typography>
+            </Box>
+
+            {/* =================================================
+                              HOME
+        ================================================= */}
+
+            {activePage === "Home" && (
+              <Box>
+                {/* STATS */}
+
+                <Box
+                  sx={{
+                    display: "grid",
+
+                    gridTemplateColumns: {
+                      xs: "1fr",
+
+                      sm: "1fr 1fr",
+
+                      md: "1fr 1fr 1fr",
+                    },
+
+                    gap: 2,
+
+                    mb: 4,
+                  }}
+                >
+                  {[
+                    {
+                      label: "Total Users",
+
+                      value: users.length,
+
+                      icon: <PeopleAltRounded />,
+
+                      color: "#6F4E37",
+
+                      bg: "#F0E6DD",
+                    },
+
+                    {
+                      label: "Total Products",
+
+                      value: products.length,
+
+                      icon: <Inventory2Rounded />,
+
+                      color: "#A47551",
+
+                      bg: "#F4EAE1",
+                    },
+
+                    {
+                      label: "Total Revenue",
+
+                      value: `$${products
+                        .reduce(
+                          (
+                            a: number,
+
+                            p: any,
+                          ) => a + (p.price || 0),
+
+                          0,
+                        )
+                        .toLocaleString()}`,
+
+                      icon: <TrendingUpRounded />,
+
+                      color: "#8B684D",
+
+                      bg: "#EFE4D8",
+                    },
+                  ].map((stat) => (
+                    <Card
+                      key={stat.label}
+                      elevation={0}
+                      sx={{
+                        backgroundColor: "#FFFDFC",
+
+                        border: "1px solid #E9DED4",
+
+                        borderRadius: "16px",
+
+                        boxShadow: "0 6px 20px rgba(47,33,28,0.06)",
+
+                        transition: "all 0.25s ease",
+
+                        "&:hover": {
+                          borderColor: "#D5B89D",
+
+                          transform: "translateY(-2px)",
+
+                          boxShadow: "0 10px 28px rgba(47,33,28,0.1)",
+                        },
+                      }}
+                    >
+                      <CardContent
+                        sx={{
+                          display: "flex",
+
+                          alignItems: "center",
+
+                          gap: 2,
+
+                          p: "20px !important",
+                        }}
+                      >
+                        <Box
+                          sx={{
+                            width: 48,
+
+                            height: 48,
+
+                            borderRadius: "12px",
+
+                            backgroundColor: stat.bg,
+
+                            display: "flex",
+
+                            alignItems: "center",
+
+                            justifyContent: "center",
+
+                            color: stat.color,
+
+                            flexShrink: 0,
+                          }}
+                        >
+                          {stat.icon}
+                        </Box>
+
+                        <Box>
+                          <Typography
+                            sx={{
+                              fontSize: "0.75rem",
+
+                              color: "#806F64",
+
+                              fontWeight: 600,
+
+                              letterSpacing: "0.04em",
+
+                              textTransform: "uppercase",
+                            }}
+                          >
+                            {stat.label}
+                          </Typography>
+
+                          <Typography
+                            sx={{
+                              fontSize: "1.6rem",
+
+                              fontWeight: 800,
+
+                              color: "#2F211C",
+
+                              lineHeight: 1.2,
+                            }}
+                          >
+                            {stat.value}
+                          </Typography>
+                        </Box>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </Box>
+
+                {/* WELCOME */}
+
+                <Box
+                  sx={{
+                    p: {
+                      xs: 3,
+
+                      md: 4,
+                    },
+
+                    borderRadius: "20px",
+
+                    backgroundColor: "#FFFDFC",
+
+                    border: "1px solid #E9DED4",
+
+                    boxShadow: "0 8px 25px rgba(47,33,28,0.06)",
+                  }}
+                >
+                  <Typography
+                    sx={{
+                      fontSize: "1.6rem",
+
+                      fontWeight: 800,
+
+                      color: "#2F211C",
+
+                      mb: 0.5,
+                    }}
+                  >
+                    Welcome back
+                  </Typography>
+
+                  <Typography
+                    sx={{
+                      color: "#806F64",
+
+                      fontSize: "0.95rem",
+                    }}
+                  >
+                    You have {users.length} users and {products.length} products
+                    in your store.
+                  </Typography>
+                </Box>
+              </Box>
+            )}
+
+            {/* =================================================
                               USERS
         ================================================= */}
 
-        {activePage === "Users" && (
-          <>
-            <Box
-              sx={{
-                display: "flex",
-
-                justifyContent: "space-between",
-
-                alignItems: "center",
-
-                mb: 3,
-
-                gap: 2,
-
-                flexWrap: "wrap",
-              }}
-            >
-              <Box>
-                <Typography
+            {activePage === "Users" && (
+              <>
+                <Box
                   sx={{
-                    fontWeight: 800,
+                    display: "flex",
 
-                    fontSize: "1.3rem",
+                    justifyContent: "space-between",
 
-                    color: "#2F211C",
+                    alignItems: "center",
+
+                    mb: 3,
+
+                    gap: 2,
+
+                    flexWrap: "wrap",
                   }}
                 >
-                  Users Management
-                </Typography>
+                  <Box>
+                    <Typography
+                      sx={{
+                        fontWeight: 800,
 
-                <Typography
-                  sx={{
-                    color: "#806F64",
+                        fontSize: "1.3rem",
 
-                    fontSize: "0.82rem",
-                  }}
-                >
-                  {users.length} total users
-                </Typography>
-              </Box>
+                        color: "#2F211C",
+                      }}
+                    >
+                      Users Management
+                    </Typography>
 
-              <Button
-                variant="contained"
-                startIcon={<PersonAddRounded />}
-                onClick={openAddUser}
-                sx={primaryButtonSx}
-              >
-                Add User
-              </Button>
-            </Box>
+                    <Typography
+                      sx={{
+                        color: "#806F64",
 
-            <TableContainer component={Paper} sx={tableContainerSx}>
-              <Table size={isMdUp ? "medium" : "small"}>
-                <TableHead>
-                  <TableRow sx={tableHeadSx}>
-                    <TableCell>#</TableCell>
+                        fontSize: "0.82rem",
+                      }}
+                    >
+                      {users.length} total users
+                    </Typography>
+                  </Box>
 
-                    <TableCell>Name</TableCell>
+                  <Button
+                    variant="contained"
+                    startIcon={<PersonAddRounded />}
+                    onClick={openAddUser}
+                    sx={primaryButtonSx}
+                  >
+                    Add User
+                  </Button>
+                </Box>
 
-                    <TableCell>Email</TableCell>
+                <TableContainer component={Paper} sx={tableContainerSx}>
+                  <Table size={isMdUp ? "medium" : "small"}>
+                    <TableHead>
+                      <TableRow sx={tableHeadSx}>
+                        <TableCell>#</TableCell>
 
-                    <TableCell>Role</TableCell>
+                        <TableCell>Name</TableCell>
 
-                    <TableCell>Actions</TableCell>
-                  </TableRow>
-                </TableHead>
+                        <TableCell>Email</TableCell>
 
-                <TableBody>
-                  {users.map(
-                    (
-                      user: any,
+                        <TableCell>Role</TableCell>
 
-                      index: number,
-                    ) => (
-                      <TableRow key={user._id} sx={tableBodyRowSx}>
-                        <TableCell
-                          sx={{
-                            color: "#9A887C !important",
+                        <TableCell>Actions</TableCell>
+                      </TableRow>
+                    </TableHead>
 
-                            fontWeight: 600,
+                    <TableBody>
+                      {users.map(
+                        (
+                          user: any,
 
-                            fontSize: "0.82rem",
-                          }}
-                        >
-                          {index + 1}
-                        </TableCell>
-
-                        <TableCell>
-                          <Box
-                            sx={{
-                              display: "flex",
-
-                              alignItems: "center",
-
-                              gap: 1.2,
-                            }}
-                          >
-                            <Avatar
+                          index: number,
+                        ) => (
+                          <TableRow key={user._id} sx={tableBodyRowSx}>
+                            <TableCell
                               sx={{
-                                width: 30,
-
-                                height: 30,
-
-                                fontSize: "0.75rem",
-
-                                backgroundColor: "#C69C72",
-
-                                color: "#2F211C",
-
-                                fontWeight: 800,
-                              }}
-                            >
-                              {user.firstName?.charAt(0).toUpperCase()}
-                            </Avatar>
-
-                            <Typography
-                              sx={{
-                                fontSize: "0.88rem",
+                                color: "#9A887C !important",
 
                                 fontWeight: 600,
 
-                                color: "#2F211C",
+                                fontSize: "0.82rem",
                               }}
                             >
-                              {user.firstName} {user.lastName}
-                            </Typography>
-                          </Box>
-                        </TableCell>
+                              {index + 1}
+                            </TableCell>
 
-                        <TableCell
-                          sx={{
-                            fontSize: "0.85rem",
+                            <TableCell>
+                              <Box
+                                sx={{
+                                  display: "flex",
 
-                            color: "#806F64 !important",
-                          }}
-                        >
-                          {user.email}
-                        </TableCell>
+                                  alignItems: "center",
 
-                        <TableCell>
-                          <Chip
-                            label={user.role}
-                            size="small"
-                            sx={{
-                              fontSize: "0.72rem",
-
-                              fontWeight: 700,
-
-                              height: 24,
-
-                              backgroundColor:
-                                user.role === "admin" ? "#E9F4EA" : "#F0E6DD",
-
-                              color:
-                                user.role === "admin" ? "#41734A" : "#6F4E37",
-
-                              border: `1px solid ${
-                                user.role === "admin" ? "#C9E0CC" : "#DFCAB7"
-                              }`,
-                            }}
-                          />
-                        </TableCell>
-
-                        <TableCell>
-                          <Box
-                            sx={{
-                              display: "flex",
-
-                              gap: 1,
-                            }}
-                          >
-                            <Button
-                              variant="contained"
-                              startIcon={
-                                <DeleteRounded
+                                  gap: 1.2,
+                                }}
+                              >
+                                <Avatar
                                   sx={{
-                                    fontSize: "15px !important",
-                                  }}
-                                />
-                              }
-                              onClick={() => deleteUser(user._id)}
-                              sx={actionBtnSx("error")}
-                            >
-                              Delete
-                            </Button>
+                                    width: 30,
 
-                            <Button
-                              variant="contained"
-                              startIcon={
-                                <EditRounded
+                                    height: 30,
+
+                                    fontSize: "0.75rem",
+
+                                    backgroundColor: "#C69C72",
+
+                                    color: "#2F211C",
+
+                                    fontWeight: 800,
+                                  }}
+                                >
+                                  {user.firstName?.charAt(0).toUpperCase()}
+                                </Avatar>
+
+                                <Typography
                                   sx={{
-                                    fontSize: "15px !important",
-                                  }}
-                                />
-                              }
-                              onClick={() => openEditUser(user)}
-                              sx={actionBtnSx("primary")}
-                            >
-                              Edit
-                            </Button>
-                          </Box>
-                        </TableCell>
-                      </TableRow>
-                    ),
-                  )}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          </>
-        )}
+                                    fontSize: "0.88rem",
 
-        {/* =================================================
+                                    fontWeight: 600,
+
+                                    color: "#2F211C",
+                                  }}
+                                >
+                                  {user.firstName} {user.lastName}
+                                </Typography>
+                              </Box>
+                            </TableCell>
+
+                            <TableCell
+                              sx={{
+                                fontSize: "0.85rem",
+
+                                color: "#806F64 !important",
+                              }}
+                            >
+                              {user.email}
+                            </TableCell>
+
+                            <TableCell>
+                              <Chip
+                                label={user.role}
+                                size="small"
+                                sx={{
+                                  fontSize: "0.72rem",
+
+                                  fontWeight: 700,
+
+                                  height: 24,
+
+                                  backgroundColor:
+                                    user.role === "admin"
+                                      ? "#E9F4EA"
+                                      : "#F0E6DD",
+
+                                  color:
+                                    user.role === "admin"
+                                      ? "#41734A"
+                                      : "#6F4E37",
+
+                                  border: `1px solid ${
+                                    user.role === "admin"
+                                      ? "#C9E0CC"
+                                      : "#DFCAB7"
+                                  }`,
+                                }}
+                              />
+                            </TableCell>
+
+                            <TableCell>
+                              <Box
+                                sx={{
+                                  display: "flex",
+
+                                  gap: 1,
+                                }}
+                              >
+                                <Button
+                                  variant="contained"
+                                  startIcon={
+                                    <DeleteRounded
+                                      sx={{
+                                        fontSize: "15px !important",
+                                      }}
+                                    />
+                                  }
+                                  onClick={() => deleteUser(user._id)}
+                                  sx={actionBtnSx("error")}
+                                >
+                                  Delete
+                                </Button>
+
+                                <Button
+                                  variant="contained"
+                                  startIcon={
+                                    <EditRounded
+                                      sx={{
+                                        fontSize: "15px !important",
+                                      }}
+                                    />
+                                  }
+                                  onClick={() => openEditUser(user)}
+                                  sx={actionBtnSx("primary")}
+                                >
+                                  Edit
+                                </Button>
+                              </Box>
+                            </TableCell>
+                          </TableRow>
+                        ),
+                      )}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              </>
+            )}
+
+            {/* =================================================
                             PRODUCTS
         ================================================= */}
 
-        {activePage === "Products" && (
-          <>
-            <Box
-              sx={{
-                display: "flex",
+            {activePage === "Products" && (
+              <>
+                <Box
+                  sx={{
+                    display: "flex",
 
-                justifyContent: "space-between",
+                    justifyContent: "space-between",
 
-                alignItems: "center",
+                    alignItems: "center",
 
-                mb: 3,
+                    mb: 3,
 
-                gap: 2,
+                    gap: 2,
 
-                flexWrap: "wrap",
+                    flexWrap: "wrap",
+                  }}
+                >
+                  <Box>
+                    <Typography
+                      sx={{
+                        fontWeight: 800,
+
+                        fontSize: "1.3rem",
+
+                        color: "#2F211C",
+                      }}
+                    >
+                      Products Management
+                    </Typography>
+
+                    <Typography
+                      sx={{
+                        color: "#806F64",
+
+                        fontSize: "0.82rem",
+                      }}
+                    >
+                      {products.length} total products
+                    </Typography>
+                  </Box>
+
+                  <Button
+                    variant="contained"
+                    startIcon={<AddBoxRounded />}
+                    onClick={openAddProduct}
+                    sx={primaryButtonSx}
+                  >
+                    Add Product
+                  </Button>
+                </Box>
+
+                <TableContainer component={Paper} sx={tableContainerSx}>
+                  <Table size={isMdUp ? "medium" : "small"}>
+                    <TableHead>
+                      <TableRow sx={tableHeadSx}>
+                        <TableCell>#</TableCell>
+
+                        <TableCell>Image</TableCell>
+
+                        <TableCell>Title</TableCell>
+
+                        <TableCell>Price</TableCell>
+
+                        <TableCell>Stock</TableCell>
+
+                        <TableCell>Actions</TableCell>
+                      </TableRow>
+                    </TableHead>
+
+                    <TableBody>
+                      {products.map(
+                        (
+                          product: any,
+
+                          index: number,
+                        ) => (
+                          <TableRow key={product._id} sx={tableBodyRowSx}>
+                            <TableCell
+                              sx={{
+                                color: "#9A887C !important",
+
+                                fontWeight: 600,
+
+                                fontSize: "0.82rem",
+                              }}
+                            >
+                              {index + 1}
+                            </TableCell>
+
+                            <TableCell>
+                              <Box
+                                component="img"
+                                src={product.image}
+                                alt={product.title}
+                                sx={{
+                                  width: 44,
+
+                                  height: 44,
+
+                                  objectFit: "cover",
+
+                                  borderRadius: "10px",
+
+                                  border: "1px solid #E9DED4",
+
+                                  backgroundColor: "#F3EDE7",
+                                }}
+                              />
+                            </TableCell>
+
+                            <TableCell
+                              sx={{
+                                fontWeight: 600,
+
+                                fontSize: "0.88rem",
+
+                                maxWidth: 180,
+
+                                overflow: "hidden",
+
+                                textOverflow: "ellipsis",
+
+                                whiteSpace: "nowrap",
+
+                                color: "#2F211C !important",
+                              }}
+                            >
+                              {product.title}
+                            </TableCell>
+
+                            <TableCell>
+                              <Typography
+                                sx={{
+                                  fontWeight: 700,
+
+                                  fontSize: "0.9rem",
+
+                                  color: "#6F4E37",
+                                }}
+                              >
+                                ${product.price}
+                              </Typography>
+                            </TableCell>
+
+                            <TableCell>
+                              <Chip
+                                label={
+                                  product.stock > 0
+                                    ? `${product.stock} in stock`
+                                    : "Out of stock"
+                                }
+                                size="small"
+                                sx={{
+                                  fontSize: "0.7rem",
+
+                                  fontWeight: 700,
+
+                                  height: 24,
+
+                                  backgroundColor:
+                                    product.stock > 0 ? "#F0E6DD" : "#FFF1F0",
+
+                                  color:
+                                    product.stock > 0 ? "#6F4E37" : "#B42318",
+
+                                  border: `1px solid ${
+                                    product.stock > 0 ? "#DFCAB7" : "#F3CBC7"
+                                  }`,
+                                }}
+                              />
+                            </TableCell>
+
+                            <TableCell>
+                              <Box
+                                sx={{
+                                  display: "flex",
+
+                                  gap: 1,
+                                }}
+                              >
+                                <Button
+                                  variant="contained"
+                                  startIcon={
+                                    <DeleteRounded
+                                      sx={{
+                                        fontSize: "15px !important",
+                                      }}
+                                    />
+                                  }
+                                  onClick={() => deleteProduct(product._id)}
+                                  sx={actionBtnSx("error")}
+                                >
+                                  Delete
+                                </Button>
+
+                                <Button
+                                  variant="contained"
+                                  startIcon={
+                                    <EditRounded
+                                      sx={{
+                                        fontSize: "15px !important",
+                                      }}
+                                    />
+                                  }
+                                  onClick={() => openEditProduct(product)}
+                                  sx={actionBtnSx("primary")}
+                                >
+                                  Edit
+                                </Button>
+                              </Box>
+                            </TableCell>
+                          </TableRow>
+                        ),
+                      )}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              </>
+            )}
+
+            {/* =================================================
+                            DIALOG
+        ================================================= */}
+
+            <Dialog
+              open={open}
+              onClose={() => setOpen(false)}
+              fullWidth
+              maxWidth="sm"
+              PaperProps={{
+                sx: {
+                  backgroundColor: "#FFFDFC",
+
+                  border: "1px solid #E9DED4",
+
+                  borderRadius: "20px",
+
+                  color: "#2F211C",
+
+                  boxShadow: "0 20px 60px rgba(47,33,28,0.2)",
+                },
               }}
             >
-              <Box>
+              <DialogTitle
+                sx={{
+                  display: "flex",
+
+                  justifyContent: "space-between",
+
+                  alignItems: "center",
+
+                  pb: 1,
+                }}
+              >
                 <Typography
                   sx={{
                     fontWeight: 800,
 
-                    fontSize: "1.3rem",
+                    fontSize: "1.1rem",
 
                     color: "#2F211C",
                   }}
                 >
-                  Products Management
+                  {dialogType === "user"
+                    ? selectedItem
+                      ? "Edit User"
+                      : "Add User"
+                    : selectedItem
+                      ? "Edit Product"
+                      : "Add Product"}
                 </Typography>
 
-                <Typography
+                <IconButton
+                  onClick={() => setOpen(false)}
                   sx={{
                     color: "#806F64",
 
-                    fontSize: "0.82rem",
+                    "&:hover": {
+                      color: "#2F211C",
+
+                      backgroundColor: "#F3EDE7",
+                    },
                   }}
                 >
-                  {products.length} total products
-                </Typography>
-              </Box>
+                  <CloseRounded fontSize="small" />
+                </IconButton>
+              </DialogTitle>
 
-              <Button
-                variant="contained"
-                startIcon={<AddBoxRounded />}
-                onClick={openAddProduct}
-                sx={primaryButtonSx}
+              <Divider
+                sx={{
+                  borderColor: "#E9DED4",
+                }}
+              />
+
+              <DialogContent
+                sx={{
+                  display: "flex",
+
+                  flexDirection: "column",
+
+                  gap: 2,
+
+                  pt: 3,
+                }}
               >
-                Add Product
-              </Button>
-            </Box>
+                {(() => {
+                  const inputSx = {
+                    "& .MuiOutlinedInput-root": {
+                      borderRadius: "12px",
 
-            <TableContainer component={Paper} sx={tableContainerSx}>
-              <Table size={isMdUp ? "medium" : "small"}>
-                <TableHead>
-                  <TableRow sx={tableHeadSx}>
-                    <TableCell>#</TableCell>
+                      color: "#2F211C",
 
-                    <TableCell>Image</TableCell>
+                      backgroundColor: "#FAF7F4",
 
-                    <TableCell>Title</TableCell>
+                      "& fieldset": {
+                        borderColor: "#DED0C4",
+                      },
 
-                    <TableCell>Price</TableCell>
+                      "&:hover fieldset": {
+                        borderColor: "#C69C72",
+                      },
 
-                    <TableCell>Stock</TableCell>
+                      "&.Mui-focused fieldset": {
+                        borderColor: "#6F4E37",
+                      },
+                    },
 
-                    <TableCell>Actions</TableCell>
-                  </TableRow>
-                </TableHead>
+                    "& .MuiInputLabel-root": {
+                      color: "#806F64",
+                    },
 
-                <TableBody>
-                  {products.map(
-                    (
-                      product: any,
+                    "& .MuiInputLabel-root.Mui-focused": {
+                      color: "#6F4E37",
+                    },
+                  };
 
-                      index: number,
-                    ) => (
-                      <TableRow key={product._id} sx={tableBodyRowSx}>
-                        <TableCell
-                          sx={{
-                            color: "#9A887C !important",
+                  return dialogType === "user" ? (
+                    <>
+                      <TextField
+                        label="First Name"
+                        value={formData.firstName || ""}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
 
-                            fontWeight: 600,
+                            firstName: e.target.value,
+                          })
+                        }
+                        fullWidth
+                        sx={inputSx}
+                      />
 
-                            fontSize: "0.82rem",
-                          }}
-                        >
-                          {index + 1}
-                        </TableCell>
+                      <TextField
+                        label="Last Name"
+                        value={formData.lastName || ""}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
 
-                        <TableCell>
-                          <Box
-                            component="img"
-                            src={product.image}
-                            alt={product.title}
-                            sx={{
-                              width: 44,
+                            lastName: e.target.value,
+                          })
+                        }
+                        fullWidth
+                        sx={inputSx}
+                      />
 
-                              height: 44,
+                      <TextField
+                        label="Email"
+                        value={formData.email || ""}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
 
-                              objectFit: "cover",
+                            email: e.target.value,
+                          })
+                        }
+                        fullWidth
+                        sx={inputSx}
+                      />
 
-                              borderRadius: "10px",
+                      {!selectedItem && (
+                        <TextField
+                          label="Password"
+                          type="password"
+                          value={formData.password || ""}
+                          onChange={(e) =>
+                            setFormData({
+                              ...formData,
 
-                              border: "1px solid #E9DED4",
+                              password: e.target.value,
+                            })
+                          }
+                          fullWidth
+                          sx={inputSx}
+                        />
+                      )}
 
-                              backgroundColor: "#F3EDE7",
-                            }}
-                          />
-                        </TableCell>
+                      <TextField
+                        label="Role"
+                        value={formData.role || ""}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
 
-                        <TableCell
-                          sx={{
-                            fontWeight: 600,
+                            role: e.target.value,
+                          })
+                        }
+                        fullWidth
+                        sx={inputSx}
+                      />
+                    </>
+                  ) : (
+                    <>
+                      <TextField
+                        label="Title"
+                        value={formData.title || ""}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
 
-                            fontSize: "0.88rem",
+                            title: e.target.value,
+                          })
+                        }
+                        fullWidth
+                        sx={inputSx}
+                      />
 
-                            maxWidth: 180,
+                      <TextField
+                        label="Image URL"
+                        value={formData.image || ""}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
 
-                            overflow: "hidden",
+                            image: e.target.value,
+                          })
+                        }
+                        fullWidth
+                        sx={inputSx}
+                      />
 
-                            textOverflow: "ellipsis",
+                      <TextField
+                        label="Price"
+                        value={formData.price || ""}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
 
-                            whiteSpace: "nowrap",
+                            price: e.target.value,
+                          })
+                        }
+                        fullWidth
+                        sx={inputSx}
+                      />
 
-                            color: "#2F211C !important",
-                          }}
-                        >
-                          {product.title}
-                        </TableCell>
+                      <TextField
+                        label="Stock"
+                        value={formData.stock || ""}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
 
-                        <TableCell>
-                          <Typography
-                            sx={{
-                              fontWeight: 700,
+                            stock: e.target.value,
+                          })
+                        }
+                        fullWidth
+                        sx={inputSx}
+                      />
 
-                              fontSize: "0.9rem",
+                      <TextField
+                        label="Description"
+                        multiline
+                        rows={3}
+                        value={formData.description || ""}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
 
-                              color: "#6F4E37",
-                            }}
-                          >
-                            ${product.price}
-                          </Typography>
-                        </TableCell>
+                            description: e.target.value,
+                          })
+                        }
+                        fullWidth
+                        sx={inputSx}
+                      />
+                    </>
+                  );
+                })()}
+              </DialogContent>
 
-                        <TableCell>
-                          <Chip
-                            label={
-                              product.stock > 0
-                                ? `${product.stock} in stock`
-                                : "Out of stock"
-                            }
-                            size="small"
-                            sx={{
-                              fontSize: "0.7rem",
+              {/* DIALOG ACTIONS */}
 
-                              fontWeight: 700,
+              <DialogActions
+                sx={{
+                  px: 3,
 
-                              height: 24,
+                  pb: 3,
 
-                              backgroundColor:
-                                product.stock > 0 ? "#F0E6DD" : "#FFF1F0",
+                  gap: 1,
+                }}
+              >
+                <Button
+                  onClick={() => setOpen(false)}
+                  sx={{
+                    borderRadius: "10px",
 
-                              color: product.stock > 0 ? "#6F4E37" : "#B42318",
+                    textTransform: "none",
 
-                              border: `1px solid ${
-                                product.stock > 0 ? "#DFCAB7" : "#F3CBC7"
-                              }`,
-                            }}
-                          />
-                        </TableCell>
+                    fontWeight: 600,
 
-                        <TableCell>
-                          <Box
-                            sx={{
-                              display: "flex",
+                    color: "#6F4E37",
 
-                              gap: 1,
-                            }}
-                          >
-                            <Button
-                              variant="contained"
-                              startIcon={
-                                <DeleteRounded
-                                  sx={{
-                                    fontSize: "15px !important",
-                                  }}
-                                />
-                              }
-                              onClick={() => deleteProduct(product._id)}
-                              sx={actionBtnSx("error")}
-                            >
-                              Delete
-                            </Button>
+                    border: "1px solid #DED0C4",
 
-                            <Button
-                              variant="contained"
-                              startIcon={
-                                <EditRounded
-                                  sx={{
-                                    fontSize: "15px !important",
-                                  }}
-                                />
-                              }
-                              onClick={() => openEditProduct(product)}
-                              sx={actionBtnSx("primary")}
-                            >
-                              Edit
-                            </Button>
-                          </Box>
-                        </TableCell>
-                      </TableRow>
-                    ),
-                  )}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          </>
-        )}
+                    px: 2.5,
 
-        {/* =================================================
-                            DIALOG
-        ================================================= */}
+                    "&:hover": {
+                      backgroundColor: "#F3EDE7",
 
-        <Dialog
-          open={open}
-          onClose={() => setOpen(false)}
-          fullWidth
-          maxWidth="sm"
-          PaperProps={{
-            sx: {
-              backgroundColor: "#FFFDFC",
+                      borderColor: "#C69C72",
+                    },
+                  }}
+                >
+                  Cancel
+                </Button>
 
-              border: "1px solid #E9DED4",
-
-              borderRadius: "20px",
-
-              color: "#2F211C",
-
-              boxShadow: "0 20px 60px rgba(47,33,28,0.2)",
-            },
-          }}
-        >
-          <DialogTitle
-            sx={{
-              display: "flex",
-
-              justifyContent: "space-between",
-
-              alignItems: "center",
-
-              pb: 1,
-            }}
-          >
-            <Typography
-              sx={{
-                fontWeight: 800,
-
-                fontSize: "1.1rem",
-
-                color: "#2F211C",
-              }}
-            >
-              {dialogType === "user"
-                ? selectedItem
-                  ? "Edit User"
-                  : "Add User"
-                : selectedItem
-                  ? "Edit Product"
-                  : "Add Product"}
-            </Typography>
-
-            <IconButton
-              onClick={() => setOpen(false)}
-              sx={{
-                color: "#806F64",
-
-                "&:hover": {
-                  color: "#2F211C",
-
-                  backgroundColor: "#F3EDE7",
-                },
-              }}
-            >
-              <CloseRounded fontSize="small" />
-            </IconButton>
-          </DialogTitle>
-
-          <Divider
-            sx={{
-              borderColor: "#E9DED4",
-            }}
-          />
-
-          <DialogContent
-            sx={{
-              display: "flex",
-
-              flexDirection: "column",
-
-              gap: 2,
-
-              pt: 3,
-            }}
-          >
-            {(() => {
-              const inputSx = {
-                "& .MuiOutlinedInput-root": {
-                  borderRadius: "12px",
-
-                  color: "#2F211C",
-
-                  backgroundColor: "#FAF7F4",
-
-                  "& fieldset": {
-                    borderColor: "#DED0C4",
-                  },
-
-                  "&:hover fieldset": {
-                    borderColor: "#C69C72",
-                  },
-
-                  "&.Mui-focused fieldset": {
-                    borderColor: "#6F4E37",
-                  },
-                },
-
-                "& .MuiInputLabel-root": {
-                  color: "#806F64",
-                },
-
-                "& .MuiInputLabel-root.Mui-focused": {
-                  color: "#6F4E37",
-                },
-              };
-
-              return dialogType === "user" ? (
-                <>
-                  <TextField
-                    label="First Name"
-                    value={formData.firstName || ""}
-                    onChange={(e) =>
-                      setFormData({
-                        ...formData,
-
-                        firstName: e.target.value,
-                      })
+                <Button
+                  variant="contained"
+                  onClick={() => {
+                    if (dialogType === "user") {
+                      selectedItem ? updateUser() : addUser();
+                    } else {
+                      selectedItem ? updateProduct() : addProduct();
                     }
-                    fullWidth
-                    sx={inputSx}
-                  />
+                  }}
+                  sx={{
+                    borderRadius: "10px",
 
-                  <TextField
-                    label="Last Name"
-                    value={formData.lastName || ""}
-                    onChange={(e) =>
-                      setFormData({
-                        ...formData,
+                    textTransform: "none",
 
-                        lastName: e.target.value,
-                      })
-                    }
-                    fullWidth
-                    sx={inputSx}
-                  />
+                    fontWeight: 700,
 
-                  <TextField
-                    label="Email"
-                    value={formData.email || ""}
-                    onChange={(e) =>
-                      setFormData({
-                        ...formData,
+                    px: 3,
 
-                        email: e.target.value,
-                      })
-                    }
-                    fullWidth
-                    sx={inputSx}
-                  />
+                    backgroundColor: "#6F4E37",
 
-                  {!selectedItem && (
-                    <TextField
-                      label="Password"
-                      type="password"
-                      value={formData.password || ""}
-                      onChange={(e) =>
-                        setFormData({
-                          ...formData,
+                    boxShadow: "none",
 
-                          password: e.target.value,
-                        })
-                      }
-                      fullWidth
-                      sx={inputSx}
-                    />
-                  )}
+                    "&:hover": {
+                      backgroundColor: "#4E342E",
 
-                  <TextField
-                    label="Role"
-                    value={formData.role || ""}
-                    onChange={(e) =>
-                      setFormData({
-                        ...formData,
-
-                        role: e.target.value,
-                      })
-                    }
-                    fullWidth
-                    sx={inputSx}
-                  />
-                </>
-              ) : (
-                <>
-                  <TextField
-                    label="Title"
-                    value={formData.title || ""}
-                    onChange={(e) =>
-                      setFormData({
-                        ...formData,
-
-                        title: e.target.value,
-                      })
-                    }
-                    fullWidth
-                    sx={inputSx}
-                  />
-
-                  <TextField
-                    label="Image URL"
-                    value={formData.image || ""}
-                    onChange={(e) =>
-                      setFormData({
-                        ...formData,
-
-                        image: e.target.value,
-                      })
-                    }
-                    fullWidth
-                    sx={inputSx}
-                  />
-
-                  <TextField
-                    label="Price"
-                    value={formData.price || ""}
-                    onChange={(e) =>
-                      setFormData({
-                        ...formData,
-
-                        price: e.target.value,
-                      })
-                    }
-                    fullWidth
-                    sx={inputSx}
-                  />
-
-                  <TextField
-                    label="Stock"
-                    value={formData.stock || ""}
-                    onChange={(e) =>
-                      setFormData({
-                        ...formData,
-
-                        stock: e.target.value,
-                      })
-                    }
-                    fullWidth
-                    sx={inputSx}
-                  />
-
-                  <TextField
-                    label="Description"
-                    multiline
-                    rows={3}
-                    value={formData.description || ""}
-                    onChange={(e) =>
-                      setFormData({
-                        ...formData,
-
-                        description: e.target.value,
-                      })
-                    }
-                    fullWidth
-                    sx={inputSx}
-                  />
-                </>
-              );
-            })()}
-          </DialogContent>
-
-          {/* DIALOG ACTIONS */}
-
-          <DialogActions
-            sx={{
-              px: 3,
-
-              pb: 3,
-
-              gap: 1,
-            }}
-          >
-            <Button
-              onClick={() => setOpen(false)}
-              sx={{
-                borderRadius: "10px",
-
-                textTransform: "none",
-
-                fontWeight: 600,
-
-                color: "#6F4E37",
-
-                border: "1px solid #DED0C4",
-
-                px: 2.5,
-
-                "&:hover": {
-                  backgroundColor: "#F3EDE7",
-
-                  borderColor: "#C69C72",
-                },
-              }}
-            >
-              Cancel
-            </Button>
-
-            <Button
-              variant="contained"
-              onClick={() => {
-                if (dialogType === "user") {
-                  selectedItem ? updateUser() : addUser();
-                } else {
-                  selectedItem ? updateProduct() : addProduct();
-                }
-              }}
-              sx={{
-                borderRadius: "10px",
-
-                textTransform: "none",
-
-                fontWeight: 700,
-
-                px: 3,
-
-                backgroundColor: "#6F4E37",
-
-                boxShadow: "none",
-
-                "&:hover": {
-                  backgroundColor: "#4E342E",
-
-                  boxShadow: "none",
-                },
-              }}
-            >
-              {selectedItem ? "Update" : "Add"}
-            </Button>
-          </DialogActions>
-        </Dialog>
-      </Box>
-    </Box>
+                      boxShadow: "none",
+                    },
+                  }}
+                >
+                  {selectedItem ? "Update" : "Add"}
+                </Button>
+              </DialogActions>
+            </Dialog>
+          </Box>
+        </Box>
+      )}
+    </>
   );
 }
