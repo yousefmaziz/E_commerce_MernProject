@@ -11,7 +11,9 @@ import { useCart } from "../context/cart/CartContext";
 import { useAuth } from "../context/Auth/AuthContext";
 import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 const API = import.meta.env.VITE_BACK_API;
+
 export default function CheckoutPage() {
   const { token } = useAuth()!;
   const { cartItems, totalPrice, clearCart } = useCart()!;
@@ -47,27 +49,23 @@ export default function CheckoutPage() {
 
       const result = await response.json();
       console.log("Checkout response:", result);
+
       if (!response.ok) {
         console.log("SERVER:", result);
+        toast.error("Failed to place order. out of stock");
         return;
       }
 
+      toast.success("Order placed successfully!");
       clearCart();
-
       navigate("/order");
     } catch (err) {
       console.error("Checkout error:", err);
+      toast.error(
+        "An error occurred while placing the order. Please try again.",
+      );
     }
   };
-
-  // ❌ لو الكارت فاضي
-  if (cartItems.length === 0) {
-    return (
-      <Container sx={{ mt: 5 }}>
-        <Typography variant="h5">Your cart is empty 🛒</Typography>
-      </Container>
-    );
-  }
 
   // EMPTY CART
   if (cartItems.length === 0) {
@@ -76,16 +74,17 @@ export default function CheckoutPage() {
         sx={{
           minHeight: "100vh",
           backgroundColor: "#F7F3EE",
-          py: 7,
+          py: { xs: 5, sm: 7 },
+          px: { xs: 2, sm: 0 },
         }}
       >
-        <Container maxWidth="lg">
+        <Container maxWidth="lg" disableGutters={false}>
           <Box
             sx={{
               backgroundColor: "#FFFDFC",
               border: "1px solid #E9DED4",
-              borderRadius: "20px",
-              p: { xs: 4, md: 6 },
+              borderRadius: { xs: "16px", md: "20px" },
+              p: { xs: 3, sm: 4, md: 6 },
               textAlign: "center",
               boxShadow: "0 8px 25px rgba(47,33,28,0.06)",
             }}
@@ -96,6 +95,7 @@ export default function CheckoutPage() {
                 color: "#2F211C",
                 fontWeight: 800,
                 mb: 1,
+                fontSize: { xs: "1.2rem", sm: "1.5rem" },
               }}
             >
               Your cart is empty
@@ -105,12 +105,14 @@ export default function CheckoutPage() {
               sx={{
                 color: "#806F64",
                 mb: 3,
+                fontSize: { xs: "0.85rem", sm: "0.95rem" },
               }}
             >
               Add some products before proceeding to checkout.
             </Typography>
 
             <Button
+              fullWidth={true}
               variant="contained"
               onClick={() => navigate("/")}
               sx={{
@@ -121,6 +123,8 @@ export default function CheckoutPage() {
                 textTransform: "none",
                 fontWeight: 700,
                 boxShadow: "none",
+                maxWidth: { xs: "100%", sm: 260 },
+                mx: "auto",
 
                 "&:hover": {
                   backgroundColor: "#4E342E",
@@ -141,17 +145,17 @@ export default function CheckoutPage() {
       sx={{
         minHeight: "100vh",
         backgroundColor: "#F7F3EE",
-        py: { xs: 5, md: 8 },
+        py: { xs: 4, sm: 6, md: 8 },
       }}
     >
-      <Container maxWidth="lg">
+      <Container maxWidth="lg" sx={{ px: { xs: 2, sm: 3 } }}>
         {/* ================= HEADER ================= */}
 
-        <Box sx={{ mb: 5 }}>
+        <Box sx={{ mb: { xs: 3, md: 5 } }}>
           <Typography
             sx={{
               color: "#A47551",
-              fontSize: "0.78rem",
+              fontSize: { xs: "0.7rem", sm: "0.78rem" },
               fontWeight: 700,
               textTransform: "uppercase",
               letterSpacing: "0.12em",
@@ -168,6 +172,7 @@ export default function CheckoutPage() {
               fontWeight: 800,
               letterSpacing: "-0.02em",
               mb: 1,
+              fontSize: { xs: "1.6rem", sm: "2rem", md: "2.125rem" },
             }}
           >
             Checkout
@@ -176,7 +181,7 @@ export default function CheckoutPage() {
           <Typography
             sx={{
               color: "#806F64",
-              fontSize: "0.95rem",
+              fontSize: { xs: "0.85rem", sm: "0.95rem" },
             }}
           >
             Review your order and complete your delivery details.
@@ -203,7 +208,7 @@ export default function CheckoutPage() {
               md: "row",
             },
             alignItems: "flex-start",
-            gap: 3,
+            gap: { xs: 2.5, md: 3 },
           }}
         >
           {/* ================= ORDER SUMMARY ================= */}
@@ -215,11 +220,11 @@ export default function CheckoutPage() {
               width: "100%",
 
               p: {
-                xs: 2.5,
+                xs: 2,
                 sm: 3,
               },
 
-              borderRadius: "18px",
+              borderRadius: { xs: "14px", md: "18px" },
 
               backgroundColor: "#FFFDFC",
 
@@ -233,7 +238,8 @@ export default function CheckoutPage() {
               sx={{
                 color: "#2F211C",
                 fontWeight: 800,
-                mb: 3,
+                mb: { xs: 2, sm: 3 },
+                fontSize: { xs: "1.05rem", sm: "1.25rem" },
               }}
             >
               Order Summary
@@ -245,7 +251,7 @@ export default function CheckoutPage() {
               sx={{
                 display: "flex",
                 flexDirection: "column",
-                gap: 2,
+                gap: { xs: 1.5, sm: 2 },
               }}
             >
               {cartItems.map((item) => (
@@ -253,10 +259,11 @@ export default function CheckoutPage() {
                   key={item.productId}
                   sx={{
                     display: "flex",
+                    flexWrap: "wrap",
                     justifyContent: "space-between",
                     alignItems: "center",
 
-                    gap: 2,
+                    gap: 1,
 
                     backgroundColor: "#F8F3EE",
 
@@ -264,16 +271,17 @@ export default function CheckoutPage() {
 
                     borderRadius: "12px",
 
-                    p: 2,
+                    p: { xs: 1.5, sm: 2 },
                   }}
                 >
-                  <Box>
+                  <Box sx={{ minWidth: 0 }}>
                     <Typography
                       sx={{
                         color: "#2F211C",
                         fontWeight: 700,
-                        fontSize: "0.95rem",
+                        fontSize: { xs: "0.88rem", sm: "0.95rem" },
                         mb: 0.4,
+                        wordBreak: "break-word",
                       }}
                     >
                       {item.title}
@@ -282,7 +290,7 @@ export default function CheckoutPage() {
                     <Typography
                       sx={{
                         color: "#806F64",
-                        fontSize: "0.8rem",
+                        fontSize: { xs: "0.75rem", sm: "0.8rem" },
                       }}
                     >
                       ${item.unitPrice.toFixed(2)} × {item.quantity}
@@ -294,6 +302,7 @@ export default function CheckoutPage() {
                       color: "#6F4E37",
                       fontWeight: 800,
                       whiteSpace: "nowrap",
+                      fontSize: { xs: "0.88rem", sm: "1rem" },
                     }}
                   >
                     ${(item.unitPrice * item.quantity).toFixed(2)}
@@ -304,7 +313,7 @@ export default function CheckoutPage() {
 
             <Divider
               sx={{
-                my: 3,
+                my: { xs: 2, sm: 3 },
                 borderColor: "#E9DED4",
               }}
             />
@@ -322,6 +331,7 @@ export default function CheckoutPage() {
                 sx={{
                   color: "#806F64",
                   fontWeight: 600,
+                  fontSize: { xs: "0.85rem", sm: "1rem" },
                 }}
               >
                 Total Amount
@@ -332,6 +342,7 @@ export default function CheckoutPage() {
                 sx={{
                   color: "#6F4E37",
                   fontWeight: 800,
+                  fontSize: { xs: "1.25rem", sm: "1.5rem" },
                 }}
               >
                 ${totalPrice.toFixed(2)}
@@ -348,11 +359,11 @@ export default function CheckoutPage() {
               width: "100%",
 
               p: {
-                xs: 2.5,
+                xs: 2,
                 sm: 3,
               },
 
-              borderRadius: "18px",
+              borderRadius: { xs: "14px", md: "18px" },
 
               backgroundColor: "#FFFDFC",
 
@@ -367,6 +378,7 @@ export default function CheckoutPage() {
                 color: "#2F211C",
                 fontWeight: 800,
                 mb: 1,
+                fontSize: { xs: "1.05rem", sm: "1.25rem" },
               }}
             >
               Shipping & Payment
@@ -375,8 +387,8 @@ export default function CheckoutPage() {
             <Typography
               sx={{
                 color: "#806F64",
-                fontSize: "0.85rem",
-                mb: 3,
+                fontSize: { xs: "0.8rem", sm: "0.85rem" },
+                mb: { xs: 2, sm: 3 },
               }}
             >
               Enter your delivery information to complete the order.
@@ -388,7 +400,7 @@ export default function CheckoutPage() {
               sx={{
                 color: "#2F211C",
                 fontWeight: 700,
-                fontSize: "0.85rem",
+                fontSize: { xs: "0.8rem", sm: "0.85rem" },
                 mb: 1,
               }}
             >
@@ -404,11 +416,12 @@ export default function CheckoutPage() {
               multiline
               minRows={2}
               sx={{
-                mb: 3,
+                mb: { xs: 2, sm: 3 },
 
                 "& .MuiOutlinedInput-root": {
                   borderRadius: "12px",
                   backgroundColor: "#FAF7F4",
+                  fontSize: { xs: "0.9rem", sm: "1rem" },
 
                   "& fieldset": {
                     borderColor: "#DED0C4",
@@ -431,7 +444,7 @@ export default function CheckoutPage() {
               sx={{
                 color: "#2F211C",
                 fontWeight: 700,
-                fontSize: "0.85rem",
+                fontSize: { xs: "0.8rem", sm: "0.85rem" },
                 mb: 1,
               }}
             >
@@ -444,11 +457,12 @@ export default function CheckoutPage() {
               onChange={(e) => setPaymentMethod(e.target.value)}
               placeholder="cash / card"
               sx={{
-                mb: 4,
+                mb: { xs: 3, sm: 4 },
 
                 "& .MuiOutlinedInput-root": {
                   borderRadius: "12px",
                   backgroundColor: "#FAF7F4",
+                  fontSize: { xs: "0.9rem", sm: "1rem" },
 
                   "& fieldset": {
                     borderColor: "#DED0C4",
@@ -475,13 +489,13 @@ export default function CheckoutPage() {
                 backgroundColor: "#6F4E37",
                 color: "#FFFFFF",
 
-                py: 1.4,
+                py: { xs: 1.2, sm: 1.4 },
 
                 borderRadius: "12px",
 
                 textTransform: "none",
 
-                fontSize: "1rem",
+                fontSize: { xs: "0.9rem", sm: "1rem" },
                 fontWeight: 700,
 
                 boxShadow: "none",
@@ -503,7 +517,7 @@ export default function CheckoutPage() {
             <Typography
               sx={{
                 color: "#9A887C",
-                fontSize: "0.75rem",
+                fontSize: { xs: "0.7rem", sm: "0.75rem" },
                 textAlign: "center",
                 mt: 2,
               }}
